@@ -116,8 +116,7 @@ misrepresented as being the original software.
 package mixer
 
 import sdl "../"
-SDL3_SYSTEM :: sdl.SDL3_SYSTEM
-SDL3_SHARED :: sdl.SDL3_SHARED
+SDL3_LINK :: sdl.SDL3_LINK
 
 when sdl.SDL3_MIXER {
     when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
@@ -2589,19 +2588,28 @@ when sdl.SDL3_MIXER {
         }
     } else {
         when ODIN_OS == .Windows {
-            foreign import lib {"SDL3_mixer.lib" when SDL3_SHARED else "SDL3_mixer_static.lib"}
+            foreign import lib {"SDL3_mixer.lib" when SDL3_LINK == "shared" else "SDL3_mixer_static.lib"}
         } else when ODIN_OS == .Darwin {
-            when !SDL3_SHARED {
+            when SDL3_LINK == "static" {
+                @(export)
                 foreign import lib "SDL3_mixer.darwin.a"
+            } else when SDL3_LINK == "shared" {
+                @(export)
+                foreign import lib "libSDL3_mixer.dylib"
             } else {
-                // not available on brew yet...
-                foreign import lib {"system:SDL3_mixer" when SDL3_SYSTEM else "libSDL3_mixer.dylib"}
+                @(export)
+                foreign import lib "system:SDL3_mixer"
             }
         } else when ODIN_OS == .Linux {
-            when !SDL3_SHARED {
+            when SDL3_LINK == "static" {
+                @(export)
                 foreign import lib "SDL3_mixer.linux.a"
+            } else when SDL3_LINK == "shared" {
+                @(export)
+                foreign import lib "libSDL3_mixer.so"
             } else {
-                foreign import lib {"system:SDL3_mixer" when SDL3_SYSTEM else "libSDL3_mixer.so"}
+                @(export)
+                foreign import lib "system:SDL3_mixer"
             }
         }
         @(default_calling_convention = "c", link_prefix = "MIX_")

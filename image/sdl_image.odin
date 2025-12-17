@@ -3,8 +3,7 @@ package sdl3_image
 import "core:c"
 
 import sdl "../"
-SDL3_SYSTEM :: sdl.SDL3_SYSTEM
-SDL3_SHARED :: sdl.SDL3_SHARED
+SDL3_LINK :: sdl.SDL3_LINK
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 
@@ -98,16 +97,25 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     when ODIN_OS == .Windows {
         foreign import lib {"SDL3_image.lib" when SDL3_SHARED else "SDL3_image_static.lib"}
     } else when ODIN_OS == .Darwin {
-        when !SDL3_SHARED {
+        when SDL3_LINK == "static" {
             foreign import lib "SDL3_image.darwin.a"
+        } else when SDL3_LINK == "shared" {
+            @(export)
+            foreign import lib "libSDL3_image.dylib"
         } else {
-            foreign import lib {"system:SDL3_image" when SDL3_SYSTEM else "libSDL3_image.dylib"}
+            @(export)
+            foreign import lib "system:SDL3_image"
         }
     } else when ODIN_OS == .Linux {
-        when !SDL3_SHARED {
+        when SDL3_LINK == "static" {
+            @(export)
             foreign import lib "SDL3_image.linux.a"
+        } else when SDL3_LINK == "shared" {
+            @(export)
+            foreign import lib "libSDL3_image.so"
         } else {
-            foreign import lib {"system:SDL3_image" when SDL3_SYSTEM else "libSDL3_image.so"}
+            @(export)
+            foreign import lib "system:SDL3_image"
         }
     }
 

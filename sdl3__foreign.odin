@@ -3,31 +3,19 @@ package sdl3
 SDL3_MIXER :: #config(SDL3_MIXER, false)
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     SYSTEM_SUPPORT :: false
-    SDL3_SYSTEM :: false
-    SDL3_SHARED :: false
 } else {
-    when ODIN_OS != .Windows {
-        when ODIN_OS != .Darwin || !SDL3_MIXER {
-            SYSTEM_SUPPORT :: true
-        } else {
-            SYSTEM_SUPPORT :: false
-        }
-        SDL3_SYSTEM :: #config(SDL3_SYSTEM, SYSTEM_SUPPORT)
-    } else {
-        SDL3_SYSTEM :: false
-        SYSTEM_SUPPORT :: false
-    }
-    SDL3_SHARED :: #config(SDL3_SHARED, !SYSTEM_SUPPORT)
+    SYSTEM_SUPPORT :: ODIN_OS != .Windows && ODIN_OS != .Darwin || !SDL3_MIXER
+    SDL3_LINK :: #config(SDL3_LINK, "system" when SYSTEM_SUPPORT else "shared")
 
-    when ODIN_OS == .Darwin && SDL3_SYSTEM && SDL3_MIXER {
+    when ODIN_OS == .Darwin && SDL3_MIXER && SDL3_LINK == "system" {
         #panic("not available on brew yet, you gotta copile")
     }
 
     when ODIN_OS == .Windows {
         @(export)
-        foreign import lib {"SDL3.lib" when SDL3_SHARED else "SDL3_static.lib"}
+        foreign import lib {"SDL3.lib" when SDL3_LINK == "shared" else "SDL3_static.lib"}
     } else when ODIN_OS == .Darwin {
-        when !SDL3_SHARED {
+        when SDL3_LINK == "static" {
             @(require) foreign import "system:System"
             @(require) foreign import "system:ObjC"
             @(require) foreign import "system:iconv"
@@ -53,17 +41,23 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
             @(require) foreign import "system:Carbon.framework"
             @(export)
             foreign import lib "SDL3.darwin.a"
+        } else when SDL3_LINK == "shared" {
+            @(export)
+            foreign import lib "libSDL3.dylib"
         } else {
             @(export)
-            foreign import lib {"system:SDL3" when SDL3_SYSTEM else "libSDL3.dylib"}
+            foreign import lib "system:SDL3"
         }
     } else when ODIN_OS == .Linux {
-        when !SDL3_SHARED {
+        when SDL3_LINK == "static" {
             @(export)
             foreign import lib "SDL3.linux.a"
+        } else when SDL3_LINK == "shared" {
+            @(export)
+            foreign import lib "libSDL3.so"
         } else {
             @(export)
-            foreign import lib {"system:SDL3" when SDL3_SYSTEM else "libSDL3.so"}
+            foreign import lib "system:SDL3"
         }
     }
 }

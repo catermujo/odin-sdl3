@@ -3,16 +3,33 @@ package sdl3_ttf
 import "core:c"
 
 import sdl "../"
+SDL3_LINK :: sdl.SDL3_LINK
 
 when ODIN_OS == .Windows {
-    foreign import lib "SDL3_ttf.lib"
+    foreign import lib {"SDL3_ttf.lib" when SDL3_LINK == "shared" else "SDL3_ttf_static.lib"}
 } else when ODIN_OS == .Darwin {
-    // foreign import lib "SDL3_ttf.darwin.a"
-    foreign import lib "libSDL3_ttf.dylib"
+    when SDL3_LINK == "static" {
+        @(export)
+        foreign import lib "SDL3_ttf.darwin.a"
+    } else when SDL3_LINK == "shared" {
+        @(export)
+        foreign import lib "libSDL3_ttf.dylib"
+    } else {
+        @(export)
+        foreign import lib "system:SDL3_ttf"
+    }
 } else when ODIN_OS == .Linux {
-    foreign import lib "system:SDL3_ttf"
+    when SDL3_LINK == "static" {
+        @(export)
+        foreign import lib "SDL3_ttf.linux.a"
+    } else when SDL3_LINK == "shared" {
+        @(export)
+        foreign import lib "libSDL3_ttf.so"
+    } else {
+        @(export)
+        foreign import lib "system:SDL3_ttf"
+    }
 } else when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    foreign import lib "SDL3_ttf.wasm.a"
 }
 
 
@@ -476,3 +493,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         Quit :: proc() ---
     }
 }
+
