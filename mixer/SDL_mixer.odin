@@ -2588,7 +2588,11 @@ when sdl.SDL3_MIXER {
         }
     } else {
         when ODIN_OS == .Windows {
-            foreign import lib {"SDL3_mixer.lib" when SDL3_LINK == "shared" else "SDL3_mixer_static.lib"}
+            when SDL3_LINK == "shared" {
+                foreign import lib "SDL3_mixer.lib"
+            } else when SDL3_LINK == "static" {
+                foreign import lib "SDL3_mixer_static.lib"
+            }
         } else when ODIN_OS == .Darwin {
             when SDL3_LINK == "static" {
                 @(export)

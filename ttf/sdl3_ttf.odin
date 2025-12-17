@@ -6,7 +6,11 @@ import sdl "../"
 SDL3_LINK :: sdl.SDL3_LINK
 
 when ODIN_OS == .Windows {
-    foreign import lib {"SDL3_ttf.lib" when SDL3_LINK == "shared" else "SDL3_ttf_static.lib"}
+    when SDL3_LINK == "shared" {
+        foreign import lib "SDL3_ttf.lib"
+    } else when SDL3_LINK == "static" {
+        foreign import lib "SDL3_ttf_static.lib"
+    }
 } else when ODIN_OS == .Darwin {
     when SDL3_LINK == "static" {
         @(export)

@@ -12,8 +12,13 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     }
 
     when ODIN_OS == .Windows {
-        @(export)
-        foreign import lib {"SDL3.lib" when SDL3_LINK == "shared" else "SDL3_static.lib"}
+        when SDL3_LINK == "shared" {
+            @(export)
+            foreign import lib "SDL3.lib"
+        } else when SDL3_LINK == "static" {
+            @(export)
+            foreign import lib "SDL3_static.lib"
+        }
     } else when ODIN_OS == .Darwin {
         when SDL3_LINK == "static" {
             @(require) foreign import "system:System"

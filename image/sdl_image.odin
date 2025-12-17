@@ -95,7 +95,11 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     }
 } else {
     when ODIN_OS == .Windows {
-        foreign import lib {"SDL3_image.lib" when SDL3_SHARED else "SDL3_image_static.lib"}
+        when SDL3_LINK == "shared" {
+            foreign import lib "SDL3_image.lib"
+        } else when SDL3_LINK == "static" {
+            foreign import lib "SDL3_image_static.lib"
+        }
     } else when ODIN_OS == .Darwin {
         when SDL3_LINK == "static" {
             foreign import lib "SDL3_image.darwin.a"
