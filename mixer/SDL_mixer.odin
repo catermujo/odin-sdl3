@@ -116,7 +116,9 @@ misrepresented as being the original software.
 package mixer
 
 import sdl "../"
-SDL3_LINK :: sdl.SDL3_LINK
+when sdl.SYSTEM_SUPPORT {
+    SDL3_LINK :: sdl.SDL3_LINK
+}
 
 when sdl.SDL3_MIXER {
     when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {

@@ -3,7 +3,9 @@ package sdl3_ttf
 import "core:c"
 
 import sdl "../"
-SDL3_LINK :: sdl.SDL3_LINK
+when sdl.SYSTEM_SUPPORT {
+    SDL3_LINK :: sdl.SDL3_LINK
+}
 
 when ODIN_OS == .Windows {
     when SDL3_LINK == "shared" {

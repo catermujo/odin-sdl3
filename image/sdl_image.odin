@@ -3,7 +3,9 @@ package sdl3_image
 import "core:c"
 
 import sdl "../"
-SDL3_LINK :: sdl.SDL3_LINK
+when sdl.SYSTEM_SUPPORT {
+    SDL3_LINK :: sdl.SDL3_LINK
+}
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 
