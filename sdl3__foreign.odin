@@ -4,7 +4,7 @@ SDL3_MIXER :: #config(SDL3_MIXER, false)
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     SYSTEM_SUPPORT :: false
 } else {
-    SYSTEM_SUPPORT :: ODIN_OS != .Windows && ODIN_OS != .Darwin || !SDL3_MIXER
+    SYSTEM_SUPPORT :: ODIN_OS != .Windows && (ODIN_OS != .Darwin || !SDL3_MIXER)
     SDL3_LINK :: #config(SDL3_LINK, "system" when SYSTEM_SUPPORT else "shared")
 
     when ODIN_OS == .Darwin && SDL3_MIXER && SDL3_LINK == "system" {

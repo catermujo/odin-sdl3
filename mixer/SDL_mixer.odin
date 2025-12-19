@@ -116,9 +116,6 @@ misrepresented as being the original software.
 package mixer
 
 import sdl "../"
-when sdl.SYSTEM_SUPPORT {
-    SDL3_LINK :: sdl.SDL3_LINK
-}
 
 when sdl.SDL3_MIXER {
     when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
@@ -2590,16 +2587,16 @@ when sdl.SDL3_MIXER {
         }
     } else {
         when ODIN_OS == .Windows {
-            when SDL3_LINK == "shared" {
+            when sdl.SDL3_LINK == "shared" {
                 foreign import lib "SDL3_mixer.lib"
-            } else when SDL3_LINK == "static" {
+            } else when sdl.SDL3_LINK == "static" {
                 foreign import lib "SDL3_mixer_static.lib"
             }
         } else when ODIN_OS == .Darwin {
-            when SDL3_LINK == "static" {
+            when sdl.SDL3_LINK == "static" {
                 @(export)
                 foreign import lib "SDL3_mixer.darwin.a"
-            } else when SDL3_LINK == "shared" {
+            } else when sdl.SDL3_LINK == "shared" {
                 @(export)
                 foreign import lib "libSDL3_mixer.dylib"
             } else {
@@ -2607,10 +2604,10 @@ when sdl.SDL3_MIXER {
                 foreign import lib "system:SDL3_mixer"
             }
         } else when ODIN_OS == .Linux {
-            when SDL3_LINK == "static" {
+            when sdl.SDL3_LINK == "static" {
                 @(export)
                 foreign import lib "SDL3_mixer.linux.a"
-            } else when SDL3_LINK == "shared" {
+            } else when sdl.SDL3_LINK == "shared" {
                 @(export)
                 foreign import lib "libSDL3_mixer.so"
             } else {

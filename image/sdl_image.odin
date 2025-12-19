@@ -3,13 +3,8 @@ package sdl3_image
 import "core:c"
 
 import sdl "../"
-when sdl.SYSTEM_SUPPORT {
-    SDL3_LINK :: sdl.SDL3_LINK
-}
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "IMG_")
     foreign _ {
         Version :: proc() -> c.int ---
@@ -97,15 +92,15 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     }
 } else {
     when ODIN_OS == .Windows {
-        when SDL3_LINK == "shared" {
+        when sdl.SDL3_LINK == "shared" {
             foreign import lib "SDL3_image.lib"
-        } else when SDL3_LINK == "static" {
+        } else when sdl.SDL3_LINK == "static" {
             foreign import lib "SDL3_image_static.lib"
         }
     } else when ODIN_OS == .Darwin {
-        when SDL3_LINK == "static" {
+        when sdl.SDL3_LINK == "static" {
             foreign import lib "SDL3_image.darwin.a"
-        } else when SDL3_LINK == "shared" {
+        } else when sdl.SDL3_LINK == "shared" {
             @(export)
             foreign import lib "libSDL3_image.dylib"
         } else {
@@ -113,10 +108,10 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
             foreign import lib "system:SDL3_image"
         }
     } else when ODIN_OS == .Linux {
-        when SDL3_LINK == "static" {
+        when sdl.SDL3_LINK == "static" {
             @(export)
             foreign import lib "SDL3_image.linux.a"
-        } else when SDL3_LINK == "shared" {
+        } else when sdl.SDL3_LINK == "shared" {
             @(export)
             foreign import lib "libSDL3_image.so"
         } else {

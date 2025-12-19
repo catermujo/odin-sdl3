@@ -9,7 +9,7 @@ set -e
 
 wait
 
-cmake -S . -B libs -DSDL_SHARED=OFF -DSDL_STATIC=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B libs -DSDL_SHARED=OFF -DSDL_STATIC=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=OFF
 if [ $(uname -s) = 'Darwin' ]; then
     cmake --build libs -j$(sysctl -n hw.ncpu) --config Release
     LIB_EXT=darwin
