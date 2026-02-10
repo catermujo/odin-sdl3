@@ -92,15 +92,15 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     }
 } else {
     when ODIN_OS == .Windows {
-        when sdl.SDL3_LINK == "shared" {
+        when sdl.LINK == "shared" {
             foreign import lib "SDL3_image.lib"
-        } else when sdl.SDL3_LINK == "static" {
+        } else when sdl.LINK == "static" {
             foreign import lib "SDL3_image_static.lib"
         }
     } else when ODIN_OS == .Darwin {
-        when sdl.SDL3_LINK == "static" {
+        when sdl.LINK == "static" {
             foreign import lib "SDL3_image.darwin.a"
-        } else when sdl.SDL3_LINK == "shared" {
+        } else when sdl.LINK == "shared" {
             @(export)
             foreign import lib "libSDL3_image.dylib"
         } else {
@@ -108,10 +108,10 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
             foreign import lib "system:SDL3_image"
         }
     } else when ODIN_OS == .Linux {
-        when sdl.SDL3_LINK == "static" {
+        when sdl.LINK == "static" {
             @(export)
             foreign import lib "SDL3_image.linux.a"
-        } else when sdl.SDL3_LINK == "shared" {
+        } else when sdl.LINK == "shared" {
             @(export)
             foreign import lib "libSDL3_image.so"
         } else {

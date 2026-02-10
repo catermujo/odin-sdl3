@@ -117,7 +117,7 @@ package mixer
 
 import sdl "../"
 
-when sdl.SDL3_MIXER {
+when sdl.MIXER {
     when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 
 
@@ -2587,16 +2587,16 @@ when sdl.SDL3_MIXER {
         }
     } else {
         when ODIN_OS == .Windows {
-            when sdl.SDL3_LINK == "shared" {
+            when sdl.LINK == "shared" {
                 foreign import lib "SDL3_mixer.lib"
-            } else when sdl.SDL3_LINK == "static" {
+            } else when sdl.LINK == "static" {
                 foreign import lib "SDL3_mixer_static.lib"
             }
         } else when ODIN_OS == .Darwin {
-            when sdl.SDL3_LINK == "static" {
+            when sdl.LINK == "static" {
                 @(export)
                 foreign import lib "SDL3_mixer.darwin.a"
-            } else when sdl.SDL3_LINK == "shared" {
+            } else when sdl.LINK == "shared" {
                 @(export)
                 foreign import lib "libSDL3_mixer.dylib"
             } else {
@@ -2604,10 +2604,10 @@ when sdl.SDL3_MIXER {
                 foreign import lib "system:SDL3_mixer"
             }
         } else when ODIN_OS == .Linux {
-            when sdl.SDL3_LINK == "static" {
+            when sdl.LINK == "static" {
                 @(export)
                 foreign import lib "SDL3_mixer.linux.a"
-            } else when sdl.SDL3_LINK == "shared" {
+            } else when sdl.LINK == "shared" {
                 @(export)
                 foreign import lib "libSDL3_mixer.so"
             } else {
