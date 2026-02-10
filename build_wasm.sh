@@ -9,7 +9,18 @@ set -e
 
 wait
 
-emcmake cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DDAV1D_ASM=OFF -DEMSCRIPTEN=ON -DSDLIMAGE_AVIF=OFF
+WASM_THREAD_FLAGS=${WASM_THREAD_FLAGS:-"-pthread -matomics -mbulk-memory"}
+
+emcmake cmake -S . -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DDAV1D_ASM=OFF \
+    -DEMSCRIPTEN=ON \
+    -DSDLIMAGE_AVIF=OFF \
+    -DCMAKE_C_FLAGS="$WASM_THREAD_FLAGS" \
+    -DCMAKE_CXX_FLAGS="$WASM_THREAD_FLAGS" \
+    -DCMAKE_EXE_LINKER_FLAGS="$WASM_THREAD_FLAGS" \
+    -DCMAKE_SHARED_LINKER_FLAGS="$WASM_THREAD_FLAGS" \
+    -DCMAKE_MODULE_LINKER_FLAGS="$WASM_THREAD_FLAGS"
 if [ $(uname -s) = 'Darwin' ]; then
     emmake make -C build -j$(sysctl -n hw.ncpu)
 else

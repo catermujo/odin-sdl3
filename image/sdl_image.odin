@@ -217,4 +217,3 @@ Animation :: struct {
     frames: [^]^sdl.Surface,
     delays: [^]c.int,
 }
-

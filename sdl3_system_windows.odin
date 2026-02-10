@@ -14,4 +14,3 @@ foreign lib {
     GetDirect3D9AdapterIndex :: proc(displayID: DisplayID) -> i32 ---
     GetDXGIOutputInfo :: proc(displayID: DisplayID, adapterIndex: ^i32, outputIndex: ^i32) -> bool ---
 }
-

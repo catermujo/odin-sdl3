@@ -496,4 +496,3 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         Quit :: proc() ---
     }
 }
-
