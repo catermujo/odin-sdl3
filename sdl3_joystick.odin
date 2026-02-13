@@ -1,14 +1,18 @@
 package sdl3
 
-when !(ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32) {
+import "core:c"
+
+when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
+    @(link_prefix = "SDL_")
+    foreign _ {
+        joystick_lock: ^Mutex
+    }
+} else {
     @(link_prefix = "SDL_")
     foreign lib {
         joystick_lock: ^Mutex
     }
 }
-
-import "core:c"
-
 
 Joystick :: struct {}
 JoystickID :: distinct Uint32
@@ -41,11 +45,8 @@ JOYSTICK_AXIS_MIN :: -32768
 
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         LockJoysticks :: proc() ---
         UnlockJoysticks :: proc() ---
         HasJoystick :: proc() -> bool ---
@@ -65,7 +66,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         LockJoysticks :: proc() ---
         UnlockJoysticks :: proc() ---
         HasJoystick :: proc() -> bool ---
@@ -165,11 +165,8 @@ HAT_LEFTUP :: HAT_LEFT | HAT_UP
 HAT_LEFTDOWN :: HAT_LEFT | HAT_DOWN
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         AttachVirtualJoystick :: proc(#by_ptr desc: VirtualJoystickDesc) -> JoystickID ---
         DetachVirtualJoystick :: proc(instance_id: JoystickID) -> bool ---
         IsJoystickVirtual :: proc(instance_id: JoystickID) -> bool ---
@@ -217,7 +214,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         AttachVirtualJoystick :: proc(#by_ptr desc: VirtualJoystickDesc) -> JoystickID ---
         DetachVirtualJoystick :: proc(instance_id: JoystickID) -> bool ---
         IsJoystickVirtual :: proc(instance_id: JoystickID) -> bool ---

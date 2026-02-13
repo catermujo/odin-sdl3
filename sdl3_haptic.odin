@@ -5,6 +5,7 @@ import "core:c"
 Haptic :: struct {}
 
 HapticType :: Uint16
+HapticEffectId :: c.int
 
 HAPTIC_CONSTANT :: 1 << 0
 HAPTIC_SINE :: 1 << 1
@@ -198,11 +199,8 @@ HapticID :: distinct Uint32
 
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         GetHaptics :: proc(count: ^c.int) -> ^HapticID ---
         GetHapticNameForID :: proc(instance_id: HapticID) -> cstring ---
         OpenHaptic :: proc(instance_id: HapticID) -> ^Haptic ---
@@ -219,12 +217,12 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetHapticFeatures :: proc(haptic: ^Haptic) -> Uint32 ---
         GetNumHapticAxes :: proc(haptic: ^Haptic) -> c.int ---
         HapticEffectSupported :: proc(haptic: ^Haptic, #by_ptr effect: HapticEffect) -> bool ---
-        CreateHapticEffect :: proc(haptic: ^Haptic, #by_ptr effect: HapticEffect) -> c.int ---
-        UpdateHapticEffect :: proc(haptic: ^Haptic, effect: c.int, #by_ptr data: HapticEffect) -> bool ---
-        RunHapticEffect :: proc(haptic: ^Haptic, effect: c.int, iterations: Uint32) -> bool ---
-        StopHapticEffect :: proc(haptic: ^Haptic, effect: c.int) -> bool ---
-        DestroyHapticEffect :: proc(haptic: ^Haptic, effect: c.int) ---
-        GetHapticEffectStatus :: proc(haptic: ^Haptic, effect: c.int) -> bool ---
+        CreateHapticEffect :: proc(haptic: ^Haptic, #by_ptr effect: HapticEffect) -> HapticEffectId ---
+        UpdateHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId, #by_ptr data: HapticEffect) -> bool ---
+        RunHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId, iterations: Uint32) -> bool ---
+        StopHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId) -> bool ---
+        DestroyHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId) ---
+        GetHapticEffectStatus :: proc(haptic: ^Haptic, effect: HapticEffectId) -> bool ---
         SetHapticGain :: proc(haptic: ^Haptic, gain: c.int) -> bool ---
         SetHapticAutocenter :: proc(haptic: ^Haptic, autocenter: c.int) -> bool ---
         PauseHaptic :: proc(haptic: ^Haptic) -> bool ---
@@ -238,7 +236,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         GetHaptics :: proc(count: ^c.int) -> ^HapticID ---
         GetHapticNameForID :: proc(instance_id: HapticID) -> cstring ---
         OpenHaptic :: proc(instance_id: HapticID) -> ^Haptic ---
@@ -255,12 +252,12 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetHapticFeatures :: proc(haptic: ^Haptic) -> Uint32 ---
         GetNumHapticAxes :: proc(haptic: ^Haptic) -> c.int ---
         HapticEffectSupported :: proc(haptic: ^Haptic, #by_ptr effect: HapticEffect) -> bool ---
-        CreateHapticEffect :: proc(haptic: ^Haptic, #by_ptr effect: HapticEffect) -> c.int ---
-        UpdateHapticEffect :: proc(haptic: ^Haptic, effect: c.int, #by_ptr data: HapticEffect) -> bool ---
-        RunHapticEffect :: proc(haptic: ^Haptic, effect: c.int, iterations: Uint32) -> bool ---
-        StopHapticEffect :: proc(haptic: ^Haptic, effect: c.int) -> bool ---
-        DestroyHapticEffect :: proc(haptic: ^Haptic, effect: c.int) ---
-        GetHapticEffectStatus :: proc(haptic: ^Haptic, effect: c.int) -> bool ---
+        CreateHapticEffect :: proc(haptic: ^Haptic, #by_ptr effect: HapticEffect) -> HapticEffectId ---
+        UpdateHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId, #by_ptr data: HapticEffect) -> bool ---
+        RunHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId, iterations: Uint32) -> bool ---
+        StopHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId) -> bool ---
+        DestroyHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId) ---
+        GetHapticEffectStatus :: proc(haptic: ^Haptic, effect: HapticEffectId) -> bool ---
         SetHapticGain :: proc(haptic: ^Haptic, gain: c.int) -> bool ---
         SetHapticAutocenter :: proc(haptic: ^Haptic, autocenter: c.int) -> bool ---
         PauseHaptic :: proc(haptic: ^Haptic) -> bool ---

@@ -44,15 +44,13 @@ PROP_IOSTREAM_FILE_DESCRIPTOR_NUMBER :: "SDL.iostream.file_descriptor"
 PROP_IOSTREAM_ANDROID_AASSET_POINTER :: "SDL.iostream.android.aasset"
 PROP_IOSTREAM_MEMORY_POINTER :: "SDL.iostream.memory.base"
 PROP_IOSTREAM_MEMORY_SIZE_NUMBER :: "SDL.iostream.memory.size"
+PROP_IOSTREAM_MEMORY_FREE_FUNC_POINTER :: "SDL.iostream.memory.free"
 PROP_IOSTREAM_DYNAMIC_MEMORY_POINTER :: "SDL.iostream.dynamic.memory"
 PROP_IOSTREAM_DYNAMIC_CHUNKSIZE_NUMBER :: "SDL.iostream.dynamic.chunksize"
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         @(require_results)
         IOFromFile :: proc(file: cstring, mode: cstring) -> ^IOStream ---
         @(require_results)
@@ -120,7 +118,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         @(require_results)
         IOFromFile :: proc(file: cstring, mode: cstring) -> ^IOStream ---
         @(require_results)

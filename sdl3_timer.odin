@@ -25,11 +25,8 @@ TimerCallback :: #type proc "c" (userdata: rawptr, timerID: TimerID, interval: U
 NSTimerCallback :: #type proc "c" (userdata: rawptr, timerID: TimerID, interval: Uint64) -> Uint64
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         GetTicks :: proc() -> Uint64 ---
         GetTicksNS :: proc() -> Uint64 ---
         GetPerformanceCounter :: proc() -> Uint64 ---
@@ -44,7 +41,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         GetTicks :: proc() -> Uint64 ---
         GetTicksNS :: proc() -> Uint64 ---
         GetPerformanceCounter :: proc() -> Uint64 ---

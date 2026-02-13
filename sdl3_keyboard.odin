@@ -31,11 +31,8 @@ PROP_TEXTINPUT_ANDROID_INPUTTYPE_NUMBER :: "SDL.textinput.android.inputtype"
 
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         HasKeyboard :: proc() -> bool ---
         GetKeyboards :: proc(count: ^c.int) -> [^]KeyboardID ---
         GetKeyboardNameForID :: proc(instance_id: KeyboardID) -> cstring ---
@@ -64,7 +61,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         HasKeyboard :: proc() -> bool ---
         GetKeyboards :: proc(count: ^c.int) -> [^]KeyboardID ---
         GetKeyboardNameForID :: proc(instance_id: KeyboardID) -> cstring ---

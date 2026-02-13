@@ -21,12 +21,15 @@ CameraPosition :: enum c.int {
     BACK_FACING,
 }
 
+CameraPermissionState :: enum c.int {
+    DENIED = -1,
+    PENDING,
+    APPROVED,
+}
+
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         GetNumCameraDrivers :: proc() -> c.int ---
         GetCameraDriver :: proc(index: c.int) -> cstring ---
         GetCurrentCameraDriver :: proc() -> cstring ---
@@ -35,7 +38,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetCameraName :: proc(instance_id: CameraID) -> cstring ---
         GetCameraPosition :: proc(instance_id: CameraID) -> CameraPosition ---
         OpenCamera :: proc(instance_id: CameraID, spec: ^CameraSpec) -> ^Camera ---
-        GetCameraPermissionState :: proc(camera: ^Camera) -> c.int ---
+        GetCameraPermissionState :: proc(camera: ^Camera) -> CameraPermissionState ---
         GetCameraID :: proc(camera: ^Camera) -> CameraID ---
         GetCameraProperties :: proc(camera: ^Camera) -> PropertiesID ---
         GetCameraFormat :: proc(camera: ^Camera, spec: ^CameraSpec) -> bool ---
@@ -46,7 +49,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         GetNumCameraDrivers :: proc() -> c.int ---
         GetCameraDriver :: proc(index: c.int) -> cstring ---
         GetCurrentCameraDriver :: proc() -> cstring ---
@@ -55,7 +57,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetCameraName :: proc(instance_id: CameraID) -> cstring ---
         GetCameraPosition :: proc(instance_id: CameraID) -> CameraPosition ---
         OpenCamera :: proc(instance_id: CameraID, spec: ^CameraSpec) -> ^Camera ---
-        GetCameraPermissionState :: proc(camera: ^Camera) -> c.int ---
+        GetCameraPermissionState :: proc(camera: ^Camera) -> CameraPermissionState ---
         GetCameraID :: proc(camera: ^Camera) -> CameraID ---
         GetCameraProperties :: proc(camera: ^Camera) -> PropertiesID ---
         GetCameraFormat :: proc(camera: ^Camera, spec: ^CameraSpec) -> bool ---

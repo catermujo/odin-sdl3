@@ -7,7 +7,6 @@ import vk "vendor:vulkan"
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
 foreign lib {
-
     Vulkan_LoadLibrary :: proc(path: cstring) -> bool ---
     Vulkan_GetVkGetInstanceProcAddr :: proc() -> FunctionPointer ---
     Vulkan_UnloadLibrary :: proc() ---
@@ -17,3 +16,4 @@ foreign lib {
     Vulkan_GetPresentationSupport :: proc(instance: vk.Instance, physicalDevice: vk.PhysicalDevice, queueFamilyIndex: Uint32) -> bool ---
 
 }
+

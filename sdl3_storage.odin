@@ -54,11 +54,8 @@ Storage :: struct {}
 
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         OpenTitleStorage :: proc(override: cstring, props: PropertiesID) -> ^Storage ---
         OpenUserStorage :: proc(org, app: cstring, props: PropertiesID) -> ^Storage ---
         OpenFileStorage :: proc(path: cstring) -> ^Storage ---
@@ -74,7 +71,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         OpenTitleStorage :: proc(override: cstring, props: PropertiesID) -> ^Storage ---
         OpenUserStorage :: proc(org, app: cstring, props: PropertiesID) -> ^Storage ---
         OpenFileStorage :: proc(path: cstring) -> ^Storage ---
@@ -90,11 +86,8 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 }
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         ReadStorageFile :: proc(storage: ^Storage, path: cstring, destination: rawptr, length: Uint64) -> bool ---
         WriteStorageFile :: proc(storage: ^Storage, path: cstring, source: rawptr, length: Uint64) -> bool ---
 
@@ -107,7 +100,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         ReadStorageFile :: proc(storage: ^Storage, path: cstring, destination: rawptr, length: Uint64) -> bool ---
         WriteStorageFile :: proc(storage: ^Storage, path: cstring, source: rawptr, length: Uint64) -> bool ---
 

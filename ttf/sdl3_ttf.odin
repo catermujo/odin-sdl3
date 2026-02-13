@@ -1,20 +1,21 @@
+// Bindings for [[ SDL3 TTF ; https://wiki.libsdl.org/SDL3_ttf/FrontPage ]].
 package sdl3_ttf
 
 import "core:c"
 
-import sdl "../"
+import SDL "../"
 
 when ODIN_OS == .Windows {
-    when sdl.LINK == "shared" {
+    when SDL.LINK == "shared" {
         foreign import lib "SDL3_ttf.lib"
-    } else when sdl.LINK == "static" {
+    } else when SDL.LINK == "static" {
         foreign import lib "SDL3_ttf_static.lib"
     }
 } else when ODIN_OS == .Darwin {
-    when sdl.LINK == "static" {
+    when SDL.LINK == "static" {
         @(export)
         foreign import lib "SDL3_ttf.darwin.a"
-    } else when sdl.LINK == "shared" {
+    } else when SDL.LINK == "shared" {
         @(export)
         foreign import lib "libSDL3_ttf.dylib"
     } else {
@@ -22,10 +23,10 @@ when ODIN_OS == .Windows {
         foreign import lib "system:SDL3_ttf"
     }
 } else when ODIN_OS == .Linux {
-    when sdl.LINK == "static" {
+    when SDL.LINK == "static" {
         @(export)
         foreign import lib "SDL3_ttf.linux.a"
-    } else when sdl.LINK == "shared" {
+    } else when SDL.LINK == "shared" {
         @(export)
         foreign import lib "libSDL3_ttf.so"
     } else {
@@ -36,15 +37,15 @@ when ODIN_OS == .Windows {
 }
 
 
-PROP_FONT_CREATE_FILENAME_STRING :: "sdl_ttf.font.create.filename"
-PROP_FONT_CREATE_IOSTREAM_POINTER :: "sdl_ttf.font.create.iostream"
-PROP_FONT_CREATE_IOSTREAM_OFFSET_NUMBER :: "sdl_ttf.font.create.iostream.offset"
-PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN :: "sdl_ttf.font.create.iostream.autoclose"
-PROP_FONT_CREATE_SIZE_FLOAT :: "sdl_ttf.font.create.size"
-PROP_FONT_CREATE_FACE_NUMBER :: "sdl_ttf.font.create.face"
-PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER :: "sdl_ttf.font.create.hdpi"
-PROP_FONT_CREATE_VERTICAL_DPI_NUMBER :: "sdl_ttf.font.create.vdpi"
-PROP_FONT_CREATE_EXISTING_FONT :: "sdl_ttf.font.create.existing_font"
+PROP_FONT_CREATE_FILENAME_STRING :: "SDL_ttf.font.create.filename"
+PROP_FONT_CREATE_IOSTREAM_POINTER :: "SDL_ttf.font.create.iostream"
+PROP_FONT_CREATE_IOSTREAM_OFFSET_NUMBER :: "SDL_ttf.font.create.iostream.offset"
+PROP_FONT_CREATE_IOSTREAM_AUTOCLOSE_BOOLEAN :: "SDL_ttf.font.create.iostream.autoclose"
+PROP_FONT_CREATE_SIZE_FLOAT :: "SDL_ttf.font.create.size"
+PROP_FONT_CREATE_FACE_NUMBER :: "SDL_ttf.font.create.face"
+PROP_FONT_CREATE_HORIZONTAL_DPI_NUMBER :: "SDL_ttf.font.create.hdpi"
+PROP_FONT_CREATE_VERTICAL_DPI_NUMBER :: "SDL_ttf.font.create.vdpi"
+PROP_FONT_CREATE_EXISTING_FONT :: "SDL_ttf.font.create.existing_font"
 
 FONT_WEIGHT_THIN :: 100 /**< Thin (100) named font weight value */
 FONT_WEIGHT_EXTRA_LIGHT :: 200 /**< ExtraLight (200) named font weight value */
@@ -57,11 +58,11 @@ FONT_WEIGHT_EXTRA_BOLD :: 800 /**< ExtraBold (800) named font weight value */
 FONT_WEIGHT_BLACK :: 900 /**< Black (900) named font weight value */
 FONT_WEIGHT_EXTRA_BLACK :: 950 /**< ExtraBlack (950) named font weight value */
 
-PROP_RENDERER_TEXT_ENGINE_RENDERER :: "sdl_ttf.renderer_text_engine.create.renderer"
-PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE :: "sdl_ttf.renderer_text_engine.create.atlas_texture_size"
+PROP_RENDERER_TEXT_ENGINE_RENDERER :: "SDL_ttf.renderer_text_engine.create.renderer"
+PROP_RENDERER_TEXT_ENGINE_ATLAS_TEXTURE_SIZE :: "SDL_ttf.renderer_text_engine.create.atlas_texture_size"
 
-PROP_GPU_TEXT_ENGINE_DEVICE :: "sdl_ttf.gpu_text_engine.create.device"
-PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE :: "sdl_ttf.gpu_text_engine.create.atlas_texture_size"
+PROP_GPU_TEXT_ENGINE_DEVICE :: "SDL_ttf.gpu_text_engine.create.device"
+PROP_GPU_TEXT_ENGINE_ATLAS_TEXTURE_SIZE :: "SDL_ttf.gpu_text_engine.create.atlas_texture_size"
 
 MAJOR_VERSION :: 3
 MINOR_VERSION :: 2
@@ -119,8 +120,8 @@ ImageType :: enum c.int {
 }
 
 GPUAtlasDrawSequence :: struct {
-    atlas_texture: ^sdl.GPUTexture,
-    xy, uv:        [^]sdl.FPoint `fmt:"v,num_vertices"`,
+    atlas_texture: ^SDL.GPUTexture,
+    xy, uv:        [^]SDL.FPoint `fmt:"v,num_vertices"`,
     num_vertices:  c.int,
     indices:       [^]c.int `fmt:"v,num_indices"`,
     num_indices:   c.int,
@@ -146,25 +147,22 @@ SubString :: struct {
     flags:                     SubStringFlags,
     offset, length:            c.int,
     line_index, cluster_index: c.int,
-    rect:                      sdl.Rect,
+    rect:                      SDL.Rect,
 }
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "TTF_", require_results)
     foreign _ {
-
         Version :: proc() -> c.int ---
         WasInit :: proc() -> c.int ---
 
         OpenFont :: proc(file: cstring, ptsize: f32) -> ^Font ---
-        OpenFontIO :: proc(src: ^sdl.IOStream, closeio: bool, ptsize: f32) -> ^Font ---
-        OpenFontWithProperties :: proc(props: sdl.PropertiesID) -> ^Font ---
+        OpenFontIO :: proc(src: ^SDL.IOStream, closeio: bool, ptsize: f32) -> ^Font ---
+        OpenFontWithProperties :: proc(props: SDL.PropertiesID) -> ^Font ---
 
         CopyFont :: proc(existing_font: ^Font) -> ^Font ---
 
-        GetFontProperties :: proc(font: ^Font) -> sdl.PropertiesID ---
+        GetFontProperties :: proc(font: ^Font) -> SDL.PropertiesID ---
         GetFontGeneration :: proc(font: ^Font) -> u32 ---
 
         GetFontSize :: proc(font: ^Font) -> f32 ---
@@ -212,35 +210,35 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 
         GetGlyphScript :: proc(ch: u32) -> u32 ---
         FontHasGlyph :: proc(font: ^Font, ch: u32) -> bool ---
-        GetGlyphImage :: proc(font: ^Font, ch: u32, image_type: ^ImageType) -> ^sdl.Surface ---
-        GetGlyphImageForIndex :: proc(font: ^Font, glyph_index: u32, image_type: ^ImageType) -> ^sdl.Surface ---
+        GetGlyphImage :: proc(font: ^Font, ch: u32, image_type: ^ImageType) -> ^SDL.Surface ---
+        GetGlyphImageForIndex :: proc(font: ^Font, glyph_index: u32, image_type: ^ImageType) -> ^SDL.Surface ---
 
-        RenderText_Solid :: proc(font: ^Font, text: cstring, length: c.size_t, fg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_Solid_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg: sdl.Color, wrap_Length: c.int) -> ^sdl.Surface ---
-        RenderGlyph_Solid :: proc(font: ^Font, ch: u32, fg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_Shaded :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_Shaded_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: sdl.Color, wrap_width: c.int) -> ^sdl.Surface ---
-        RenderGlyph_Shaded :: proc(font: ^Font, ch: u32, fg, bg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_Blended :: proc(font: ^Font, text: cstring, length: c.size_t, fg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_Blended_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg: sdl.Color, wrap_width: c.int) -> ^sdl.Surface ---
-        RenderGlyph_Blended :: proc(font: ^Font, ch: u32, fg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_LCD :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_LCD_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: sdl.Color, wrap_width: c.int) -> ^sdl.Surface ---
-        RenderGlyph_LCD :: proc(font: ^Font, ch: u32, fg, bg: sdl.Color) -> ^sdl.Surface ---
+        RenderText_Solid :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_Solid_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color, wrap_Length: c.int) -> ^SDL.Surface ---
+        RenderGlyph_Solid :: proc(font: ^Font, ch: u32, fg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_Shaded :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_Shaded_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color, wrap_width: c.int) -> ^SDL.Surface ---
+        RenderGlyph_Shaded :: proc(font: ^Font, ch: u32, fg, bg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_Blended :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_Blended_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color, wrap_width: c.int) -> ^SDL.Surface ---
+        RenderGlyph_Blended :: proc(font: ^Font, ch: u32, fg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_LCD :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_LCD_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color, wrap_width: c.int) -> ^SDL.Surface ---
+        RenderGlyph_LCD :: proc(font: ^Font, ch: u32, fg, bg: SDL.Color) -> ^SDL.Surface ---
 
         CreateSurfaceTextEngine :: proc() -> ^TextEngine ---
 
-        CreateRendererTextEngine :: proc(renderer: ^sdl.Renderer) -> ^TextEngine ---
-        CreateRendererTextEngineWithProperties :: proc(props: sdl.PropertiesID) -> ^TextEngine ---
+        CreateRendererTextEngine :: proc(renderer: ^SDL.Renderer) -> ^TextEngine ---
+        CreateRendererTextEngineWithProperties :: proc(props: SDL.PropertiesID) -> ^TextEngine ---
 
-        CreateGPUTextEngine :: proc(device: ^sdl.GPUDevice) -> ^TextEngine ---
-        CreateGPUTextEngineWithProperties :: proc(props: sdl.PropertiesID) -> ^TextEngine ---
+        CreateGPUTextEngine :: proc(device: ^SDL.GPUDevice) -> ^TextEngine ---
+        CreateGPUTextEngineWithProperties :: proc(props: SDL.PropertiesID) -> ^TextEngine ---
         GetGPUTextDrawData :: proc(text: ^Text) -> ^GPUAtlasDrawSequence ---
         SetGPUTextEngineWinding :: proc(engine: ^TextEngine, winding: GPUTextEngineWinding) ---
         GetGPUTextEngineWinding :: proc(#by_ptr engine: TextEngine) -> GPUTextEngineWinding ---
 
         CreateText :: proc(engine: ^TextEngine, font: ^Font, text: cstring, length: c.size_t) -> ^Text ---
-        GetTextProperties :: proc(text: ^Text) -> sdl.PropertiesID ---
+        GetTextProperties :: proc(text: ^Text) -> SDL.PropertiesID ---
         GetTextEngine :: proc(text: ^Text) -> ^TextEngine ---
         GetTextFont :: proc(text: ^Text) -> ^Font ---
         GetTextDirection :: proc(text: ^Text) -> Direction ---
@@ -252,17 +250,16 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "TTF_", require_results)
     foreign lib {
-
         Version :: proc() -> c.int ---
         WasInit :: proc() -> c.int ---
 
         OpenFont :: proc(file: cstring, ptsize: f32) -> ^Font ---
-        OpenFontIO :: proc(src: ^sdl.IOStream, closeio: bool, ptsize: f32) -> ^Font ---
-        OpenFontWithProperties :: proc(props: sdl.PropertiesID) -> ^Font ---
+        OpenFontIO :: proc(src: ^SDL.IOStream, closeio: bool, ptsize: f32) -> ^Font ---
+        OpenFontWithProperties :: proc(props: SDL.PropertiesID) -> ^Font ---
 
         CopyFont :: proc(existing_font: ^Font) -> ^Font ---
 
-        GetFontProperties :: proc(font: ^Font) -> sdl.PropertiesID ---
+        GetFontProperties :: proc(font: ^Font) -> SDL.PropertiesID ---
         GetFontGeneration :: proc(font: ^Font) -> u32 ---
 
         GetFontSize :: proc(font: ^Font) -> f32 ---
@@ -310,35 +307,35 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 
         GetGlyphScript :: proc(ch: u32) -> u32 ---
         FontHasGlyph :: proc(font: ^Font, ch: u32) -> bool ---
-        GetGlyphImage :: proc(font: ^Font, ch: u32, image_type: ^ImageType) -> ^sdl.Surface ---
-        GetGlyphImageForIndex :: proc(font: ^Font, glyph_index: u32, image_type: ^ImageType) -> ^sdl.Surface ---
+        GetGlyphImage :: proc(font: ^Font, ch: u32, image_type: ^ImageType) -> ^SDL.Surface ---
+        GetGlyphImageForIndex :: proc(font: ^Font, glyph_index: u32, image_type: ^ImageType) -> ^SDL.Surface ---
 
-        RenderText_Solid :: proc(font: ^Font, text: cstring, length: c.size_t, fg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_Solid_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg: sdl.Color, wrap_Length: c.int) -> ^sdl.Surface ---
-        RenderGlyph_Solid :: proc(font: ^Font, ch: u32, fg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_Shaded :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_Shaded_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: sdl.Color, wrap_width: c.int) -> ^sdl.Surface ---
-        RenderGlyph_Shaded :: proc(font: ^Font, ch: u32, fg, bg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_Blended :: proc(font: ^Font, text: cstring, length: c.size_t, fg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_Blended_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg: sdl.Color, wrap_width: c.int) -> ^sdl.Surface ---
-        RenderGlyph_Blended :: proc(font: ^Font, ch: u32, fg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_LCD :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: sdl.Color) -> ^sdl.Surface ---
-        RenderText_LCD_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: sdl.Color, wrap_width: c.int) -> ^sdl.Surface ---
-        RenderGlyph_LCD :: proc(font: ^Font, ch: u32, fg, bg: sdl.Color) -> ^sdl.Surface ---
+        RenderText_Solid :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_Solid_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color, wrap_Length: c.int) -> ^SDL.Surface ---
+        RenderGlyph_Solid :: proc(font: ^Font, ch: u32, fg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_Shaded :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_Shaded_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color, wrap_width: c.int) -> ^SDL.Surface ---
+        RenderGlyph_Shaded :: proc(font: ^Font, ch: u32, fg, bg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_Blended :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_Blended_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color, wrap_width: c.int) -> ^SDL.Surface ---
+        RenderGlyph_Blended :: proc(font: ^Font, ch: u32, fg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_LCD :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color) -> ^SDL.Surface ---
+        RenderText_LCD_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color, wrap_width: c.int) -> ^SDL.Surface ---
+        RenderGlyph_LCD :: proc(font: ^Font, ch: u32, fg, bg: SDL.Color) -> ^SDL.Surface ---
 
         CreateSurfaceTextEngine :: proc() -> ^TextEngine ---
 
-        CreateRendererTextEngine :: proc(renderer: ^sdl.Renderer) -> ^TextEngine ---
-        CreateRendererTextEngineWithProperties :: proc(props: sdl.PropertiesID) -> ^TextEngine ---
+        CreateRendererTextEngine :: proc(renderer: ^SDL.Renderer) -> ^TextEngine ---
+        CreateRendererTextEngineWithProperties :: proc(props: SDL.PropertiesID) -> ^TextEngine ---
 
-        CreateGPUTextEngine :: proc(device: ^sdl.GPUDevice) -> ^TextEngine ---
-        CreateGPUTextEngineWithProperties :: proc(props: sdl.PropertiesID) -> ^TextEngine ---
+        CreateGPUTextEngine :: proc(device: ^SDL.GPUDevice) -> ^TextEngine ---
+        CreateGPUTextEngineWithProperties :: proc(props: SDL.PropertiesID) -> ^TextEngine ---
         GetGPUTextDrawData :: proc(text: ^Text) -> ^GPUAtlasDrawSequence ---
         SetGPUTextEngineWinding :: proc(engine: ^TextEngine, winding: GPUTextEngineWinding) ---
         GetGPUTextEngineWinding :: proc(#by_ptr engine: TextEngine) -> GPUTextEngineWinding ---
 
         CreateText :: proc(engine: ^TextEngine, font: ^Font, text: cstring, length: c.size_t) -> ^Text ---
-        GetTextProperties :: proc(text: ^Text) -> sdl.PropertiesID ---
+        GetTextProperties :: proc(text: ^Text) -> SDL.PropertiesID ---
         GetTextEngine :: proc(text: ^Text) -> ^TextEngine ---
         GetTextFont :: proc(text: ^Text) -> ^Font ---
         GetTextDirection :: proc(text: ^Text) -> Direction ---
@@ -350,11 +347,8 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 }
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "TTF_")
     foreign _ {
-
         GetFreeTypeVersion :: proc(major, minor, patch: ^c.int) ---
         GetHarfBuzzVersion :: proc(major, minor, patch: ^c.int) ---
 
@@ -383,7 +377,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetStringSizeWrapped :: proc(font: ^Font, text: cstring, length: c.size_t, wrap_width: c.int, w, h: ^c.int) -> bool ---
         MeasureString :: proc(font: ^Font, text: cstring, length: c.size_t, max_width: c.int, measured_width: ^c.int, measured_length: ^c.size_t) -> bool ---
 
-        DrawSurfaceText :: proc(text: ^Text, x, y: c.int, surface: ^sdl.Surface) -> bool ---
+        DrawSurfaceText :: proc(text: ^Text, x, y: c.int, surface: ^SDL.Surface) -> bool ---
         DestroySurfaceTextEngine :: proc(engine: ^TextEngine) ---
 
         DrawRendererText :: proc(text: ^Text, x, y: f32) -> bool ---
@@ -426,7 +420,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "TTF_")
     foreign lib {
-
         GetFreeTypeVersion :: proc(major, minor, patch: ^c.int) ---
         GetHarfBuzzVersion :: proc(major, minor, patch: ^c.int) ---
 
@@ -455,7 +448,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetStringSizeWrapped :: proc(font: ^Font, text: cstring, length: c.size_t, wrap_width: c.int, w, h: ^c.int) -> bool ---
         MeasureString :: proc(font: ^Font, text: cstring, length: c.size_t, max_width: c.int, measured_width: ^c.int, measured_length: ^c.size_t) -> bool ---
 
-        DrawSurfaceText :: proc(text: ^Text, x, y: c.int, surface: ^sdl.Surface) -> bool ---
+        DrawSurfaceText :: proc(text: ^Text, x, y: c.int, surface: ^SDL.Surface) -> bool ---
         DestroySurfaceTextEngine :: proc(engine: ^TextEngine) ---
 
         DrawRendererText :: proc(text: ^Text, x, y: f32) -> bool ---

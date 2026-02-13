@@ -7,11 +7,11 @@ MINOR_VERSION :: 2
 MICRO_VERSION :: 16
 
 @(require_results)
-VERSIONNUM :: #force_inline proc "c" (major, minor, patch: c.int) -> c.int {return(
+VERSIONNUM :: #force_inline proc "c" (major, minor, patch: c.int) -> c.int { return(
         (major * 1000000) +
         (minor * 1000) +
         patch \
-    )}
+    ) }
 @(require_results)
 VERSIONNUM_MAJOR :: #force_inline proc "c" (version: c.int) -> c.int { return version / 1000000 }
 @(require_results)
@@ -26,18 +26,14 @@ VERSION_ATLEAST :: proc "c" (X, Y, Z: c.int) -> bool { return VERSION >= VERSION
 
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         GetVersion :: proc() -> c.int ---
         GetRevision :: proc() -> cstring ---
     }
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         GetVersion :: proc() -> c.int ---
         GetRevision :: proc() -> cstring ---
     }

@@ -1,3 +1,4 @@
+// Bindings for [[ SDL3 ; https://wiki.libsdl.org/SDL3/FrontPage ]].
 package sdl3
 
 import "core:c"
@@ -5,11 +6,8 @@ import "core:c"
 main_func :: #type proc(argc: c.int, argv: [^]cstring)
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         AppInit :: proc(appstate: ^rawptr, argc: c.int, argv: [^]cstring) -> AppResult ---
         AppIterate :: proc(appstate: rawptr) -> AppResult ---
         AppEvent :: proc(appstate: rawptr, event: ^Event) -> AppResult ---
@@ -24,7 +22,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         AppInit :: proc(appstate: ^rawptr, argc: c.int, argv: [^]cstring) -> AppResult ---
         AppIterate :: proc(appstate: rawptr) -> AppResult ---
         AppEvent :: proc(appstate: rawptr, event: ^Event) -> AppResult ---
@@ -39,17 +36,13 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 }
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c")
     foreign _ {
-
         SDL_main :: proc(argc: c.int, argv: [^]cstring) -> c.int ---
     }
 } else {
     @(default_calling_convention = "c")
     foreign lib {
-
         SDL_main :: proc(argc: c.int, argv: [^]cstring) -> c.int ---
     }
 }

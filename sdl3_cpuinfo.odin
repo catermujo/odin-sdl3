@@ -5,11 +5,8 @@ import "core:c"
 CACHELINE_SIZE :: 128
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         GetNumLogicalCPUCores :: proc() -> c.int ---
         GetCPUCacheLineSize :: proc() -> c.int ---
         HasAltiVec :: proc() -> bool ---
@@ -28,11 +25,11 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         HasLASX :: proc() -> bool ---
         GetSystemRAM :: proc() -> c.int ---
         GetSIMDAlignment :: proc() -> uint ---
+        GetSystemPageSize :: proc() -> c.int ---
     }
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         GetNumLogicalCPUCores :: proc() -> c.int ---
         GetCPUCacheLineSize :: proc() -> c.int ---
         HasAltiVec :: proc() -> bool ---
@@ -51,5 +48,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         HasLASX :: proc() -> bool ---
         GetSystemRAM :: proc() -> c.int ---
         GetSIMDAlignment :: proc() -> uint ---
+        GetSystemPageSize :: proc() -> c.int ---
     }
 }

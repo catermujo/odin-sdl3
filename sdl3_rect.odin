@@ -29,6 +29,11 @@ PointInRect :: proc "c" (p: Point, r: Rect) -> bool {
 }
 
 @(require_results)
+PointInRectFloat :: proc "c" (p: FPoint, r: FRect) -> bool {
+    return (p.x >= r.x) && (p.x <= (r.x + r.w)) && (p.y >= r.y) && (p.y <= (r.y + r.h))
+}
+
+@(require_results)
 RectEmpty :: proc "c" (r: Rect) -> bool {
     return r.w <= 0 || r.h <= 0
 }
@@ -40,11 +45,8 @@ RectEqual :: proc "c" (a, b: Rect) -> bool {
 }
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         HasRectIntersection :: proc(#by_ptr A, B: Rect) -> bool ---
         GetRectIntersection :: proc(#by_ptr A, B: Rect, result: ^Rect) -> bool ---
         GetRectUnion :: proc(#by_ptr A, B: Rect, result: ^Rect) -> bool ---
@@ -59,7 +61,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         HasRectIntersection :: proc(#by_ptr A, B: Rect) -> bool ---
         GetRectIntersection :: proc(#by_ptr A, B: Rect, result: ^Rect) -> bool ---
         GetRectUnion :: proc(#by_ptr A, B: Rect, result: ^Rect) -> bool ---

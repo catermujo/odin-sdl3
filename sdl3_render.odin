@@ -4,6 +4,7 @@ import "core:c"
 
 
 SOFTWARE_RENDERER :: "software"
+GPU_RENDER :: "gpu"
 
 Vertex :: struct {
     position:  FPoint, /**< Vertex position, in SDL_Renderer coordinates  */
@@ -15,6 +16,13 @@ TextureAccess :: enum c.int {
     STATIC, /**< Changes rarely, not lockable */
     STREAMING, /**< Changes frequently, lockable */
     TARGET, /**< Texture can be used as a render target */
+}
+
+TextureAddressMode :: enum c.int {
+    INVALID = -1,
+    AUTO, /**< Wrapping is enabled if texture coordinates are outside [0, 1], this is the default */
+    CLAMP, /**< Texture coordinates are clamped to the [0, 1] range */
+    WRAP, /**< The texture is repeated (tiled) */
 }
 
 RendererLogicalPresentation :: enum c.int {
@@ -39,6 +47,10 @@ PROP_RENDERER_CREATE_WINDOW_POINTER :: "SDL.renderer.create.window"
 PROP_RENDERER_CREATE_SURFACE_POINTER :: "SDL.renderer.create.surface"
 PROP_RENDERER_CREATE_OUTPUT_COLORSPACE_NUMBER :: "SDL.renderer.create.output_colorspace"
 PROP_RENDERER_CREATE_PRESENT_VSYNC_NUMBER :: "SDL.renderer.create.present_vsync"
+PROP_RENDERER_CREATE_GPU_DEVICE_POINTER :: "SDL.renderer.create.gpu.device"
+PROP_RENDERER_CREATE_GPU_SHADERS_SPIRV_BOOLEAN :: "SDL.renderer.create.gpu.shaders_spirv"
+PROP_RENDERER_CREATE_GPU_SHADERS_DXIL_BOOLEAN :: "SDL.renderer.create.gpu.shaders_dxil"
+PROP_RENDERER_CREATE_GPU_SHADERS_MSL_BOOLEAN :: "SDL.renderer.create.gpu.shaders_msl"
 PROP_RENDERER_CREATE_VULKAN_INSTANCE_POINTER :: "SDL.renderer.create.vulkan.instance"
 PROP_RENDERER_CREATE_VULKAN_SURFACE_NUMBER :: "SDL.renderer.create.vulkan.surface"
 PROP_RENDERER_CREATE_VULKAN_PHYSICAL_DEVICE_POINTER :: "SDL.renderer.create.vulkan.physical_device"
@@ -52,6 +64,7 @@ PROP_RENDERER_SURFACE_POINTER :: "SDL.renderer.surface"
 PROP_RENDERER_VSYNC_NUMBER :: "SDL.renderer.vsync"
 PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER :: "SDL.renderer.max_texture_size"
 PROP_RENDERER_TEXTURE_FORMATS_POINTER :: "SDL.renderer.texture_formats"
+PROP_RENDERER_TEXTURE_WRAPPING_BOOLEAN :: "SDL.renderer.texture_wrapping"
 PROP_RENDERER_OUTPUT_COLORSPACE_NUMBER :: "SDL.renderer.output_colorspace"
 PROP_RENDERER_HDR_ENABLED_BOOLEAN :: "SDL.renderer.HDR_enabled"
 PROP_RENDERER_SDR_WHITE_POINT_FLOAT :: "SDL.renderer.SDR_white_point"
@@ -76,6 +89,7 @@ PROP_TEXTURE_CREATE_FORMAT_NUMBER :: "SDL.texture.create.format"
 PROP_TEXTURE_CREATE_ACCESS_NUMBER :: "SDL.texture.create.access"
 PROP_TEXTURE_CREATE_WIDTH_NUMBER :: "SDL.texture.create.width"
 PROP_TEXTURE_CREATE_HEIGHT_NUMBER :: "SDL.texture.create.height"
+PROP_TEXTURE_CREATE_PALETTE_POINTER :: "SDL.texture.create.palette"
 PROP_TEXTURE_CREATE_SDR_WHITE_POINT_FLOAT :: "SDL.texture.create.SDR_white_point"
 PROP_TEXTURE_CREATE_HDR_HEADROOM_FLOAT :: "SDL.texture.create.HDR_headroom"
 PROP_TEXTURE_CREATE_D3D11_TEXTURE_POINTER :: "SDL.texture.create.d3d11.texture"
@@ -94,6 +108,11 @@ PROP_TEXTURE_CREATE_OPENGLES2_TEXTURE_UV_NUMBER :: "SDL.texture.create.opengles2
 PROP_TEXTURE_CREATE_OPENGLES2_TEXTURE_U_NUMBER :: "SDL.texture.create.opengles2.texture_u"
 PROP_TEXTURE_CREATE_OPENGLES2_TEXTURE_V_NUMBER :: "SDL.texture.create.opengles2.texture_v"
 PROP_TEXTURE_CREATE_VULKAN_TEXTURE_NUMBER :: "SDL.texture.create.vulkan.texture"
+PROP_TEXTURE_CREATE_VULKAN_LAYOUT_NUMBER :: "SDL.texture.create.vulkan.layout"
+PROP_TEXTURE_CREATE_GPU_TEXTURE_POINTER :: "SDL.texture.create.gpu.texture"
+PROP_TEXTURE_CREATE_GPU_TEXTURE_UV_POINTER :: "SDL.texture.create.gpu.texture_uv"
+PROP_TEXTURE_CREATE_GPU_TEXTURE_U_POINTER :: "SDL.texture.create.gpu.texture_u"
+PROP_TEXTURE_CREATE_GPU_TEXTURE_V_POINTER :: "SDL.texture.create.gpu.texture_v"
 
 PROP_TEXTURE_COLORSPACE_NUMBER :: "SDL.texture.colorspace"
 PROP_TEXTURE_FORMAT_NUMBER :: "SDL.texture.format"
@@ -121,6 +140,10 @@ PROP_TEXTURE_OPENGLES2_TEXTURE_U_NUMBER :: "SDL.texture.opengles2.texture_u"
 PROP_TEXTURE_OPENGLES2_TEXTURE_V_NUMBER :: "SDL.texture.opengles2.texture_v"
 PROP_TEXTURE_OPENGLES2_TEXTURE_TARGET_NUMBER :: "SDL.texture.opengles2.target"
 PROP_TEXTURE_VULKAN_TEXTURE_NUMBER :: "SDL.texture.vulkan.texture"
+PROP_TEXTURE_GPU_TEXTURE_POINTER :: "SDL.texture.gpu.texture"
+PROP_TEXTURE_GPU_TEXTURE_UV_POINTER :: "SDL.texture.gpu.texture_uv"
+PROP_TEXTURE_GPU_TEXTURE_U_POINTER :: "SDL.texture.gpu.texture_u"
+PROP_TEXTURE_GPU_TEXTURE_V_POINTER :: "SDL.texture.gpu.texture_v"
 
 RENDERER_VSYNC_DISABLED :: 0
 RENDERER_VSYNC_ADAPTIVE :: -1
@@ -128,15 +151,14 @@ RENDERER_VSYNC_ADAPTIVE :: -1
 DEBUG_TEXT_FONT_CHARACTER_SIZE :: 8
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         GetNumRenderDrivers :: proc() -> c.int ---
         GetRenderDriver :: proc(index: c.int) -> cstring ---
         CreateRenderer :: proc(window: ^Window, name: cstring) -> ^Renderer ---
         CreateRendererWithProperties :: proc(props: PropertiesID) -> ^Renderer ---
+        CreateGPURenderer :: proc(device: ^GPUDevice, window: ^Window) -> ^Renderer ---
+        GetGPURendererDevice :: proc(device: ^Renderer) -> ^GPUDevice ---
         CreateSoftwareRenderer :: proc(surface: ^Surface) -> ^Renderer ---
         GetRenderer :: proc(window: ^Window) -> ^Renderer ---
         GetRenderWindow :: proc(renderer: ^Renderer) -> ^Window ---
@@ -157,11 +179,12 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         GetNumRenderDrivers :: proc() -> c.int ---
         GetRenderDriver :: proc(index: c.int) -> cstring ---
         CreateRenderer :: proc(window: ^Window, name: cstring) -> ^Renderer ---
         CreateRendererWithProperties :: proc(props: PropertiesID) -> ^Renderer ---
+        CreateGPURenderer :: proc(device: ^GPUDevice, window: ^Window) -> ^Renderer ---
+        GetGPURendererDevice :: proc(device: ^Renderer) -> ^GPUDevice ---
         CreateSoftwareRenderer :: proc(surface: ^Surface) -> ^Renderer ---
         GetRenderer :: proc(window: ^Window) -> ^Renderer ---
         GetRenderWindow :: proc(renderer: ^Renderer) -> ^Window ---
@@ -182,15 +205,14 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 }
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         CreateWindowAndRenderer :: proc(title: cstring, width, height: c.int, window_flags: WindowFlags, window: ^^Window, renderer: ^^Renderer) -> bool ---
         GetRenderOutputSize :: proc(renderer: ^Renderer, w, h: ^c.int) -> bool ---
         GetCurrentRenderOutputSize :: proc(renderer: ^Renderer, w, h: ^c.int) -> bool ---
         GetTextureSize :: proc(texture: ^Texture, w, h: ^f32) -> bool ---
+        SetTexturePalette :: proc(texture: ^Texture, palette: ^Palette) -> bool ---
+        GetTexturePalette :: proc(texture: ^Texture) -> ^Palette ---
         SetTextureColorMod :: proc(texture: ^Texture, r, g, b: Uint8) -> bool ---
         SetTextureColorModFloat :: proc(texture: ^Texture, r, g, b: f32) -> bool ---
         GetTextureColorMod :: proc(texture: ^Texture, r, g, b: ^Uint8) -> bool ---
@@ -241,12 +263,15 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         RenderFillRect :: proc(renderer: ^Renderer, rect: Maybe(^FRect)) -> bool ---
         RenderFillRects :: proc(renderer: ^Renderer, rects: [^]FRect, count: c.int) -> bool ---
         RenderTexture :: proc(renderer: ^Renderer, texture: ^Texture, srcrect, dstrect: Maybe(^FRect)) -> bool ---
-        RenderTextureRotated :: proc(renderer: ^Renderer, texture: ^Texture, srcrect, dstrect: Maybe(^FRect), angle: f64, #by_ptr center: FPoint, flip: FlipMode) -> bool ---
+        RenderTextureRotated :: proc(renderer: ^Renderer, texture: ^Texture, srcrect, dstrect: Maybe(^FRect), angle: f64, center: Maybe(^FPoint), flip: FlipMode) -> bool ---
         RenderTextureAffine :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), origin, right, down: Maybe(^FPoint)) -> bool ---
         RenderTextureTiled :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), scale: f32, dstrect: Maybe(^FRect)) -> bool ---
         RenderTexture9Grid :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), left_width, right_width, top_height, bottom_height: f32, scale: f32, dstrect: Maybe(^FRect)) -> bool ---
+        RenderTexture9GridTiled :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), left_width, right_width, top_height, bottom_height: f32, scale: f32, dstrect: Maybe(^FRect), tileScale: f32) -> bool ---
         RenderGeometry :: proc(renderer: ^Renderer, texture: ^Texture, vertices: [^]Vertex, num_vertices: c.int, indices: [^]c.int, num_indices: c.int) -> bool ---
         RenderGeometryRaw :: proc(renderer: ^Renderer, texture: ^Texture, xy: [^]f32, xy_stride: c.int, color: [^]FColor, color_stride: c.int, uv: [^]f32, uv_stride: c.int, num_vertices: c.int, indices: rawptr, num_indices: c.int, size_indices: c.int) -> bool ---
+        SetRenderTextureAddressMode :: proc(renderer: ^Renderer, u_mode, v_mode: TextureAddressMode) -> bool ---
+        GetRenderTextureAddressMode :: proc(renderer: ^Renderer, u_mode, v_mode: ^TextureAddressMode) -> bool ---
         RenderPresent :: proc(renderer: ^Renderer) -> bool ---
         DestroyTexture :: proc(texture: ^Texture) ---
         DestroyRenderer :: proc(renderer: ^Renderer) ---
@@ -256,15 +281,18 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetRenderVSync :: proc(renderer: ^Renderer, vsync: ^c.int) -> bool ---
         RenderDebugText :: proc(renderer: ^Renderer, x, y: f32, str: cstring) -> bool ---
         RenderDebugTextFormat :: proc(renderer: ^Renderer, x, y: f32, fmt: cstring, #c_vararg args: ..any) -> bool ---
+        SetDefaultTextureAddressMode :: proc(renderer: ^Renderer, scale_mode: ScaleMode) -> bool ---
+        GetDefaultTextureAddressMode :: proc(renderer: ^Renderer, scale_mode: ^ScaleMode) -> bool ---
     }
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         CreateWindowAndRenderer :: proc(title: cstring, width, height: c.int, window_flags: WindowFlags, window: ^^Window, renderer: ^^Renderer) -> bool ---
         GetRenderOutputSize :: proc(renderer: ^Renderer, w, h: ^c.int) -> bool ---
         GetCurrentRenderOutputSize :: proc(renderer: ^Renderer, w, h: ^c.int) -> bool ---
         GetTextureSize :: proc(texture: ^Texture, w, h: ^f32) -> bool ---
+        SetTexturePalette :: proc(texture: ^Texture, palette: ^Palette) -> bool ---
+        GetTexturePalette :: proc(texture: ^Texture) -> ^Palette ---
         SetTextureColorMod :: proc(texture: ^Texture, r, g, b: Uint8) -> bool ---
         SetTextureColorModFloat :: proc(texture: ^Texture, r, g, b: f32) -> bool ---
         GetTextureColorMod :: proc(texture: ^Texture, r, g, b: ^Uint8) -> bool ---
@@ -315,12 +343,15 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         RenderFillRect :: proc(renderer: ^Renderer, rect: Maybe(^FRect)) -> bool ---
         RenderFillRects :: proc(renderer: ^Renderer, rects: [^]FRect, count: c.int) -> bool ---
         RenderTexture :: proc(renderer: ^Renderer, texture: ^Texture, srcrect, dstrect: Maybe(^FRect)) -> bool ---
-        RenderTextureRotated :: proc(renderer: ^Renderer, texture: ^Texture, srcrect, dstrect: Maybe(^FRect), angle: f64, #by_ptr center: FPoint, flip: FlipMode) -> bool ---
+        RenderTextureRotated :: proc(renderer: ^Renderer, texture: ^Texture, srcrect, dstrect: Maybe(^FRect), angle: f64, center: Maybe(^FPoint), flip: FlipMode) -> bool ---
         RenderTextureAffine :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), origin, right, down: Maybe(^FPoint)) -> bool ---
         RenderTextureTiled :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), scale: f32, dstrect: Maybe(^FRect)) -> bool ---
         RenderTexture9Grid :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), left_width, right_width, top_height, bottom_height: f32, scale: f32, dstrect: Maybe(^FRect)) -> bool ---
+        RenderTexture9GridTiled :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), left_width, right_width, top_height, bottom_height: f32, scale: f32, dstrect: Maybe(^FRect), tileScale: f32) -> bool ---
         RenderGeometry :: proc(renderer: ^Renderer, texture: ^Texture, vertices: [^]Vertex, num_vertices: c.int, indices: [^]c.int, num_indices: c.int) -> bool ---
         RenderGeometryRaw :: proc(renderer: ^Renderer, texture: ^Texture, xy: [^]f32, xy_stride: c.int, color: [^]FColor, color_stride: c.int, uv: [^]f32, uv_stride: c.int, num_vertices: c.int, indices: rawptr, num_indices: c.int, size_indices: c.int) -> bool ---
+        SetRenderTextureAddressMode :: proc(renderer: ^Renderer, u_mode, v_mode: TextureAddressMode) -> bool ---
+        GetRenderTextureAddressMode :: proc(renderer: ^Renderer, u_mode, v_mode: ^TextureAddressMode) -> bool ---
         RenderPresent :: proc(renderer: ^Renderer) -> bool ---
         DestroyTexture :: proc(texture: ^Texture) ---
         DestroyRenderer :: proc(renderer: ^Renderer) ---
@@ -330,5 +361,39 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetRenderVSync :: proc(renderer: ^Renderer, vsync: ^c.int) -> bool ---
         RenderDebugText :: proc(renderer: ^Renderer, x, y: f32, str: cstring) -> bool ---
         RenderDebugTextFormat :: proc(renderer: ^Renderer, x, y: f32, fmt: cstring, #c_vararg args: ..any) -> bool ---
+        SetDefaultTextureAddressMode :: proc(renderer: ^Renderer, scale_mode: ScaleMode) -> bool ---
+        GetDefaultTextureAddressMode :: proc(renderer: ^Renderer, scale_mode: ^ScaleMode) -> bool ---
+    }
+}
+
+
+GPURenderStateCreateInfo :: struct {
+    fragment_shader:      ^GPUShader, /**< The fragment shader to use when this render state is active */
+    num_sampler_bindings: Sint32, /**< The number of additional fragment samplers to bind when this render state is active */
+    sampler_bindings:     [^]GPUTextureSamplerBinding, /**< Additional fragment samplers to bind when this render state is active */
+    num_storage_textures: Sint32, /**< The number of storage textures to bind when this render state is active */
+    storage_textures:     [^]^GPUTexture, /**< Storage textures to bind when this render state is active */
+    num_storage_buffers:  Sint32, /**< The number of storage buffers to bind when this render state is active */
+    storage_buffers:      [^]^GPUBuffer, /**< Storage buffers to bind when this render state is active */
+    props:                PropertiesID, /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
+}
+
+GPURenderState :: struct {}
+
+when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
+    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
+    foreign _ {
+        CreateGPURenderState :: proc(renderer: ^Renderer, createinfo: ^GPURenderStateCreateInfo) -> ^GPURenderState ---
+        SetGPURenderStateFragmentUniforms :: proc(state: ^GPURenderState, slot_index: Uint32, data: rawptr, length: Uint32) -> bool ---
+        SetGPURenderState :: proc(renderer: ^Renderer, state: ^GPURenderState) -> bool ---
+        DestroyGPURenderState :: proc(renderer: ^Renderer) ---
+    }
+} else {
+    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
+    foreign lib {
+        CreateGPURenderState :: proc(renderer: ^Renderer, createinfo: ^GPURenderStateCreateInfo) -> ^GPURenderState ---
+        SetGPURenderStateFragmentUniforms :: proc(state: ^GPURenderState, slot_index: Uint32, data: rawptr, length: Uint32) -> bool ---
+        SetGPURenderState :: proc(renderer: ^Renderer, state: ^GPURenderState) -> bool ---
+        DestroyGPURenderState :: proc(renderer: ^Renderer) ---
     }
 }

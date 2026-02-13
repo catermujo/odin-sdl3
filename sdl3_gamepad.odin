@@ -81,25 +81,25 @@ GamepadBindingType :: enum c.int {
 GamepadBinding :: struct {
     input_type:  GamepadBindingType,
     input:       struct #raw_union {
-        button: c.int,
+        button: c.int `raw_union_tag:"input_type=.BUTTON"`,
         axis:   struct {
             axis:     c.int,
             axis_min: c.int,
             axis_max: c.int,
-        },
+        } `raw_union_tag:"input_type=.AXIS"`,
         hat:    struct {
             hat:      c.int,
             hat_mask: c.int,
-        },
+        } `raw_union_tag:"input_type=.HAT"`,
     },
     output_type: GamepadBindingType,
     output:      struct #raw_union {
-        button: GamepadButton,
+        button: GamepadButton `raw_union_tag:"output_type=.BUTTON"`,
         axis:   struct {
             axis:     GamepadAxis,
             axis_min: c.int,
             axis_max: c.int,
-        },
+        } `raw_union_tag:"output_type=.AXIS"`,
     },
 }
 
@@ -112,11 +112,8 @@ PROP_GAMEPAD_CAP_TRIGGER_RUMBLE_BOOLEAN :: PROP_JOYSTICK_CAP_TRIGGER_RUMBLE_BOOL
 
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         AddGamepadMapping :: proc(mapping: cstring) -> c.int ---
         AddGamepadMappingsFromIO :: proc(src: ^IOStream, closeio: bool) -> c.int ---
         AddGamepadMappingsFromFile :: proc(file: cstring) -> c.int ---
@@ -194,7 +191,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         AddGamepadMapping :: proc(mapping: cstring) -> c.int ---
         AddGamepadMappingsFromIO :: proc(src: ^IOStream, closeio: bool) -> c.int ---
         AddGamepadMappingsFromFile :: proc(file: cstring) -> c.int ---

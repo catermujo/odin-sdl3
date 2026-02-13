@@ -7,7 +7,6 @@ import "core:c"
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
 foreign lib {
-
     SetLinuxThreadPriority :: proc(threadID: Sint64, priority: c.int) -> bool ---
     SetLinuxThreadPriorityAndPolicy :: proc(threadID: Sint64, sdlPriority: c.int, schedPolicy: c.int) -> bool ---
 }
@@ -19,7 +18,6 @@ when ODIN_PLATFORM_SUBTARGET == .Android {
 
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         GetAndroidJNIEnv :: proc() -> rawptr ---
         GetAndroidActivity :: proc() -> rawptr ---
         GetAndroidSDKVersion :: proc() -> c.int ---
@@ -35,3 +33,4 @@ when ODIN_PLATFORM_SUBTARGET == .Android {
         SendAndroidMessage :: proc(command: Uint32, param: c.int) -> bool ---
     }
 }
+

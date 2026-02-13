@@ -45,11 +45,8 @@ PROP_APP_METADATA_URL_STRING :: "SDL.app.metadata.url"
 PROP_APP_METADATA_TYPE_STRING :: "SDL.app.metadata.type"
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         Init :: proc(flags: InitFlags) -> bool ---
         InitSubSystem :: proc(flags: InitFlags) -> bool ---
         QuitSubSystem :: proc(flags: InitFlags) ---
@@ -64,7 +61,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         Init :: proc(flags: InitFlags) -> bool ---
         InitSubSystem :: proc(flags: InitFlags) -> bool ---
         QuitSubSystem :: proc(flags: InitFlags) ---

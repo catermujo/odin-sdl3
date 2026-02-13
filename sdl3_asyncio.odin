@@ -30,11 +30,8 @@ AsyncIOOutcome :: struct {
 AsyncIOQueue :: struct {}
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         AsyncIOFromFile :: proc(file: cstring, mode: cstring) -> ^AsyncIO ---
         GetAsyncIOSize :: proc(asyncio: ^AsyncIO) -> Sint64 ---
         ReadAsyncIO :: proc(asyncio: ^AsyncIO, ptr: rawptr, offset, size: Uint64, queue: ^AsyncIOQueue, userdata: rawptr) -> bool ---
@@ -50,7 +47,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         AsyncIOFromFile :: proc(file: cstring, mode: cstring) -> ^AsyncIO ---
         GetAsyncIOSize :: proc(asyncio: ^AsyncIO) -> Sint64 ---
         ReadAsyncIO :: proc(asyncio: ^AsyncIO, ptr: rawptr, offset, size: Uint64, queue: ^AsyncIOQueue, userdata: rawptr) -> bool ---

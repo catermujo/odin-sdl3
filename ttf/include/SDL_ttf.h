@@ -1,6 +1,6 @@
 /*
   SDL_ttf:  A companion library to SDL for working with TrueType (tm) fonts
-  Copyright (C) 2001-2025 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 2001-2026 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -968,6 +968,46 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetFontDirection(TTF_Font *font, TTF_Direct
  * \since This function is available since SDL_ttf 3.0.0.
  */
 extern SDL_DECLSPEC TTF_Direction SDLCALL TTF_GetFontDirection(TTF_Font *font);
+
+/**
+ * Set additional space in pixels to be applied between any two rendered
+ * characters.
+ *
+ * The spacing value is applied uniformly after each character, in addition to
+ * the normal glyph's advance.
+ *
+ * Spacing may be a negative value, in which case it will reduce the distance
+ * instead.
+ *
+ * This updates any TTF_Text objects using this font.
+ *
+ * \param font the font to specify a direction for.
+ * \param spacing the new additional glyph spacing for the font.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.4.0.
+ */
+extern SDL_DECLSPEC bool SDLCALL TTF_SetFontCharSpacing(TTF_Font *font, int spacing);
+
+/**
+ * Get the additional character spacing in pixels to be applied between any
+ * two rendered characters.
+ *
+ * This defaults to 0 if it hasn't been set.
+ *
+ * \param font the font to query.
+ * \returns the character spacing in pixels.
+ *
+ * \threadsafety This function should be called on the thread that created the
+ *               font.
+ *
+ * \since This function is available since SDL_ttf 3.4.0.
+ */
+extern SDL_DECLSPEC int SDLCALL TTF_GetFontCharSpacing(TTF_Font *font);
 
 /**
  * Convert from a 4 character string to a 32-bit tag.
@@ -2331,6 +2371,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_GetTextColorFloat(TTF_Text *text, float *r,
  * \param text the TTF_Text to modify.
  * \param x the x offset of the upper left corner of this text in pixels.
  * \param y the y offset of the upper left corner of this text in pixels.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \threadsafety This function should be called on the thread that created the
  *               text.
@@ -2349,6 +2391,8 @@ extern SDL_DECLSPEC bool SDLCALL TTF_SetTextPosition(TTF_Text *text, int x, int 
  *          this text in pixels, may be NULL.
  * \param y a pointer filled in with the y offset of the upper left corner of
  *          this text in pixels, may be NULL.
+ * \returns true on success or false on failure; call SDL_GetError() for more
+ *          information.
  *
  * \threadsafety This function should be called on the thread that created the
  *               text.

@@ -27,11 +27,8 @@ TrayCallback :: #type proc "c" (userdata: rawptr, entry: ^TrayEntry)
 
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         CreateTray :: proc(icon: ^Surface, tooltip: cstring) -> ^Tray ---
         SetTrayIcon :: proc(tray: ^Tray, icon: ^Surface) ---
         SetTrayTooltip :: proc(tray: ^Tray, tooltip: cstring) ---
@@ -59,7 +56,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         CreateTray :: proc(icon: ^Surface, tooltip: cstring) -> ^Tray ---
         SetTrayIcon :: proc(tray: ^Tray, icon: ^Surface) ---
         SetTrayTooltip :: proc(tray: ^Tray, tooltip: cstring) ---

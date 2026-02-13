@@ -3,11 +3,8 @@ package sdl3
 import "core:c"
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         SetError :: proc(fmt: cstring, #c_vararg args: ..any) -> bool ---
         SetErrorV :: proc(fmt: cstring, ap: c.va_list) -> bool ---
         @(require_results)
@@ -19,7 +16,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         SetError :: proc(fmt: cstring, #c_vararg args: ..any) -> bool ---
         SetErrorV :: proc(fmt: cstring, ap: c.va_list) -> bool ---
         @(require_results)

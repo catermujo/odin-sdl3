@@ -2,12 +2,17 @@
 
 set -e
 
-[ -d SDL ] || git clone https://github.com/libsdl-org/SDL --revision 0f061ff154dafb2f65fd882aa69beb119f99318d --depth=1 --recurse-submodules -j 4 &
-[ -d SDL_image ] || git clone https://github.com/libsdl-org/SDL_image --revision 925c19db4d0bc9809fd3ac25c7e0ef771b668390 --depth=1 --recurse-submodules -j 10 &
-[ -d SDL_mixer ] || git clone https://github.com/libsdl-org/SDL_mixer --revision 9cc531686cb3e3ed394790ff075c9760359c0756 --depth=1 --recurse-submodules -j 4 &
-[ -d SDL_ttf ] || git clone https://github.com/libsdl-org/SDL_ttf --revision 6b1114c526ed98d5d03bf504ef06f04c669e2be2 --depth=1 --recurse-submodules -j 10 &
+[ -d SDL ] || git clone https://github.com/libsdl-org/SDL --revision release-3.4.0 --depth=1 --recurse-submodules -j 4 &
+[ -d SDL_image ] || git clone https://github.com/libsdl-org/SDL_image --revision release-3.4.0 --depth=1 --recurse-submodules -j 10 &
+[ -d SDL_mixer ] || git clone https://github.com/libsdl-org/SDL_mixer --revision 37b2f3325a0fb1e98ba265aa38826aa9e16624fb --depth=1 --recurse-submodules -j 4 &
+[ -d SDL_ttf ] || git clone https://github.com/libsdl-org/SDL_ttf --revision 053bbc89517471427748a082583c9eada55c07b5 --depth=1 --recurse-submodules -j 10 &
 
 wait
+
+# Apply patches
+for patch in patches/*.patch; do
+    [ -f "$patch" ] && git -C SDL am --3way "$PWD/$patch" 2>/dev/null || true
+done
 
 emcmake cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DDAV1D_ASM=OFF -DEMSCRIPTEN=ON -DSDLIMAGE_AVIF=OFF
 if [ $(uname -s) = 'Darwin' ]; then

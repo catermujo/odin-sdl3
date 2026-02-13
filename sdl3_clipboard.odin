@@ -4,11 +4,8 @@ ClipboardDataCallback :: #type proc "c" (userdata: rawptr, mime_type: cstring, s
 ClipboardCleanupCallback :: #type proc "c" (userdata: rawptr)
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         SetClipboardText :: proc(text: cstring) -> bool ---
         GetClipboardText :: proc() -> [^]Uint8 ---
         HasClipboardText :: proc() -> bool ---
@@ -24,7 +21,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         SetClipboardText :: proc(text: cstring) -> bool ---
         GetClipboardText :: proc() -> [^]Uint8 ---
         HasClipboardText :: proc() -> bool ---

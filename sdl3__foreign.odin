@@ -5,7 +5,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     SYSTEM_SUPPORT :: false
 } else {
     SYSTEM_SUPPORT :: ODIN_OS != .Windows && (ODIN_OS != .Darwin || !MIXER)
-    LINK :: #config(LINK, "system" when SYSTEM_SUPPORT else "shared")
+    LINK :: #config(SDL3_LINK, "system" when SYSTEM_SUPPORT else "shared")
 
     when ODIN_OS == .Darwin && MIXER && LINK == "system" {
         #panic("not available on brew yet, you gotta copile")

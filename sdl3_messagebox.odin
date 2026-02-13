@@ -52,18 +52,14 @@ MessageBoxData :: struct {
 
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         ShowMessageBox :: proc(#by_ptr messageboxdata: MessageBoxData, buttonid: ^c.int) -> bool ---
         ShowSimpleMessageBox :: proc(flags: MessageBoxFlags, title, message: cstring, window: ^Window) -> bool ---
     }
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         ShowMessageBox :: proc(#by_ptr messageboxdata: MessageBoxData, buttonid: ^c.int) -> bool ---
         ShowSimpleMessageBox :: proc(flags: MessageBoxFlags, title, message: cstring, window: ^Window) -> bool ---
     }

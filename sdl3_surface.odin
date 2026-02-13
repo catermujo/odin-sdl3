@@ -25,12 +25,14 @@ ScaleMode :: enum c.int {
     INVALID = -1,
     NEAREST, /**< nearest pixel sampling */
     LINEAR, /**< linear filtering */
+    PIXELART, /**< nearest pixel sampling with improved scaling for pixel art, available since SDL 3.4.0 */
 }
 
 FlipMode :: enum c.int {
     NONE, /**< Do not flip */
     HORIZONTAL, /**< flip horizontally */
     VERTICAL, /**< flip vertically */
+    HORIZONTAL_AND_VERTICAL = HORIZONTAL | VERTICAL, /**< flip horizontally and vertically (not a diagonal flip) */
 }
 
 Surface :: struct {
@@ -49,13 +51,11 @@ PROP_SURFACE_HDR_HEADROOM_FLOAT :: "SDL.surface.HDR_headroom"
 PROP_SURFACE_TONEMAP_OPERATOR_STRING :: "SDL.surface.tonemap"
 PROP_SURFACE_HOTSPOT_X_NUMBER :: "SDL.surface.hotspot.x"
 PROP_SURFACE_HOTSPOT_Y_NUMBER :: "SDL.surface.hotspot.y"
+PROP_SURFACE_ROTATION_FLOAT :: "SDL.surface.rotation"
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         CreateSurface :: proc(width, height: c.int, format: PixelFormat) -> ^Surface ---
         CreateSurfaceFrom :: proc(width, height: c.int, format: PixelFormat, pixels: rawptr, pitch: c.int) -> ^Surface ---
         DestroySurface :: proc(surface: ^Surface) ---
@@ -71,10 +71,16 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         RemoveSurfaceAlternateImages :: proc(surface: ^Surface) ---
         LockSurface :: proc(surface: ^Surface) -> bool ---
         UnlockSurface :: proc(surface: ^Surface) ---
+        LoadSurface_IO :: proc(src: ^IOStream, closeio: bool) -> ^Surface ---
+        LoadSurface :: proc(file: cstring) -> ^Surface ---
         LoadBMP_IO :: proc(src: ^IOStream, closeio: bool) -> ^Surface ---
         LoadBMP :: proc(file: cstring) -> ^Surface ---
         SaveBMP_IO :: proc(surface: ^Surface, dst: ^IOStream, closeio: bool) -> bool ---
         SaveBMP :: proc(surface: ^Surface, file: cstring) -> bool ---
+        LoadPNG_IO :: proc(src: ^IOStream, closeio: bool) -> ^Surface ---
+        LoadPNG :: proc(file: cstring) -> ^Surface ---
+        SavePNG_IO :: proc(surface: ^Surface, dst: ^IOStream, closeio: bool) -> bool ---
+        SavePNG :: proc(surface: ^Surface, file: cstring) -> bool ---
         SetSurfaceRLE :: proc(surface: ^Surface, enabled: bool) -> bool ---
         SurfaceHasRLE :: proc(surface: ^Surface) -> bool ---
         SetSurfaceColorKey :: proc(surface: ^Surface, enabled: bool, key: Uint32) -> bool ---
@@ -89,6 +95,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         SetSurfaceClipRect :: proc(surface: ^Surface, rect: Maybe(^Rect)) -> bool ---
         GetSurfaceClipRect :: proc(surface: ^Surface, rect: ^Rect) -> bool ---
         FlipSurface :: proc(surface: ^Surface, flip: FlipMode) -> bool ---
+        RotateSurface :: proc(surface: ^Surface, angle: f32) -> ^Surface ---
         DuplicateSurface :: proc(surface: ^Surface) -> ^Surface ---
         ScaleSurface :: proc(surface: ^Surface, width, height: c.int, scaleMode: ScaleMode) -> ^Surface ---
         ConvertSurface :: proc(surface: ^Surface, format: PixelFormat) -> ^Surface ---
@@ -118,7 +125,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         CreateSurface :: proc(width, height: c.int, format: PixelFormat) -> ^Surface ---
         CreateSurfaceFrom :: proc(width, height: c.int, format: PixelFormat, pixels: rawptr, pitch: c.int) -> ^Surface ---
         DestroySurface :: proc(surface: ^Surface) ---
@@ -134,10 +140,16 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         RemoveSurfaceAlternateImages :: proc(surface: ^Surface) ---
         LockSurface :: proc(surface: ^Surface) -> bool ---
         UnlockSurface :: proc(surface: ^Surface) ---
+        LoadSurface_IO :: proc(src: ^IOStream, closeio: bool) -> ^Surface ---
+        LoadSurface :: proc(file: cstring) -> ^Surface ---
         LoadBMP_IO :: proc(src: ^IOStream, closeio: bool) -> ^Surface ---
         LoadBMP :: proc(file: cstring) -> ^Surface ---
         SaveBMP_IO :: proc(surface: ^Surface, dst: ^IOStream, closeio: bool) -> bool ---
         SaveBMP :: proc(surface: ^Surface, file: cstring) -> bool ---
+        LoadPNG_IO :: proc(src: ^IOStream, closeio: bool) -> ^Surface ---
+        LoadPNG :: proc(file: cstring) -> ^Surface ---
+        SavePNG_IO :: proc(surface: ^Surface, dst: ^IOStream, closeio: bool) -> bool ---
+        SavePNG :: proc(surface: ^Surface, file: cstring) -> bool ---
         SetSurfaceRLE :: proc(surface: ^Surface, enabled: bool) -> bool ---
         SurfaceHasRLE :: proc(surface: ^Surface) -> bool ---
         SetSurfaceColorKey :: proc(surface: ^Surface, enabled: bool, key: Uint32) -> bool ---
@@ -152,6 +164,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         SetSurfaceClipRect :: proc(surface: ^Surface, rect: Maybe(^Rect)) -> bool ---
         GetSurfaceClipRect :: proc(surface: ^Surface, rect: ^Rect) -> bool ---
         FlipSurface :: proc(surface: ^Surface, flip: FlipMode) -> bool ---
+        RotateSurface :: proc(surface: ^Surface, angle: f32) -> ^Surface ---
         DuplicateSurface :: proc(surface: ^Surface) -> ^Surface ---
         ScaleSurface :: proc(surface: ^Surface, width, height: c.int, scaleMode: ScaleMode) -> ^Surface ---
         ConvertSurface :: proc(surface: ^Surface, format: PixelFormat) -> ^Surface ---

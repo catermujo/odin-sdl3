@@ -4,6 +4,8 @@ import "core:c"
 
 PropertiesID :: distinct Uint32
 
+PROP_NAME_STRING :: "SDL.name"
+
 PropertyType :: enum c.int {
     INVALID,
     POINTER,
@@ -18,11 +20,8 @@ EnumeratePropertiesCallback :: #type proc "c" (userdata: rawptr, props: Properti
 
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         @(require_results)
         GetGlobalProperties :: proc() -> PropertiesID ---
         @(require_results)
@@ -58,7 +57,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         @(require_results)
         GetGlobalProperties :: proc() -> PropertiesID ---
         @(require_results)

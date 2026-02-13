@@ -1,8 +1,7 @@
 package sdl3_ttf
 
 import "core:c"
-
-import sdl "../"
+import SDL "vendor:sdl3"
 
 DrawCommand :: enum c.int {
     NOOP,
@@ -12,7 +11,7 @@ DrawCommand :: enum c.int {
 
 FillOperation :: struct {
     cmd:  DrawCommand,
-    rect: sdl.Rect,
+    rect: SDL.Rect,
 }
 
 CopyOperation :: struct {
@@ -20,8 +19,8 @@ CopyOperation :: struct {
     text_offset: c.int,
     glyph_font:  ^Font,
     glyph_index: u32,
-    src:         sdl.Rect,
-    dst:         sdl.Rect,
+    src:         SDL.Rect,
+    dst:         SDL.Rect,
     reserved:    rawptr,
 }
 
@@ -35,7 +34,7 @@ TextLayout :: struct {}
 
 TextData :: struct {
     font:                ^Font,
-    color:               sdl.FColor,
+    color:               SDL.FColor,
     needs_layout_update: bool,
     layout:              ^TextLayout,
     x, y:                c.int,
@@ -44,7 +43,7 @@ TextData :: struct {
     ops:                 [^]DrawOperation `fmt:"v,num_ops"`,
     num_clusters:        c.int,
     clusters:            [^]SubString `fmt:"v,num_clusters"`,
-    props:               sdl.PropertiesID,
+    props:               SDL.PropertiesID,
     needs_engine_update: bool,
     engine:              ^TextEngine,
     engine_text:         rawptr,

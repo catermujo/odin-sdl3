@@ -49,11 +49,8 @@ AssertData :: struct {
 AssertionHandler :: #type proc "c" (data: ^AssertData, userdata: rawptr) -> AssertState
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign _ {
-
         ReportAssertion :: proc(data: ^AssertData, func, file: cstring, line: c.int) -> AssertState ---
 
         SetAssertionHandler :: proc(handler: AssertionHandler, userdata: rawptr) ---
@@ -64,7 +61,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
-
         ReportAssertion :: proc(data: ^AssertData, func, file: cstring, line: c.int) -> AssertState ---
 
         SetAssertionHandler :: proc(handler: AssertionHandler, userdata: rawptr) ---

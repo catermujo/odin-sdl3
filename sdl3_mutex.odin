@@ -5,11 +5,8 @@ RWLock :: struct {}
 Semaphore :: struct {}
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         CreateMutex :: proc() -> ^Mutex ---
         LockMutex :: proc(mutex: ^Mutex) ---
         TryLockMutex :: proc(mutex: ^Mutex) -> bool ---
@@ -35,7 +32,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         CreateMutex :: proc() -> ^Mutex ---
         LockMutex :: proc(mutex: ^Mutex) ---
         TryLockMutex :: proc(mutex: ^Mutex) -> bool ---

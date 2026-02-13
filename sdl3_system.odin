@@ -13,11 +13,8 @@ Sandbox :: enum c.int {
 }
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         IsTablet :: proc() -> bool ---
         IsTV :: proc() -> bool ---
         GetSandbox :: proc() -> Sandbox ---
@@ -32,7 +29,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         IsTablet :: proc() -> bool ---
         IsTV :: proc() -> bool ---
         GetSandbox :: proc() -> Sandbox ---
@@ -53,19 +49,16 @@ XTaskQueueHandle :: distinct rawptr
 XUserHandle :: distinct rawptr
 
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-
-
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-
         GetGDKTaskQueue :: proc(outTaskQueue: ^XTaskQueueHandle) -> bool ---
         GetGDKDefaultUser :: proc(outUserHandle: ^XUserHandle) -> bool ---
     }
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-
         GetGDKTaskQueue :: proc(outTaskQueue: ^XTaskQueueHandle) -> bool ---
         GetGDKDefaultUser :: proc(outUserHandle: ^XUserHandle) -> bool ---
     }
 }
+
