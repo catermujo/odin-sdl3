@@ -383,7 +383,7 @@ GPURenderState :: struct {}
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
-        CreateGPURenderState :: proc(renderer: ^Renderer, createinfo: ^GPURenderStateCreateInfo) -> ^GPURenderState ---
+        CreateGPURenderState :: proc(renderer: ^Renderer, #by_ptr createinfo: GPURenderStateCreateInfo) -> ^GPURenderState ---
         SetGPURenderStateFragmentUniforms :: proc(state: ^GPURenderState, slot_index: Uint32, data: rawptr, length: Uint32) -> bool ---
         SetGPURenderState :: proc(renderer: ^Renderer, state: ^GPURenderState) -> bool ---
         DestroyGPURenderState :: proc(renderer: ^Renderer) ---
@@ -391,7 +391,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 } else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
-        CreateGPURenderState :: proc(renderer: ^Renderer, createinfo: ^GPURenderStateCreateInfo) -> ^GPURenderState ---
+        CreateGPURenderState :: proc(renderer: ^Renderer, #by_ptr createinfo: GPURenderStateCreateInfo) -> ^GPURenderState ---
         SetGPURenderStateFragmentUniforms :: proc(state: ^GPURenderState, slot_index: Uint32, data: rawptr, length: Uint32) -> bool ---
         SetGPURenderState :: proc(renderer: ^Renderer, state: ^GPURenderState) -> bool ---
         DestroyGPURenderState :: proc(renderer: ^Renderer) ---

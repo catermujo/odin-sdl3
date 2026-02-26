@@ -3,8 +3,8 @@ package sdl3
 import "core:c"
 
 MAJOR_VERSION :: 3
-MINOR_VERSION :: 2
-MICRO_VERSION :: 16
+MINOR_VERSION :: 4
+MICRO_VERSION :: 2
 
 @(require_results)
 VERSIONNUM :: #force_inline proc "c" (major, minor, patch: c.int) -> c.int { return(

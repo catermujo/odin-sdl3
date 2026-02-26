@@ -13,4 +13,3 @@ when ODIN_PLATFORM_SUBTARGET == .iPhone {
         SetiOSEventPump :: proc(enabled: bool) ---
     }
 }
-

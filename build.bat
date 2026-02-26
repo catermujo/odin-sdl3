@@ -3,7 +3,7 @@
 setlocal EnableDelayedExpansion
 
 if not exist SDL (
-   git clone https://github.com/libsdl-org/SDL --revision release-3.4.0 --depth=1 --recurse-submodules -j 4
+   git clone https://github.com/libsdl-org/SDL --revision release-3.4.2 --depth=1 --recurse-submodules -j 4
 )
 if not exist SDL_image (
    git clone https://github.com/libsdl-org/SDL_image --revision release-3.4.0 --depth=1 --recurse-submodules -j 10
