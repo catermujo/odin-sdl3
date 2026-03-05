@@ -8,7 +8,7 @@ WindowsMessageHook :: #type proc(userdata: rawptr, msg: ^win32.MSG) -> bool
 @(default_calling_convention = "c", link_prefix = "SDL_")
 foreign lib {
     SetWindowsMessageHook :: proc(callback: WindowsMessageHook, userdata: rawptr) ---
-    GetDirect3D9AdapterIndex :: proc(displayID: DisplayID) -> c.int ---
-    GetDXGIOutputInfo :: proc(displayID: DisplayID, adapterIndex: ^c.int, outputIndex: ^c.int) -> bool ---
+    GetDirect3D9AdapterIndex :: proc(displayID: DisplayID) -> i32 ---
+    GetDXGIOutputInfo :: proc(displayID: DisplayID, adapterIndex: ^i32, outputIndex: ^i32) -> bool ---
 }
 

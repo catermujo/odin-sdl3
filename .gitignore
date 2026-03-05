@@ -4,3 +4,4 @@ SDL_image/
 SDL_mixer/
 SDL_ttf/
 libs/
+build_static/

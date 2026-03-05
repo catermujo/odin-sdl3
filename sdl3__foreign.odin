@@ -16,6 +16,19 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
             @(export)
             foreign import lib "SDL3.lib"
         } else when LINK == "static" {
+            @(require) foreign import "system:Kernel32.lib"
+            @(require) foreign import "system:User32.lib"
+            @(require) foreign import "system:Gdi32.lib"
+            @(require) foreign import "system:Winmm.lib"
+            @(require) foreign import "system:Imm32.lib"
+            @(require) foreign import "system:Ole32.lib"
+            @(require) foreign import "system:Oleaut32.lib"
+            @(require) foreign import "system:Version.lib"
+            @(require) foreign import "system:Uuid.lib"
+            @(require) foreign import "system:Advapi32.lib"
+            @(require) foreign import "system:Setupapi.lib"
+            @(require) foreign import "system:Shell32.lib"
+            @(require) foreign import "system:Cfgmgr32.lib"
             @(export)
             foreign import lib "SDL3_static.lib"
         }
