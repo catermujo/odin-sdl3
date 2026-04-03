@@ -10,7 +10,8 @@ if not exist SDL_image (
    git clone https://github.com/libsdl-org/SDL_image --revision release-3.4.0 --depth=1 --recurse-submodules -j 10
 )
 if not exist SDL_mixer (
-   git clone https://github.com/libsdl-org/SDL_mixer --revision 37b2f3325a0fb1e98ba265aa38826aa9e16624fb --depth=1 --recurse-submodules -j 4
+   rem SDL_mixer now publishes a release tag for this snapshot, so pin the build to the named 3.2.0 release instead of a floating commit hash.
+   git clone https://github.com/libsdl-org/SDL_mixer --revision release-3.2.0 --depth=1 --recurse-submodules -j 4
 )
 if not exist SDL_ttf (
    git clone https://github.com/libsdl-org/SDL_ttf --revision 053bbc89517471427748a082583c9eada55c07b5 --depth=1 --recurse-submodules -j 10

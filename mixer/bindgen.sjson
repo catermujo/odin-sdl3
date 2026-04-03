@@ -81,7 +81,8 @@ opaque_types = [
 // additional include paths to send into clang. While generating the bindings
 // clang will look into this path in search for included headers.
 clang_include_paths = [
-	"../SDL-build/SDL/include"
+	// Point at the vendored SDL source tree so bindgen resolves <SDL3/...> headers without a separate build output.
+	"../SDL/include"
 ]
 
 // Writes the clang JSON ast dump for debug inspection (in output folder)
