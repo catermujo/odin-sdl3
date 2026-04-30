@@ -15,8 +15,14 @@ for patch in patches/*.patch; do
     [ -f "$patch" ] && git -C SDL am --3way "$PWD/$patch" 2>/dev/null || true
 done
 
-cmake -S . -B libs -DSDL_SHARED=ON -DSDL_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=ON
-if [ $(uname -s) = 'Darwin' ]; then
+EXTRA_CMAKE_FLAGS=()
+if [ "$(uname -s)" = 'Linux' ]; then
+    # DUMBAI: Vendored Vorbis in SDL_mixer expects HAVE_ALLOCA_H from autotools; define it explicitly in our CMake flow.
+    EXTRA_CMAKE_FLAGS+=(-DCMAKE_C_FLAGS=-DHAVE_ALLOCA_H=1)
+fi
+
+cmake -S . -B libs -DSDL_SHARED=ON -DSDL_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=ON "${EXTRA_CMAKE_FLAGS[@]}"
+if [ "$(uname -s)" = 'Darwin' ]; then
     cmake --build libs -j$(sysctl -n hw.ncpu) --config Release
     LIB_EXT=dylib
 else
