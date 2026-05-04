@@ -42,8 +42,26 @@ else
     cp libs/SDL_ttf/*.$LIB_EXT ttf/
     cp libs/SDL_mixer/*.$LIB_EXT mixer/
 fi
-# NOTE: do we actually need aom?
-cp libs/SDL_image/external/**/*.$LIB_EXT image/
+if [ "$(uname -s)" = 'Darwin' ]; then
+    # DUMBAI: Stage only ABI-major external SDL_image dylibs so vendor output does not duplicate unversioned and patch-level aliases.
+    for dylib in \
+        libaom.3.dylib \
+        libaom_version.dylib \
+        libavif.16.dylib \
+        libdav1d.6.dylib \
+        libpng16.16.dylib \
+        libwebp.7.dylib \
+        libwebpdemux.2.dylib
+    do
+        src="$(find libs/SDL_image/external -type f -name "$dylib" -print -quit)"
+        if [ -n "$src" ]; then
+            cp "$src" image/
+        fi
+    done
+else
+    # NOTE: do we actually need aom?
+    cp libs/SDL_image/external/**/*.$LIB_EXT image/
+fi
 
 cp -r SDL/include/SDL3/* include
 cp -r SDL_image/include/SDL3_image/* image/include
