@@ -15,8 +15,9 @@ when ODIN_OS == .Windows {
     when SDL.LINK == "static" {
         foreign import lib "SDL3_image.darwin.a"
     } else when SDL.LINK == "shared" {
+        // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
         @(export)
-        foreign import lib "libSDL3_image.dylib"
+        foreign import lib "libSDL3_image.0.dylib"
     } else {
         @(export)
         foreign import lib "system:SDL3_image"
@@ -370,4 +371,3 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         SaveWEBPAnimation_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool, quality: c.int) -> c.bool ---
     }
 }
-

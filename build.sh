@@ -30,12 +30,20 @@ else
     LIB_EXT=so
 fi
 
-cp libs/SDL/*.$LIB_EXT .
-cp libs/SDL_image/*.$LIB_EXT image/
+if [ "$(uname -s)" = 'Darwin' ]; then
+    # DUMBAI: Keep only ABI-major SDL dylib names in vendor output; Odin bindings import these directly to avoid duplicate unversioned aliases.
+    cp libs/SDL/libSDL3.0.dylib .
+    cp libs/SDL_image/libSDL3_image.0.dylib image/
+    cp libs/SDL_ttf/libSDL3_ttf.0.dylib ttf/
+    cp libs/SDL_mixer/libSDL3_mixer.0.dylib mixer/
+else
+    cp libs/SDL/*.$LIB_EXT .
+    cp libs/SDL_image/*.$LIB_EXT image/
+    cp libs/SDL_ttf/*.$LIB_EXT ttf/
+    cp libs/SDL_mixer/*.$LIB_EXT mixer/
+fi
 # NOTE: do we actually need aom?
 cp libs/SDL_image/external/**/*.$LIB_EXT image/
-cp libs/SDL_ttf/*.$LIB_EXT ttf/
-cp libs/SDL_mixer/*.$LIB_EXT mixer/
 
 cp -r SDL/include/SDL3/* include
 cp -r SDL_image/include/SDL3_image/* image/include

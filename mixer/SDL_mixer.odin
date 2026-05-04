@@ -18,8 +18,9 @@ when sdl.MIXER {
             @(export)
             foreign import lib "SDL3_mixer.darwin.a"
         } else when sdl.LINK == "shared" {
+            // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
             @(export)
-            foreign import lib "libSDL3_mixer.dylib"
+            foreign import lib "libSDL3_mixer.0.dylib"
         } else {
             @(export)
             foreign import lib "system:SDL3_mixer"

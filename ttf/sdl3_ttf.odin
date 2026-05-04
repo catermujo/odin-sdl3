@@ -16,8 +16,9 @@ when ODIN_OS == .Windows {
         @(export)
         foreign import lib "SDL3_ttf.darwin.a"
     } else when SDL.LINK == "shared" {
+        // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
         @(export)
-        foreign import lib "libSDL3_ttf.dylib"
+        foreign import lib "libSDL3_ttf.0.dylib"
     } else {
         @(export)
         foreign import lib "system:SDL3_ttf"
@@ -489,4 +490,3 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         Quit :: proc() ---
     }
 }
-

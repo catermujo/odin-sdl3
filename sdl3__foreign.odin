@@ -60,8 +60,9 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
             @(export)
             foreign import lib "SDL3.darwin.a"
         } else when LINK == "shared" {
+            // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
             @(export)
-            foreign import lib "libSDL3.dylib"
+            foreign import lib "libSDL3.0.dylib"
         } else {
             @(export)
             foreign import lib "system:SDL3"
@@ -79,4 +80,3 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         }
     }
 }
-
