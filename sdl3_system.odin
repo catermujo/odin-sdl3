@@ -42,7 +42,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     }
 }
 
-
 // GDK
 
 XTaskQueueHandle :: distinct rawptr
@@ -53,12 +52,9 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     foreign _ {
         GetGDKTaskQueue :: proc(outTaskQueue: ^XTaskQueueHandle) -> bool ---
         GetGDKDefaultUser :: proc(outUserHandle: ^XUserHandle) -> bool ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         GetGDKTaskQueue :: proc(outTaskQueue: ^XTaskQueueHandle) -> bool ---
         GetGDKDefaultUser :: proc(outUserHandle: ^XUserHandle) -> bool ---
-    }
-}
-
+    }}

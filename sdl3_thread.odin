@@ -105,13 +105,11 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         WaitThread :: proc(thread: ^Thread, status: ^c.int) ---
         DetachThread :: proc(thread: ^Thread) ---
         CleanupTLS :: proc() ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
         SetCurrentThreadPriority :: proc(priority: ThreadPriority) -> bool ---
         WaitThread :: proc(thread: ^Thread, status: ^c.int) ---
         DetachThread :: proc(thread: ^Thread) ---
         CleanupTLS :: proc() ---
-    }
-}
+    }}

@@ -54,10 +54,8 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign _ {
         ComposeCustomBlendMode :: proc(srcColorFactor: BlendFactor, dstColorFactor: BlendFactor, colorOperation: BlendOperation, srcAlphaFactor: BlendFactor, dstAlphaFactor: BlendFactor, alphaOperation: BlendOperation) -> BlendMode ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         ComposeCustomBlendMode :: proc(srcColorFactor: BlendFactor, dstColorFactor: BlendFactor, colorOperation: BlendOperation, srcAlphaFactor: BlendFactor, dstAlphaFactor: BlendFactor, alphaOperation: BlendOperation) -> BlendMode ---
-    }
-}
+    }}

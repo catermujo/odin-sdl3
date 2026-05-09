@@ -11,11 +11,9 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     foreign _ {
         GUIDToString :: proc(guid: GUID, pszGUID: [^]c.char, cbGUID: c.int) ---
         StringToGUID :: proc(pchGUID: cstring) -> GUID ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
         GUIDToString :: proc(guid: GUID, pszGUID: [^]c.char, cbGUID: c.int) ---
         StringToGUID :: proc(pchGUID: cstring) -> GUID ---
-    }
-}
+    }}

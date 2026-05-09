@@ -70,8 +70,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetDefaultLogOutputFunction :: proc() -> LogOutputFunction ---
         GetLogOutputFunction :: proc(callback: ^LogOutputFunction, userdata: ^rawptr) ---
         SetLogOutputFunction :: proc(callback: LogOutputFunction, userdata: rawptr) ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
         SetLogPriorities :: proc(priority: LogPriority) ---
@@ -92,5 +91,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetDefaultLogOutputFunction :: proc() -> LogOutputFunction ---
         GetLogOutputFunction :: proc(callback: ^LogOutputFunction, userdata: ^rawptr) ---
         SetLogOutputFunction :: proc(callback: LogOutputFunction, userdata: rawptr) ---
-    }
-}
+    }}

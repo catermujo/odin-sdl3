@@ -98,12 +98,12 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         Version :: proc() -> c.int ---
 
         /* Load an image from an SDL data source.
-	   The 'type' may be one of: "BMP", "GIF", "PNG", etc.
-	   If the image format supports a transparent pixel, SDL will set the
-	   colorkey for the surface.  You can enable RLE acceleration on the
-	   surface afterwards by calling:
-	    SDL_SetColorKey(image, SDL_RLEACCEL, image->format->colorkey);
-	 */
+    	   The 'type' may be one of: "BMP", "GIF", "PNG", etc.
+    	   If the image format supports a transparent pixel, SDL will set the
+    	   colorkey for the surface.  You can enable RLE acceleration on the
+    	   surface afterwards by calling:
+    	    SDL_SetColorKey(image, SDL_RLEACCEL, image->format->colorkey);
+    	 */
         LoadTyped_IO :: proc(src: ^SDL.IOStream, closeio: bool, type: cstring) -> ^SDL.Surface ---
 
         /* Convenience functions */
@@ -237,12 +237,12 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         Version :: proc() -> c.int ---
 
         /* Load an image from an SDL data source.
-	   The 'type' may be one of: "BMP", "GIF", "PNG", etc.
-	   If the image format supports a transparent pixel, SDL will set the
-	   colorkey for the surface.  You can enable RLE acceleration on the
-	   surface afterwards by calling:
-	    SDL_SetColorKey(image, SDL_RLEACCEL, image->format->colorkey);
-	 */
+    	   The 'type' may be one of: "BMP", "GIF", "PNG", etc.
+    	   If the image format supports a transparent pixel, SDL will set the
+    	   colorkey for the surface.  You can enable RLE acceleration on the
+    	   surface afterwards by calling:
+    	    SDL_SetColorKey(image, SDL_RLEACCEL, image->format->colorkey);
+    	 */
         LoadTyped_IO :: proc(src: ^SDL.IOStream, closeio: bool, type: cstring) -> ^SDL.Surface ---
 
         /* Convenience functions */

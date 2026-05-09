@@ -38,8 +38,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetDaysInMonth :: proc(year, month: c.int) -> c.int ---
         GetDayOfYear :: proc(year, month, day: c.int) -> c.int ---
         GetDayOfWeek :: proc(year, month, day: c.int) -> c.int ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         GetDateTimeLocalePreferences :: proc(dateFormat: ^DateFormat, timeFormat: ^TimeFormat) -> bool ---
@@ -51,5 +50,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetDaysInMonth :: proc(year, month: c.int) -> c.int ---
         GetDayOfYear :: proc(year, month, day: c.int) -> c.int ---
         GetDayOfWeek :: proc(year, month, day: c.int) -> c.int ---
-    }
-}
+    }}

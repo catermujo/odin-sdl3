@@ -36,8 +36,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetSensorData :: proc(sensor: ^Sensor, data: [^]f32, num_values: c.int) -> bool ---
         CloseSensor :: proc(sensor: ^Sensor) ---
         UpdateSensors :: proc() ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         GetSensors :: proc(count: ^c.int) -> [^]SensorID ---
@@ -54,5 +53,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetSensorData :: proc(sensor: ^Sensor, data: [^]f32, num_values: c.int) -> bool ---
         CloseSensor :: proc(sensor: ^Sensor) ---
         UpdateSensors :: proc() ---
-    }
-}
+    }}

@@ -33,4 +33,3 @@ when ODIN_PLATFORM_SUBTARGET == .Android {
         SendAndroidMessage :: proc(command: Uint32, param: c.int) -> bool ---
     }
 }
-

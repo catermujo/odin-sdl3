@@ -57,8 +57,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         SetAppMetadata :: proc(appname, appversion, appidentifier: cstring) -> bool ---
         SetAppMetadataProperty :: proc(name: cstring, value: cstring) -> bool ---
         GetAppMetadataProperty :: proc(name: cstring) -> cstring ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         Init :: proc(flags: InitFlags) -> bool ---
@@ -71,5 +70,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         SetAppMetadata :: proc(appname, appversion, appidentifier: cstring) -> bool ---
         SetAppMetadataProperty :: proc(name: cstring, value: cstring) -> bool ---
         GetAppMetadataProperty :: proc(name: cstring) -> cstring ---
-    }
-}
+    }}

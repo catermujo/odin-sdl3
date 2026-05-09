@@ -37,8 +37,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         AddTimer :: proc(interval: Uint32, callback: TimerCallback, userdata: rawptr) -> TimerID ---
         AddTimerNS :: proc(interval: Uint64, callback: NSTimerCallback, userdata: rawptr) -> TimerID ---
         RemoveTimer :: proc(id: TimerID) -> bool ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         GetTicks :: proc() -> Uint64 ---
@@ -51,5 +50,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         AddTimer :: proc(interval: Uint32, callback: TimerCallback, userdata: rawptr) -> TimerID ---
         AddTimerNS :: proc(interval: Uint64, callback: NSTimerCallback, userdata: rawptr) -> TimerID ---
         RemoveTimer :: proc(id: TimerID) -> bool ---
-    }
-}
+    }}

@@ -187,8 +187,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         CloseGamepad :: proc(gamepad: ^Gamepad) ---
         GetGamepadAppleSFSymbolsNameForButton :: proc(gamepad: ^Gamepad, button: GamepadButton) -> cstring ---
         GetGamepadAppleSFSymbolsNameForAxis :: proc(gamepad: ^Gamepad, axis: GamepadAxis) -> cstring ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
         AddGamepadMapping :: proc(mapping: cstring) -> c.int ---
@@ -264,5 +263,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         CloseGamepad :: proc(gamepad: ^Gamepad) ---
         GetGamepadAppleSFSymbolsNameForButton :: proc(gamepad: ^Gamepad, button: GamepadButton) -> cstring ---
         GetGamepadAppleSFSymbolsNameForAxis :: proc(gamepad: ^Gamepad, axis: GamepadAxis) -> cstring ---
-    }
-}
+    }}

@@ -1,7 +1,7 @@
 package sdl3_ttf
 
+import SDL ".."
 import "core:c"
-import SDL "vendor:sdl3"
 
 DrawCommand :: enum c.int {
     NOOP,

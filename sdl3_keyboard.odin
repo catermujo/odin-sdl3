@@ -57,8 +57,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetTextInputArea :: proc(window: ^Window, rect: ^Rect, cursor: ^c.int) -> bool ---
         HasScreenKeyboardSupport :: proc() -> bool ---
         ScreenKeyboardShown :: proc(window: ^Window) -> bool ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         HasKeyboard :: proc() -> bool ---
@@ -85,5 +84,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetTextInputArea :: proc(window: ^Window, rect: ^Rect, cursor: ^c.int) -> bool ---
         HasScreenKeyboardSupport :: proc() -> bool ---
         ScreenKeyboardShown :: proc(window: ^Window) -> bool ---
-    }
-}
+    }}

@@ -1,4 +1,4 @@
-#+build darwin,linux,freebsd,openbsd,netbsd,haiku
+#+build darwin,linux,freebsd,openbsd,netbsd
 package sdl3
 
 // UNIX
@@ -20,4 +20,3 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         SetX11EventHook :: proc(callback: X11EventHook, userdata: rawptr) ---
     }
 }
-

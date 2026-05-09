@@ -53,9 +53,27 @@ when sdl.MIXER {
     }
 
     TrackStoppedCallback :: #type proc "c" (userdata: rawptr, track: ^Track)
-    TrackMixCallback :: #type proc "c" (userdata: rawptr, track: ^Track, spec: ^sdl.AudioSpec, pcm: ^c.float, samples: c.int)
-    GroupMixCallback :: #type proc "c" (userdata: rawptr, group: ^Group, spec: ^sdl.AudioSpec, pcm: ^c.float, samples: c.int)
-    PostMixCallback :: #type proc "c" (userdata: rawptr, mixer: ^Mixer, spec: ^sdl.AudioSpec, pcm: ^c.float, samples: c.int)
+    TrackMixCallback :: #type proc "c" (
+        userdata: rawptr,
+        track: ^Track,
+        spec: ^sdl.AudioSpec,
+        pcm: ^c.float,
+        samples: c.int,
+    )
+    GroupMixCallback :: #type proc "c" (
+        userdata: rawptr,
+        group: ^Group,
+        spec: ^sdl.AudioSpec,
+        pcm: ^c.float,
+        samples: c.int,
+    )
+    PostMixCallback :: #type proc "c" (
+        userdata: rawptr,
+        mixer: ^Mixer,
+        spec: ^sdl.AudioSpec,
+        pcm: ^c.float,
+        samples: c.int,
+    )
 
     AudioDecoder :: struct {}
 

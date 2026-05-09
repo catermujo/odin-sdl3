@@ -57,8 +57,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetRectUnionFloat :: proc(#by_ptr A, B: FRect, result: ^FRect) -> bool ---
         GetRectEnclosingPointsFloat :: proc(points: [^]FPoint, count: c.int, #by_ptr clip: FRect, result: ^FRect) -> bool ---
         GetRectAndLineIntersectionFloat :: proc(#by_ptr rect: FRect, X1, Y1, X2, Y2: ^f32) -> bool ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         HasRectIntersection :: proc(#by_ptr A, B: Rect) -> bool ---
@@ -71,5 +70,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetRectUnionFloat :: proc(#by_ptr A, B: FRect, result: ^FRect) -> bool ---
         GetRectEnclosingPointsFloat :: proc(points: [^]FPoint, count: c.int, #by_ptr clip: FRect, result: ^FRect) -> bool ---
         GetRectAndLineIntersectionFloat :: proc(#by_ptr rect: FRect, X1, Y1, X2, Y2: ^f32) -> bool ---
-    }
-}
+    }}

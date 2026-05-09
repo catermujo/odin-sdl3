@@ -16,4 +16,3 @@ foreign lib {
     Vulkan_GetPresentationSupport :: proc(instance: vk.Instance, physicalDevice: vk.PhysicalDevice, queueFamilyIndex: Uint32) -> bool ---
 
 }
-

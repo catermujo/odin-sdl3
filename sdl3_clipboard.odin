@@ -17,8 +17,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetClipboardData :: proc(mime_type: cstring, size: ^uint) -> rawptr ---
         HasClipboardData :: proc(mime_type: cstring) -> bool ---
         GetClipboardMimeTypes :: proc(num_mime_types: ^uint) -> [^][^]Uint8 ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
         SetClipboardText :: proc(text: cstring) -> bool ---
@@ -32,5 +31,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetClipboardData :: proc(mime_type: cstring, size: ^uint) -> rawptr ---
         HasClipboardData :: proc(mime_type: cstring) -> bool ---
         GetClipboardMimeTypes :: proc(num_mime_types: ^uint) -> [^][^]Uint8 ---
-    }
-}
+    }}

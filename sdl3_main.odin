@@ -39,10 +39,8 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     @(default_calling_convention = "c")
     foreign _ {
         SDL_main :: proc(argc: c.int, argv: [^]cstring) -> c.int ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c")
     foreign lib {
         SDL_main :: proc(argc: c.int, argv: [^]cstring) -> c.int ---
-    }
-}
+    }}

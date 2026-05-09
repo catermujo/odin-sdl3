@@ -43,8 +43,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         WaitAsyncIOResult :: proc(queue: ^AsyncIOQueue, outcome: ^AsyncIOOutcome, timeoutMS: Sint32) -> bool ---
         SignalAsyncIOQueue :: proc(queue: ^AsyncIOQueue) ---
         LoadFileAsync :: proc(file: cstring, queue: ^AsyncIOQueue, userdata: rawptr) -> bool ---
-    }
-} else {
+    }} else {
     @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         AsyncIOFromFile :: proc(file: cstring, mode: cstring) -> ^AsyncIO ---
@@ -58,5 +57,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         WaitAsyncIOResult :: proc(queue: ^AsyncIOQueue, outcome: ^AsyncIOOutcome, timeoutMS: Sint32) -> bool ---
         SignalAsyncIOQueue :: proc(queue: ^AsyncIOQueue) ---
         LoadFileAsync :: proc(file: cstring, queue: ^AsyncIOQueue, userdata: rawptr) -> bool ---
-    }
-}
+    }}
