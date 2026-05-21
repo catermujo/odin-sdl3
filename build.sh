@@ -18,10 +18,10 @@ clone_at_revision() {
     fi
 }
 
-clone_at_revision SDL release-3.4.2 https://github.com/libsdl-org/SDL --depth=1 --recurse-submodules -j 4
-clone_at_revision SDL_image release-3.4.0 https://github.com/libsdl-org/SDL_image --depth=1 --recurse-submodules -j 10
-clone_at_revision SDL_ttf 053bbc89517471427748a082583c9eada55c07b5 https://github.com/libsdl-org/SDL_ttf --depth=1 --recurse-submodules -j 10
-clone_at_revision SDL_mixer release-3.2.0 https://github.com/libsdl-org/SDL_mixer --depth=1 --recurse-submodules -j 4
+clone_at_revision SDL release-3.4.2 https://github.com/libsdl-org/SDL --depth=1 --recurse-submodules -j 4 --shallow-submodules
+clone_at_revision SDL_image release-3.4.0 https://github.com/libsdl-org/SDL_image --depth=1 --recurse-submodules -j 10 --shallow-submodules
+clone_at_revision SDL_ttf 053bbc89517471427748a082583c9eada55c07b5 https://github.com/libsdl-org/SDL_ttf --depth=1 --recurse-submodules -j 10 --shallow-submodules
+clone_at_revision SDL_mixer release-3.2.0 https://github.com/libsdl-org/SDL_mixer --depth=1 --recurse-submodules -j 4 --shallow-submodules
 
 # Apply patches
 for patch in patches/*.patch; do
@@ -64,8 +64,7 @@ if [ "$(uname -s)" = 'Darwin' ]; then
         libdav1d.6.dylib \
         libpng16.16.dylib \
         libwebp.7.dylib \
-        libwebpdemux.2.dylib
-    do
+        libwebpdemux.2.dylib; do
         src="$(find libs/SDL_image/external -type f -name "$dylib" -print -quit)"
         if [ -n "$src" ]; then
             cp "$src" image/
