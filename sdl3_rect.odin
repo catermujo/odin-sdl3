@@ -44,21 +44,7 @@ RectEqual :: proc "c" (a, b: Rect) -> bool {
     return a == b
 }
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign _ {
-        HasRectIntersection :: proc(#by_ptr A, B: Rect) -> bool ---
-        GetRectIntersection :: proc(#by_ptr A, B: Rect, result: ^Rect) -> bool ---
-        GetRectUnion :: proc(#by_ptr A, B: Rect, result: ^Rect) -> bool ---
-        GetRectEnclosingPoints :: proc(points: [^]Point, count: c.int, #by_ptr clip: Rect, result: ^Rect) -> bool ---
-        GetRectAndLineIntersection :: proc(#by_ptr rect: Rect, X1, Y1, X2, Y2: ^c.int) -> bool ---
-        HasRectIntersectionFloat :: proc(#by_ptr A, B: FRect) -> bool ---
-        GetRectIntersectionFloat :: proc(#by_ptr A, B: FRect, result: ^FRect) -> bool ---
-        GetRectUnionFloat :: proc(#by_ptr A, B: FRect, result: ^FRect) -> bool ---
-        GetRectEnclosingPointsFloat :: proc(points: [^]FPoint, count: c.int, #by_ptr clip: FRect, result: ^FRect) -> bool ---
-        GetRectAndLineIntersectionFloat :: proc(#by_ptr rect: FRect, X1, Y1, X2, Y2: ^f32) -> bool ---
-    }} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
+@(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         HasRectIntersection :: proc(#by_ptr A, B: Rect) -> bool ---
         GetRectIntersection :: proc(#by_ptr A, B: Rect, result: ^Rect) -> bool ---
@@ -70,4 +56,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetRectUnionFloat :: proc(#by_ptr A, B: FRect, result: ^FRect) -> bool ---
         GetRectEnclosingPointsFloat :: proc(points: [^]FPoint, count: c.int, #by_ptr clip: FRect, result: ^FRect) -> bool ---
         GetRectAndLineIntersectionFloat :: proc(#by_ptr rect: FRect, X1, Y1, X2, Y2: ^f32) -> bool ---
-    }}
+    }

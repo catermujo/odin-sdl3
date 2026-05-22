@@ -268,32 +268,13 @@ HintPriority :: enum c.int {
 
 HintCallback :: #type proc "c" (userdata: rawptr, name: cstring, oldValue, newValue: cstring)
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign _ {
-        GetHint :: proc(name: cstring) -> cstring ---
-        GetHintBoolean :: proc(name: cstring, default_value: bool) -> bool ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
+@(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         GetHint :: proc(name: cstring) -> cstring ---
         GetHintBoolean :: proc(name: cstring, default_value: bool) -> bool ---
     }
-}
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign _ {
-        SetHintWithPriority :: proc(name: cstring, value: cstring, priority: HintPriority) -> bool ---
-        SetHint :: proc(name: cstring, value: cstring) -> bool ---
-        ResetHint :: proc(name: cstring) -> bool ---
-        ResetHints :: proc() ---
-        AddHintCallback :: proc(name: cstring, callback: HintCallback, userdata: rawptr) -> bool ---
-        RemoveHintCallback :: proc(name: cstring, callback: HintCallback, userdata: rawptr) ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_")
+@(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
         SetHintWithPriority :: proc(name: cstring, value: cstring, priority: HintPriority) -> bool ---
         SetHint :: proc(name: cstring, value: cstring) -> bool ---
@@ -302,4 +283,3 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         AddHintCallback :: proc(name: cstring, callback: HintCallback, userdata: rawptr) -> bool ---
         RemoveHintCallback :: proc(name: cstring, callback: HintCallback, userdata: rawptr) ---
     }
-}

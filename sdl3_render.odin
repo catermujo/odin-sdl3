@@ -150,34 +150,7 @@ RENDERER_VSYNC_ADAPTIVE :: -1
 
 DEBUG_TEXT_FONT_CHARACTER_SIZE :: 8
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign _ {
-        GetNumRenderDrivers :: proc() -> c.int ---
-        GetRenderDriver :: proc(index: c.int) -> cstring ---
-        CreateRenderer :: proc(window: ^Window, name: cstring) -> ^Renderer ---
-        CreateRendererWithProperties :: proc(props: PropertiesID) -> ^Renderer ---
-        CreateGPURenderer :: proc(device: ^GPUDevice, window: ^Window) -> ^Renderer ---
-        GetGPURendererDevice :: proc(device: ^Renderer) -> ^GPUDevice ---
-        CreateSoftwareRenderer :: proc(surface: ^Surface) -> ^Renderer ---
-        GetRenderer :: proc(window: ^Window) -> ^Renderer ---
-        GetRenderWindow :: proc(renderer: ^Renderer) -> ^Window ---
-        GetRendererName :: proc(renderer: ^Renderer) -> cstring ---
-        GetRendererProperties :: proc(renderer: ^Renderer) -> PropertiesID ---
-        CreateTexture :: proc(renderer: ^Renderer, format: PixelFormat, access: TextureAccess, w, h: c.int) -> ^Texture ---
-        CreateTextureFromSurface :: proc(renderer: ^Renderer, surface: ^Surface) -> ^Texture ---
-        CreateTextureWithProperties :: proc(renderer: ^Renderer, props: PropertiesID) -> ^Texture ---
-        GetTextureProperties :: proc(texture: ^Texture) -> PropertiesID ---
-        GetRendererFromTexture :: proc(texture: ^Texture) -> ^Renderer ---
-        GetRenderTarget :: proc(renderer: ^Renderer) -> Maybe(^Texture) ---
-        RenderViewportSet :: proc(renderer: ^Renderer) -> bool ---
-        RenderClipEnabled :: proc(renderer: ^Renderer) -> bool ---
-        RenderReadPixels :: proc(renderer: ^Renderer, rect: Maybe(^Rect)) -> ^Surface ---
-        GetRenderMetalLayer :: proc(renderer: ^Renderer) -> rawptr ---
-        GetRenderMetalCommandEncoder :: proc(renderer: ^Renderer) -> rawptr ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
+@(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         GetNumRenderDrivers :: proc() -> c.int ---
         GetRenderDriver :: proc(index: c.int) -> cstring ---
@@ -202,90 +175,8 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetRenderMetalLayer :: proc(renderer: ^Renderer) -> rawptr ---
         GetRenderMetalCommandEncoder :: proc(renderer: ^Renderer) -> rawptr ---
     }
-}
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign _ {
-        CreateWindowAndRenderer :: proc(title: cstring, width, height: c.int, window_flags: WindowFlags, window: ^^Window, renderer: ^^Renderer) -> bool ---
-        GetRenderOutputSize :: proc(renderer: ^Renderer, w, h: ^c.int) -> bool ---
-        GetCurrentRenderOutputSize :: proc(renderer: ^Renderer, w, h: ^c.int) -> bool ---
-        GetTextureSize :: proc(texture: ^Texture, w, h: ^f32) -> bool ---
-        SetTexturePalette :: proc(texture: ^Texture, palette: ^Palette) -> bool ---
-        GetTexturePalette :: proc(texture: ^Texture) -> ^Palette ---
-        SetTextureColorMod :: proc(texture: ^Texture, r, g, b: Uint8) -> bool ---
-        SetTextureColorModFloat :: proc(texture: ^Texture, r, g, b: f32) -> bool ---
-        GetTextureColorMod :: proc(texture: ^Texture, r, g, b: ^Uint8) -> bool ---
-        GetTextureColorModFloat :: proc(texture: ^Texture, r, g, b: ^f32) -> bool ---
-        SetTextureAlphaMod :: proc(texture: ^Texture, alpha: Uint8) -> bool ---
-        SetTextureAlphaModFloat :: proc(texture: ^Texture, alpha: f32) -> bool ---
-        GetTextureAlphaMod :: proc(texture: ^Texture, alpha: ^Uint8) -> bool ---
-        GetTextureAlphaModFloat :: proc(texture: ^Texture, alpha: ^f32) -> bool ---
-        SetTextureBlendMode :: proc(texture: ^Texture, blendMode: BlendMode) -> bool ---
-        GetTextureBlendMode :: proc(texture: ^Texture, blendMode: ^BlendMode) -> bool ---
-        SetTextureScaleMode :: proc(texture: ^Texture, scaleMode: ScaleMode) -> bool ---
-        GetTextureScaleMode :: proc(texture: ^Texture, scaleMode: ^ScaleMode) -> bool ---
-        UpdateTexture :: proc(texture: ^Texture, rect: Maybe(^Rect), pixels: rawptr, pitch: c.int) -> bool ---
-        UpdateYUVTexture :: proc(texture: ^Texture, rect: Maybe(^Rect), Yplane: [^]Uint8, Ypitch: c.int, Uplane: [^]Uint8, Upitch: c.int, Vplane: [^]Uint8, Vpitch: c.int) -> bool ---
-        UpdateNVTexture :: proc(texture: ^Texture, rect: Maybe(^Rect), Yplane: [^]Uint8, Ypitch: c.int, UVplane: [^]Uint8, UVpitch: c.int) -> bool ---
-        LockTexture :: proc(texture: ^Texture, rect: Maybe(^Rect), pixels: ^rawptr, pitch: ^c.int) -> bool ---
-        LockTextureToSurface :: proc(texture: ^Texture, rect: Maybe(^Rect), surface: ^^Surface) -> bool ---
-        UnlockTexture :: proc(texture: ^Texture) ---
-        SetRenderTarget :: proc(renderer: ^Renderer, texture: Maybe(^Texture)) -> bool ---
-        SetRenderLogicalPresentation :: proc(renderer: ^Renderer, w, h: c.int, mode: RendererLogicalPresentation) -> bool ---
-        GetRenderLogicalPresentation :: proc(renderer: ^Renderer, w, h: ^c.int, mode: ^RendererLogicalPresentation) -> bool ---
-        GetRenderLogicalPresentationRect :: proc(renderer: ^Renderer, rect: ^FRect) -> bool ---
-        RenderCoordinatesFromWindow :: proc(renderer: ^Renderer, window_x, window_y: f32, x, y: ^f32) -> bool ---
-        RenderCoordinatesToWindow :: proc(renderer: ^Renderer, x, y: f32, window_x, window_y: ^f32) -> bool ---
-        ConvertEventToRenderCoordinates :: proc(renderer: ^Renderer, event: ^Event) -> bool ---
-        SetRenderViewport :: proc(renderer: ^Renderer, rect: Maybe(^Rect)) -> bool ---
-        GetRenderViewport :: proc(renderer: ^Renderer, rect: ^Rect) -> bool ---
-        GetRenderSafeArea :: proc(renderer: ^Renderer, rect: ^Rect) -> bool ---
-        SetRenderClipRect :: proc(renderer: ^Renderer, rect: Maybe(^Rect)) -> bool ---
-        GetRenderClipRect :: proc(renderer: ^Renderer, rect: ^Rect) -> bool ---
-        SetRenderScale :: proc(renderer: ^Renderer, scaleX, scaleY: f32) -> bool ---
-        GetRenderScale :: proc(renderer: ^Renderer, scaleX, scaleY: ^f32) -> bool ---
-        SetRenderDrawColor :: proc(renderer: ^Renderer, r, g, b, a: Uint8) -> bool ---
-        SetRenderDrawColorFloat :: proc(renderer: ^Renderer, r, g, b, a: f32) -> bool ---
-        GetRenderDrawColor :: proc(renderer: ^Renderer, r, g, b, a: ^Uint8) -> bool ---
-        GetRenderDrawColorFloat :: proc(renderer: ^Renderer, r, g, b, a: ^f32) -> bool ---
-        SetRenderColorScale :: proc(renderer: ^Renderer, scale: f32) -> bool ---
-        GetRenderColorScale :: proc(renderer: ^Renderer, scale: ^f32) -> bool ---
-        SetRenderDrawBlendMode :: proc(renderer: ^Renderer, blendMode: BlendMode) -> bool ---
-        GetRenderDrawBlendMode :: proc(renderer: ^Renderer, blendMode: ^BlendMode) -> bool ---
-        RenderClear :: proc(renderer: ^Renderer) -> bool ---
-        RenderPoint :: proc(renderer: ^Renderer, x, y: f32) -> bool ---
-        RenderPoints :: proc(renderer: ^Renderer, points: [^]FPoint, count: c.int) -> bool ---
-        RenderLine :: proc(renderer: ^Renderer, x1, y1, x2, y2: f32) -> bool ---
-        RenderLines :: proc(renderer: ^Renderer, points: [^]FPoint, count: c.int) -> bool ---
-        RenderRect :: proc(renderer: ^Renderer, rect: Maybe(^FRect)) -> bool ---
-        RenderRects :: proc(renderer: ^Renderer, rects: [^]FRect, count: c.int) -> bool ---
-        RenderFillRect :: proc(renderer: ^Renderer, rect: Maybe(^FRect)) -> bool ---
-        RenderFillRects :: proc(renderer: ^Renderer, rects: [^]FRect, count: c.int) -> bool ---
-        RenderTexture :: proc(renderer: ^Renderer, texture: ^Texture, srcrect, dstrect: Maybe(^FRect)) -> bool ---
-        RenderTextureRotated :: proc(renderer: ^Renderer, texture: ^Texture, srcrect, dstrect: Maybe(^FRect), angle: f64, center: Maybe(^FPoint), flip: FlipMode) -> bool ---
-        RenderTextureAffine :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), origin, right, down: Maybe(^FPoint)) -> bool ---
-        RenderTextureTiled :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), scale: f32, dstrect: Maybe(^FRect)) -> bool ---
-        RenderTexture9Grid :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), left_width, right_width, top_height, bottom_height: f32, scale: f32, dstrect: Maybe(^FRect)) -> bool ---
-        RenderTexture9GridTiled :: proc(renderer: ^Renderer, texture: ^Texture, srcrect: Maybe(^FRect), left_width, right_width, top_height, bottom_height: f32, scale: f32, dstrect: Maybe(^FRect), tileScale: f32) -> bool ---
-        RenderGeometry :: proc(renderer: ^Renderer, texture: ^Texture, vertices: [^]Vertex, num_vertices: c.int, indices: [^]c.int, num_indices: c.int) -> bool ---
-        RenderGeometryRaw :: proc(renderer: ^Renderer, texture: ^Texture, xy: [^]f32, xy_stride: c.int, color: [^]FColor, color_stride: c.int, uv: [^]f32, uv_stride: c.int, num_vertices: c.int, indices: rawptr, num_indices: c.int, size_indices: c.int) -> bool ---
-        SetRenderTextureAddressMode :: proc(renderer: ^Renderer, u_mode, v_mode: TextureAddressMode) -> bool ---
-        GetRenderTextureAddressMode :: proc(renderer: ^Renderer, u_mode, v_mode: ^TextureAddressMode) -> bool ---
-        RenderPresent :: proc(renderer: ^Renderer) -> bool ---
-        DestroyTexture :: proc(texture: ^Texture) ---
-        DestroyRenderer :: proc(renderer: ^Renderer) ---
-        FlushRenderer :: proc(renderer: ^Renderer) -> bool ---
-        AddVulkanRenderSemaphores :: proc(renderer: ^Renderer, wait_stage_mask: Uint32, wait_semaphore, signal_semaphore: Sint64) -> bool ---
-        SetRenderVSync :: proc(renderer: ^Renderer, vsync: c.int) -> bool ---
-        GetRenderVSync :: proc(renderer: ^Renderer, vsync: ^c.int) -> bool ---
-        RenderDebugText :: proc(renderer: ^Renderer, x, y: f32, str: cstring) -> bool ---
-        RenderDebugTextFormat :: proc(renderer: ^Renderer, x, y: f32, fmt: cstring, #c_vararg args: ..any) -> bool ---
-        SetDefaultTextureAddressMode :: proc(renderer: ^Renderer, scale_mode: ScaleMode) -> bool ---
-        GetDefaultTextureAddressMode :: proc(renderer: ^Renderer, scale_mode: ^ScaleMode) -> bool ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_")
+@(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
         CreateWindowAndRenderer :: proc(title: cstring, width, height: c.int, window_flags: WindowFlags, window: ^^Window, renderer: ^^Renderer) -> bool ---
         GetRenderOutputSize :: proc(renderer: ^Renderer, w, h: ^c.int) -> bool ---
@@ -364,7 +255,6 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         SetDefaultTextureAddressMode :: proc(renderer: ^Renderer, scale_mode: ScaleMode) -> bool ---
         GetDefaultTextureAddressMode :: proc(renderer: ^Renderer, scale_mode: ^ScaleMode) -> bool ---
     }
-}
 
 
 GPURenderStateCreateInfo :: struct {
@@ -380,20 +270,10 @@ GPURenderStateCreateInfo :: struct {
 
 GPURenderState :: struct {}
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign _ {
-        CreateGPURenderState :: proc(renderer: ^Renderer, #by_ptr createinfo: GPURenderStateCreateInfo) -> ^GPURenderState ---
-        SetGPURenderStateFragmentUniforms :: proc(state: ^GPURenderState, slot_index: Uint32, data: rawptr, length: Uint32) -> bool ---
-        SetGPURenderState :: proc(renderer: ^Renderer, state: ^GPURenderState) -> bool ---
-        DestroyGPURenderState :: proc(renderer: ^Renderer) ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
+@(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         CreateGPURenderState :: proc(renderer: ^Renderer, #by_ptr createinfo: GPURenderStateCreateInfo) -> ^GPURenderState ---
         SetGPURenderStateFragmentUniforms :: proc(state: ^GPURenderState, slot_index: Uint32, data: rawptr, length: Uint32) -> bool ---
         SetGPURenderState :: proc(renderer: ^Renderer, state: ^GPURenderState) -> bool ---
         DestroyGPURenderState :: proc(renderer: ^Renderer) ---
     }
-}

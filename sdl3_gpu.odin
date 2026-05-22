@@ -840,107 +840,7 @@ PROP_GPU_DEVICE_DRIVER_NAME_STRING :: "SDL.gpu.device.driver_name"
 PROP_GPU_DEVICE_DRIVER_VERSION_STRING :: "SDL.gpu.device.driver_version"
 PROP_GPU_DEVICE_DRIVER_INFO_STRING :: "SDL.gpu.device.driver_info"
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign _ {
-        GPUSupportsShaderFormats :: proc(format_flags: GPUShaderFormat, name: cstring) -> bool ---
-        GPUSupportsProperties :: proc(props: PropertiesID) -> bool ---
-        CreateGPUDevice :: proc(format_flags: GPUShaderFormat, debug_mode: bool, name: cstring) -> ^GPUDevice ---
-        CreateGPUDeviceWithProperties :: proc(props: PropertiesID) -> ^GPUDevice ---
-        DestroyGPUDevice :: proc(device: ^GPUDevice) ---
-        GetNumGPUDrivers :: proc() -> c.int ---
-        GetGPUDriver :: proc(index: c.int) -> cstring ---
-        GetGPUDeviceDriver :: proc(device: ^GPUDevice) -> cstring ---
-        GetGPUShaderFormats :: proc(device: ^GPUDevice) -> GPUShaderFormat ---
-        GetGPUDeviceProperties :: proc(device: ^GPUDevice) -> PropertiesID ---
-        CreateGPUComputePipeline :: proc(device: ^GPUDevice, #by_ptr createinfo: GPUComputePipelineCreateInfo) -> ^GPUComputePipeline ---
-        CreateGPUGraphicsPipeline :: proc(device: ^GPUDevice, #by_ptr createinfo: GPUGraphicsPipelineCreateInfo) -> ^GPUGraphicsPipeline ---
-        CreateGPUSampler :: proc(device: ^GPUDevice, #by_ptr createinfo: GPUSamplerCreateInfo) -> ^GPUSampler ---
-        CreateGPUShader :: proc(device: ^GPUDevice, #by_ptr createinfo: GPUShaderCreateInfo) -> ^GPUShader ---
-        CreateGPUTexture :: proc(device: ^GPUDevice, #by_ptr createinfo: GPUTextureCreateInfo) -> ^GPUTexture ---
-        CreateGPUBuffer :: proc(device: ^GPUDevice, #by_ptr createinfo: GPUBufferCreateInfo) -> ^GPUBuffer ---
-        CreateGPUTransferBuffer :: proc(device: ^GPUDevice, #by_ptr createinfo: GPUTransferBufferCreateInfo) -> ^GPUTransferBuffer ---
-        SetGPUBufferName :: proc(device: ^GPUDevice, buffer: ^GPUBuffer, text: cstring) ---
-        SetGPUTextureName :: proc(device: ^GPUDevice, texture: ^GPUTexture, text: cstring) ---
-        InsertGPUDebugLabel :: proc(command_buffer: ^GPUCommandBuffer, text: cstring) ---
-        PushGPUDebugGroup :: proc(command_buffer: ^GPUCommandBuffer, name: cstring) ---
-        PopGPUDebugGroup :: proc(command_buffer: ^GPUCommandBuffer) ---
-        ReleaseGPUTexture :: proc(device: ^GPUDevice, texture: ^GPUTexture) ---
-        ReleaseGPUSampler :: proc(device: ^GPUDevice, sampler: ^GPUSampler) ---
-        ReleaseGPUBuffer :: proc(device: ^GPUDevice, buffer: ^GPUBuffer) ---
-        ReleaseGPUTransferBuffer :: proc(device: ^GPUDevice, transfer_buffer: ^GPUTransferBuffer) ---
-        ReleaseGPUComputePipeline :: proc(device: ^GPUDevice, compute_pipeline: ^GPUComputePipeline) ---
-        ReleaseGPUShader :: proc(device: ^GPUDevice, shader: ^GPUShader) ---
-        ReleaseGPUGraphicsPipeline :: proc(device: ^GPUDevice, graphics_pipeline: ^GPUGraphicsPipeline) ---
-        AcquireGPUCommandBuffer :: proc(device: ^GPUDevice) -> ^GPUCommandBuffer ---
-        PushGPUVertexUniformData :: proc(command_buffer: ^GPUCommandBuffer, slot_index: Uint32, data: rawptr, length: Uint32) ---
-        PushGPUFragmentUniformData :: proc(command_buffer: ^GPUCommandBuffer, slot_index: Uint32, data: rawptr, length: Uint32) ---
-        PushGPUComputeUniformData :: proc(command_buffer: ^GPUCommandBuffer, slot_index: Uint32, data: rawptr, length: Uint32) ---
-        BeginGPURenderPass :: proc(command_buffer: ^GPUCommandBuffer, color_target_infos: [^]GPUColorTargetInfo, num_color_targets: Uint32, depth_stencil_target_info: Maybe(^GPUDepthStencilTargetInfo)) -> ^GPURenderPass ---
-        BindGPUGraphicsPipeline :: proc(render_pass: ^GPURenderPass, graphics_pipeline: ^GPUGraphicsPipeline) ---
-        SetGPUViewport :: proc(render_pass: ^GPURenderPass, #by_ptr viewport: GPUViewport) ---
-        SetGPUScissor :: proc(render_pass: ^GPURenderPass, #by_ptr scissor: Rect) ---
-        SetGPUBlendConstants :: proc(render_pass: ^GPURenderPass, blend_constants: FColor) ---
-        SetGPUStencilReference :: proc(render_pass: ^GPURenderPass, reference: Uint8) ---
-        BindGPUVertexBuffers :: proc(render_pass: ^GPURenderPass, first_slot: Uint32, bindings: [^]GPUBufferBinding, num_bindings: Uint32) ---
-        BindGPUIndexBuffer :: proc(render_pass: ^GPURenderPass, #by_ptr binding: GPUBufferBinding, index_element_size: GPUIndexElementSize) ---
-        BindGPUVertexSamplers :: proc(render_pass: ^GPURenderPass, first_slot: Uint32, texture_sampler_bindings: [^]GPUTextureSamplerBinding, num_bindings: Uint32) ---
-        BindGPUVertexStorageTextures :: proc(render_pass: ^GPURenderPass, first_slot: Uint32, storage_textures: [^]^GPUTexture, num_bindings: Uint32) ---
-        BindGPUVertexStorageBuffers :: proc(render_pass: ^GPURenderPass, first_slot: Uint32, storage_buffers: [^]^GPUBuffer, num_bindings: Uint32) ---
-        BindGPUFragmentSamplers :: proc(render_pass: ^GPURenderPass, first_slot: Uint32, texture_sampler_bindings: [^]GPUTextureSamplerBinding, num_bindings: Uint32) ---
-        BindGPUFragmentStorageTextures :: proc(render_pass: ^GPURenderPass, first_slot: Uint32, storage_textures: [^]^GPUTexture, num_bindings: Uint32) ---
-        BindGPUFragmentStorageBuffers :: proc(render_pass: ^GPURenderPass, first_slot: Uint32, storage_buffers: [^]^GPUBuffer, num_bindings: Uint32) ---
-        DrawGPUIndexedPrimitives :: proc(render_pass: ^GPURenderPass, num_indices: Uint32, num_instances: Uint32, first_index: Uint32, vertex_offset: Sint32, first_instance: Uint32) ---
-        DrawGPUPrimitives :: proc(render_pass: ^GPURenderPass, num_vertices: Uint32, num_instances: Uint32, first_vertex: Uint32, first_instance: Uint32) ---
-        DrawGPUPrimitivesIndirect :: proc(render_pass: ^GPURenderPass, buffer: ^GPUBuffer, offset: Uint32, draw_count: Uint32) ---
-        DrawGPUIndexedPrimitivesIndirect :: proc(render_pass: ^GPURenderPass, buffer: ^GPUBuffer, offset: Uint32, draw_count: Uint32) ---
-        EndGPURenderPass :: proc(render_pass: ^GPURenderPass) ---
-        BeginGPUComputePass :: proc(command_buffer: ^GPUCommandBuffer, storage_texture_bindings: [^]GPUStorageTextureReadWriteBinding, num_storage_texture_bindings: Uint32, storage_buffer_bindings: [^]GPUStorageBufferReadWriteBinding, num_storage_buffer_bindings: Uint32) -> ^GPUComputePass ---
-        BindGPUComputePipeline :: proc(compute_pass: ^GPUComputePass, compute_pipeline: ^GPUComputePipeline) ---
-        BindGPUComputeSamplers :: proc(compute_pass: ^GPUComputePass, first_slot: Uint32, texture_sampler_bindings: [^]GPUTextureSamplerBinding, num_bindings: Uint32) ---
-        BindGPUComputeStorageTextures :: proc(compute_pass: ^GPUComputePass, first_slot: Uint32, storage_textures: [^]^GPUTexture, num_bindings: Uint32) ---
-        BindGPUComputeStorageBuffers :: proc(compute_pass: ^GPUComputePass, first_slot: Uint32, storage_buffers: [^]^GPUBuffer, num_bindings: Uint32) ---
-        DispatchGPUCompute :: proc(compute_pass: ^GPUComputePass, groupcount_x, groupcount_y, groupcount_z: Uint32) ---
-        DispatchGPUComputeIndirect :: proc(compute_pass: ^GPUComputePass, buffer: ^GPUBuffer, offset: Uint32) ---
-        EndGPUComputePass :: proc(compute_pass: ^GPUComputePass) ---
-        MapGPUTransferBuffer :: proc(device: ^GPUDevice, transfer_buffer: ^GPUTransferBuffer, cycle: bool) -> rawptr ---
-        UnmapGPUTransferBuffer :: proc(device: ^GPUDevice, transfer_buffer: ^GPUTransferBuffer) ---
-        BeginGPUCopyPass :: proc(command_buffer: ^GPUCommandBuffer) -> ^GPUCopyPass ---
-        UploadToGPUTexture :: proc(copy_pass: ^GPUCopyPass, #by_ptr source: GPUTextureTransferInfo, #by_ptr destination: GPUTextureRegion, cycle: bool) ---
-        UploadToGPUBuffer :: proc(copy_pass: ^GPUCopyPass, #by_ptr source: GPUTransferBufferLocation, #by_ptr destination: GPUBufferRegion, cycle: bool) ---
-        CopyGPUTextureToTexture :: proc(copy_pass: ^GPUCopyPass, #by_ptr source: GPUTextureLocation, #by_ptr destination: GPUTextureLocation, w, h, d: Uint32, cycle: bool) ---
-        CopyGPUBufferToBuffer :: proc(copy_pass: ^GPUCopyPass, #by_ptr source: GPUBufferLocation, #by_ptr destination: GPUBufferLocation, size: Uint32, cycle: bool) ---
-        DownloadFromGPUTexture :: proc(copy_pass: ^GPUCopyPass, #by_ptr source: GPUTextureRegion, #by_ptr destination: GPUTextureTransferInfo) ---
-        DownloadFromGPUBuffer :: proc(copy_pass: ^GPUCopyPass, #by_ptr source: GPUBufferRegion, #by_ptr destination: GPUTransferBufferLocation) ---
-        EndGPUCopyPass :: proc(copy_pass: ^GPUCopyPass) ---
-        GenerateMipmapsForGPUTexture :: proc(command_buffer: ^GPUCommandBuffer, texture: ^GPUTexture) ---
-        BlitGPUTexture :: proc(command_buffer: ^GPUCommandBuffer, #by_ptr info: GPUBlitInfo) ---
-        WindowSupportsGPUSwapchainComposition :: proc(device: ^GPUDevice, window: ^Window, swapchain_composition: GPUSwapchainComposition) -> bool ---
-        WindowSupportsGPUPresentMode :: proc(device: ^GPUDevice, window: ^Window, present_mode: GPUPresentMode) -> bool ---
-        ClaimWindowForGPUDevice :: proc(device: ^GPUDevice, window: ^Window) -> bool ---
-        ReleaseWindowFromGPUDevice :: proc(device: ^GPUDevice, window: ^Window) ---
-        SetGPUSwapchainParameters :: proc(device: ^GPUDevice, window: ^Window, swapchain_composition: GPUSwapchainComposition, present_mode: GPUPresentMode) -> bool ---
-        SetGPUAllowedFramesInFlight :: proc(device: ^GPUDevice, allowed_frames_in_flight: Uint32) -> bool ---
-        GetGPUSwapchainTextureFormat :: proc(device: ^GPUDevice, window: ^Window) -> GPUTextureFormat ---
-        AcquireGPUSwapchainTexture :: proc(command_buffer: ^GPUCommandBuffer, window: ^Window, swapchain_texture: ^^GPUTexture, swapchain_texture_width, swapchain_texture_height: ^Uint32) -> bool ---
-        WaitForGPUSwapchain :: proc(device: ^GPUDevice, window: ^Window) -> bool ---
-        WaitAndAcquireGPUSwapchainTexture :: proc(command_buffer: ^GPUCommandBuffer, window: ^Window, swapchain_texture: ^^GPUTexture, swapchain_texture_width, swapchain_texture_height: ^Uint32) -> bool ---
-        SubmitGPUCommandBuffer :: proc(command_buffer: ^GPUCommandBuffer) -> bool ---
-        SubmitGPUCommandBufferAndAcquireFence :: proc(command_buffer: ^GPUCommandBuffer) -> ^GPUFence ---
-        CancelGPUCommandBuffer :: proc(command_buffer: ^GPUCommandBuffer) -> bool ---
-        WaitForGPUIdle :: proc(device: ^GPUDevice) -> bool ---
-        WaitForGPUFences :: proc(device: ^GPUDevice, wait_all: bool, fences: [^]^GPUFence, num_fences: Uint32) -> bool ---
-        QueryGPUFence :: proc(device: ^GPUDevice, fence: ^GPUFence) -> bool ---
-        ReleaseGPUFence :: proc(device: ^GPUDevice, fence: ^GPUFence) ---
-        GPUTextureFormatTexelBlockSize :: proc(format: GPUTextureFormat) -> Uint32 ---
-        GPUTextureSupportsFormat :: proc(device: ^GPUDevice, format: GPUTextureFormat, type: GPUTextureType, usage: GPUTextureUsageFlags) -> bool ---
-        GPUTextureSupportsSampleCount :: proc(device: ^GPUDevice, format: GPUTextureFormat, sample_count: GPUSampleCount) -> bool ---
-        CalculateGPUTextureFormatSize :: proc(format: GPUTextureFormat, width, height: Uint32, depth_or_layer_count: Uint32) -> Uint32 ---
-        GetPixelFormatFromGPUTextureFormat :: proc(format: GPUTextureFormat) -> PixelFormat ---
-        GetGPUTextureFormatFromPixelFormat :: proc(format: PixelFormat) -> GPUTextureFormat ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
+@(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         GPUSupportsShaderFormats :: proc(format_flags: GPUShaderFormat, name: cstring) -> bool ---
         GPUSupportsProperties :: proc(props: PropertiesID) -> bool ---
@@ -1038,20 +938,11 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetPixelFormatFromGPUTextureFormat :: proc(format: GPUTextureFormat) -> PixelFormat ---
         GetGPUTextureFormatFromPixelFormat :: proc(format: PixelFormat) -> GPUTextureFormat ---
     }
-}
 
 
 // GDK
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign _ {
-        GDKSuspendGPU :: proc(device: ^GPUDevice) ---
-        GDKResumeGPU :: proc(device: ^GPUDevice) ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_")
+@(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
         GDKSuspendGPU :: proc(device: ^GPUDevice) ---
         GDKResumeGPU :: proc(device: ^GPUDevice) ---
     }
-}

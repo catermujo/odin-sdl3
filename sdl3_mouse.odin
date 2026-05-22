@@ -68,36 +68,7 @@ MouseMotionTransformCallback :: #type proc "c" (
     x, y: ^f32,
 )
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign _ {
-        HasMouse :: proc() -> bool ---
-        GetMice :: proc(count: ^c.int) -> [^]MouseID ---
-        GetMouseNameForID :: proc(instance_id: MouseID) -> cstring ---
-        GetMouseFocus :: proc() -> ^Window ---
-        GetMouseState :: proc(x, y: ^f32) -> MouseButtonFlags ---
-        GetGlobalMouseState :: proc(x, y: ^f32) -> MouseButtonFlags ---
-        GetRelativeMouseState :: proc(x, y: ^f32) -> MouseButtonFlags ---
-        WarpMouseInWindow :: proc(window: ^Window, x, y: f32) ---
-        WarpMouseGlobal :: proc(x, y: f32) -> bool ---
-        SetRelativeMouseTransform :: proc(callback: MouseMotionTransformCallback, userdata: rawptr) -> bool ---
-        SetWindowRelativeMouseMode :: proc(window: ^Window, enabled: bool) -> bool ---
-        GetWindowRelativeMouseMode :: proc(window: ^Window) -> bool ---
-        CaptureMouse :: proc(enabled: bool) -> bool ---
-        CreateCursor :: proc(data: [^]byte, mask: [^]Uint8, w, h, hot_x, hot_y: c.int) -> ^Cursor ---
-        CreateColorCursor :: proc(surface: ^Surface, hot_x, hot_y: c.int) -> ^Cursor ---
-        CreateAnimatedCursor :: proc(frames: [^]CursorFrameInfo, frame_count, hot_x, hot_y: c.int) -> ^Cursor ---
-        CreateSystemCursor :: proc(id: SystemCursor) -> ^Cursor ---
-        SetCursor :: proc(cursor: ^Cursor) -> bool ---
-        GetCursor :: proc() -> ^Cursor ---
-        GetDefaultCursor :: proc() -> ^Cursor ---
-        DestroyCursor :: proc(cursor: ^Cursor) ---
-        ShowCursor :: proc() -> bool ---
-        HideCursor :: proc() -> bool ---
-        CursorVisible :: proc() -> bool ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
+@(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         HasMouse :: proc() -> bool ---
         GetMice :: proc(count: ^c.int) -> [^]MouseID ---
@@ -124,4 +95,3 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         HideCursor :: proc() -> bool ---
         CursorVisible :: proc() -> bool ---
     }
-}

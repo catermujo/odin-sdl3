@@ -576,23 +576,7 @@ PixelFormatDetails :: struct {
     Ashift:          Uint8,
 }
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign _ {
-        GetPixelFormatName :: proc(format: PixelFormat) -> cstring ---
-        GetMasksForPixelFormat :: proc(format: PixelFormat, bpp: ^c.int, Rmask, Gmask, Bmask, Amask: ^Uint32) -> bool ---
-        GetPixelFormatForMasks :: proc(bpp: c.int, Rmask, Gmask, Bmask, Amask: Uint32) -> PixelFormat ---
-        GetPixelFormatDetails :: proc(format: PixelFormat) -> ^PixelFormatDetails ---
-        CreatePalette :: proc(ncolors: c.int) -> ^Palette ---
-        SetPaletteColors :: proc(palette: ^Palette, colors: [^]Color, firstcolor: c.int, ncolors: c.int) -> bool ---
-        DestroyPalette :: proc(palette: ^Palette) ---
-        MapRGB :: proc(format: ^PixelFormatDetails, palette: ^Palette, r, g, b: Uint8) -> Uint32 ---
-        MapRGBA :: proc(format: ^PixelFormatDetails, palette: ^Palette, r, g, b, a: Uint8) -> Uint32 ---
-        GetRGB :: proc(pixelvalue: Uint32, format: ^PixelFormatDetails, palette: ^Palette, r, g, b: ^Uint8) ---
-        GetRGBA :: proc(pixelvalue: Uint32, format: ^PixelFormatDetails, palette: ^Palette, r, g, b, a: ^Uint8) ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_")
+@(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
         GetPixelFormatName :: proc(format: PixelFormat) -> cstring ---
         GetMasksForPixelFormat :: proc(format: PixelFormat, bpp: ^c.int, Rmask, Gmask, Bmask, Amask: ^Uint32) -> bool ---
@@ -606,4 +590,3 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetRGB :: proc(pixelvalue: Uint32, format: ^PixelFormatDetails, palette: ^Palette, r, g, b: ^Uint8) ---
         GetRGBA :: proc(pixelvalue: Uint32, format: ^PixelFormatDetails, palette: ^Palette, r, g, b, a: ^Uint8) ---
     }
-}

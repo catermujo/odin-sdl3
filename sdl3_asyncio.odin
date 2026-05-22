@@ -29,22 +29,7 @@ AsyncIOOutcome :: struct {
 
 AsyncIOQueue :: struct {}
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign _ {
-        AsyncIOFromFile :: proc(file: cstring, mode: cstring) -> ^AsyncIO ---
-        GetAsyncIOSize :: proc(asyncio: ^AsyncIO) -> Sint64 ---
-        ReadAsyncIO :: proc(asyncio: ^AsyncIO, ptr: rawptr, offset, size: Uint64, queue: ^AsyncIOQueue, userdata: rawptr) -> bool ---
-        WriteAsyncIO :: proc(asyncio: ^AsyncIO, ptr: rawptr, offset, size: Uint64, queue: ^AsyncIOQueue, userdata: rawptr) -> bool ---
-        CloseAsyncIO :: proc(asyncio: ^AsyncIO, flush: bool, queue: ^AsyncIOQueue, userdata: rawptr) -> bool ---
-        CreateAsyncIOQueue :: proc() -> ^AsyncIOQueue ---
-        DestroyAsyncIOQueue :: proc(queue: ^AsyncIOQueue) ---
-        GetAsyncIOResult :: proc(queue: ^AsyncIOQueue, outcome: ^AsyncIOOutcome) -> bool ---
-        WaitAsyncIOResult :: proc(queue: ^AsyncIOQueue, outcome: ^AsyncIOOutcome, timeoutMS: Sint32) -> bool ---
-        SignalAsyncIOQueue :: proc(queue: ^AsyncIOQueue) ---
-        LoadFileAsync :: proc(file: cstring, queue: ^AsyncIOQueue, userdata: rawptr) -> bool ---
-    }} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
+@(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         AsyncIOFromFile :: proc(file: cstring, mode: cstring) -> ^AsyncIO ---
         GetAsyncIOSize :: proc(asyncio: ^AsyncIO) -> Sint64 ---
@@ -57,4 +42,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         WaitAsyncIOResult :: proc(queue: ^AsyncIOQueue, outcome: ^AsyncIOOutcome, timeoutMS: Sint32) -> bool ---
         SignalAsyncIOQueue :: proc(queue: ^AsyncIOQueue) ---
         LoadFileAsync :: proc(file: cstring, queue: ^AsyncIOQueue, userdata: rawptr) -> bool ---
-    }}
+    }

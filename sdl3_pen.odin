@@ -37,14 +37,7 @@ PenDeviceType :: enum c.int {
     INDIRECT, /**< Pen touches something that isn't the display. */
 }
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign _ {
-        GetPenDeviceType :: proc(instance_id: PenID) ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
+@(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         GetPenDeviceType :: proc(instance_id: PenID) ---
     }
-}

@@ -3,7 +3,7 @@ package sdl3_ttf
 
 import "core:c"
 
-import SDL "../"
+import SDL ".."
 
 when ODIN_OS == .Windows {
     when SDL.LINK == "shared" {
@@ -35,6 +35,7 @@ when ODIN_OS == .Windows {
         foreign import lib "system:SDL3_ttf"
     }
 } else when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
+    foreign import lib "SDL3_ttf.wasm.a"
 }
 
 
@@ -151,105 +152,7 @@ SubString :: struct {
     rect:                      SDL.Rect,
 }
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "TTF_", require_results)
-    foreign _ {
-        Version :: proc() -> c.int ---
-        WasInit :: proc() -> c.int ---
-
-        OpenFont :: proc(file: cstring, ptsize: f32) -> ^Font ---
-        OpenFontIO :: proc(src: ^SDL.IOStream, closeio: bool, ptsize: f32) -> ^Font ---
-        OpenFontWithProperties :: proc(props: SDL.PropertiesID) -> ^Font ---
-
-        CopyFont :: proc(existing_font: ^Font) -> ^Font ---
-
-        GetFontProperties :: proc(font: ^Font) -> SDL.PropertiesID ---
-        GetFontGeneration :: proc(font: ^Font) -> u32 ---
-
-        GetFontSize :: proc(font: ^Font) -> f32 ---
-
-        SetFontStyle :: proc(font: ^Font, style: FontStyleFlags) ---
-        GetFontStyle :: proc(font: ^Font) -> FontStyleFlags ---
-
-        SetFontOutline :: proc(font: ^Font, outline: c.int) -> bool ---
-        GetFontOutline :: proc(font: ^Font) -> c.int ---
-
-        SetFontHinting :: proc(font: ^Font, hinting: Hinting) ---
-        GetFontHinting :: proc(font: ^Font) -> Hinting ---
-
-        GetNumFontFaces :: proc(font: ^Font) -> c.int ---
-
-        SetFontSDF :: proc(font: ^Font, enabled: bool) -> bool ---
-        GetFontSDF :: proc(font: ^Font) -> bool ---
-
-        GetFontWeight :: proc(font: ^Font) -> c.int ---
-
-        SetFontWrapAlignment :: proc(font: ^Font, align: HorizontalAlignment) ---
-        GetFontWrapAlignment :: proc(font: ^Font) -> HorizontalAlignment ---
-
-        GetFontHeight :: proc(font: ^Font) -> c.int ---
-        GetFontAscent :: proc(font: ^Font) -> c.int ---
-        GetFontDescent :: proc(font: ^Font) -> c.int ---
-
-        SetFontLineSkip :: proc(font: ^Font, lineskip: c.int) ---
-        GetFontLineSkip :: proc(font: ^Font) -> c.int ---
-
-        SetFontKerning :: proc(font: ^Font, enabled: bool) ---
-        GetFontKerning :: proc(font: ^Font) -> bool ---
-
-        FontIsFixedWidth :: proc(font: ^Font) -> bool ---
-        FontIsScalable :: proc(font: ^Font) -> bool ---
-
-        GetFontFamilyName :: proc(font: ^Font) -> cstring ---
-        GetFontStyleName :: proc(font: ^Font) -> cstring ---
-
-        GetFontDirection :: proc(font: ^Font) -> Direction ---
-
-        StringToTag :: proc(string: cstring) -> u32 ---
-
-        GetFontScript :: proc(font: ^Font) -> u32 ---
-
-        GetGlyphScript :: proc(ch: u32) -> u32 ---
-        FontHasGlyph :: proc(font: ^Font, ch: u32) -> bool ---
-        GetGlyphImage :: proc(font: ^Font, ch: u32, image_type: ^ImageType) -> ^SDL.Surface ---
-        GetGlyphImageForIndex :: proc(font: ^Font, glyph_index: u32, image_type: ^ImageType) -> ^SDL.Surface ---
-
-        RenderText_Solid :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color) -> ^SDL.Surface ---
-        RenderText_Solid_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color, wrap_Length: c.int) -> ^SDL.Surface ---
-        RenderGlyph_Solid :: proc(font: ^Font, ch: u32, fg: SDL.Color) -> ^SDL.Surface ---
-        RenderText_Shaded :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color) -> ^SDL.Surface ---
-        RenderText_Shaded_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color, wrap_width: c.int) -> ^SDL.Surface ---
-        RenderGlyph_Shaded :: proc(font: ^Font, ch: u32, fg, bg: SDL.Color) -> ^SDL.Surface ---
-        RenderText_Blended :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color) -> ^SDL.Surface ---
-        RenderText_Blended_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg: SDL.Color, wrap_width: c.int) -> ^SDL.Surface ---
-        RenderGlyph_Blended :: proc(font: ^Font, ch: u32, fg: SDL.Color) -> ^SDL.Surface ---
-        RenderText_LCD :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color) -> ^SDL.Surface ---
-        RenderText_LCD_Wrapped :: proc(font: ^Font, text: cstring, length: c.size_t, fg, bg: SDL.Color, wrap_width: c.int) -> ^SDL.Surface ---
-        RenderGlyph_LCD :: proc(font: ^Font, ch: u32, fg, bg: SDL.Color) -> ^SDL.Surface ---
-
-        CreateSurfaceTextEngine :: proc() -> ^TextEngine ---
-
-        CreateRendererTextEngine :: proc(renderer: ^SDL.Renderer) -> ^TextEngine ---
-        CreateRendererTextEngineWithProperties :: proc(props: SDL.PropertiesID) -> ^TextEngine ---
-
-        CreateGPUTextEngine :: proc(device: ^SDL.GPUDevice) -> ^TextEngine ---
-        CreateGPUTextEngineWithProperties :: proc(props: SDL.PropertiesID) -> ^TextEngine ---
-        GetGPUTextDrawData :: proc(text: ^Text) -> ^GPUAtlasDrawSequence ---
-        SetGPUTextEngineWinding :: proc(engine: ^TextEngine, winding: GPUTextEngineWinding) ---
-        GetGPUTextEngineWinding :: proc(#by_ptr engine: TextEngine) -> GPUTextEngineWinding ---
-
-        CreateText :: proc(engine: ^TextEngine, font: ^Font, text: cstring, length: c.size_t) -> ^Text ---
-        GetTextProperties :: proc(text: ^Text) -> SDL.PropertiesID ---
-        GetTextEngine :: proc(text: ^Text) -> ^TextEngine ---
-        GetTextFont :: proc(text: ^Text) -> ^Font ---
-        GetTextDirection :: proc(text: ^Text) -> Direction ---
-        GetTextScript :: proc(text: ^Text) -> u32 ---
-        TextWrapWhitespaceVisible :: proc(text: ^Text) -> bool ---
-
-        GetTextSubStringsForRange :: proc(text: ^Text, offset, length: c.int, count: ^c.int) -> [^]^SubString ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "TTF_", require_results)
+@(default_calling_convention = "c", link_prefix = "TTF_", require_results)
     foreign lib {
         Version :: proc() -> c.int ---
         WasInit :: proc() -> c.int ---
@@ -345,81 +248,8 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
 
         GetTextSubStringsForRange :: proc(text: ^Text, offset, length: c.int, count: ^c.int) -> [^]^SubString ---
     }
-}
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "TTF_")
-    foreign _ {
-        GetFreeTypeVersion :: proc(major, minor, patch: ^c.int) ---
-        GetHarfBuzzVersion :: proc(major, minor, patch: ^c.int) ---
-
-        Init :: proc() -> bool ---
-
-        AddFallbackFont :: proc(font: ^Font, fallback: ^Font) -> bool ---
-        RemoveFallbackFont :: proc(font: ^Font, fallback: ^Font) ---
-        ClearFallbackFonts :: proc(font: ^Font) ---
-
-        SetFontSize :: proc(font: ^Font, ptsize: f32) -> bool ---
-        SetFontSizeDPI :: proc(font: ^Font, ptsize: f32, hdpi: c.int, vdpi: c.int) -> bool ---
-        GetFontDPI :: proc(font: ^Font, hdpi: ^c.int, vdpi: ^c.int) -> bool ---
-
-        SetFontDirection :: proc(font: ^Font, direction: Direction) -> bool ---
-
-        TagToString :: proc(tag: u32, string: [^]c.char, size: c.size_t) ---
-
-        SetFontScript :: proc(font: ^Font, script: u32) -> bool ---
-
-        SetFontLanguage :: proc(font: ^Font, language_bcp47: cstring) -> bool ---
-
-        GetGlyphMetrics :: proc(font: ^Font, ch: u32, minx, maxx, miny, maxy, advance: ^c.int) -> bool ---
-        GetGlyphKerning :: proc(font: ^Font, previous_ch: u32, ch: u32, kerning: ^c.int) -> bool ---
-
-        GetStringSize :: proc(font: ^Font, text: cstring, length: c.size_t, w, h: ^c.int) -> bool ---
-        GetStringSizeWrapped :: proc(font: ^Font, text: cstring, length: c.size_t, wrap_width: c.int, w, h: ^c.int) -> bool ---
-        MeasureString :: proc(font: ^Font, text: cstring, length: c.size_t, max_width: c.int, measured_width: ^c.int, measured_length: ^c.size_t) -> bool ---
-
-        DrawSurfaceText :: proc(text: ^Text, x, y: c.int, surface: ^SDL.Surface) -> bool ---
-        DestroySurfaceTextEngine :: proc(engine: ^TextEngine) ---
-
-        DrawRendererText :: proc(text: ^Text, x, y: f32) -> bool ---
-        DestroyRendererTextEngine :: proc(engine: ^TextEngine) ---
-
-        DestroyGPUTextEngine :: proc(engine: ^TextEngine) ---
-
-        SetTextEngine :: proc(text: ^Text, engine: ^TextEngine) -> bool ---
-        SetTextFont :: proc(text: ^Text, font: ^Font) -> bool ---
-        SetTextDirection :: proc(text: ^Text, direction: Direction) -> bool ---
-        SetTextScript :: proc(text: ^Text, script: u32) -> bool ---
-        SetTextColor :: proc(text: ^Text, r, g, b, a: u8) -> bool ---
-        SetTextColorFloat :: proc(text: ^Text, r, g, b, a: f32) -> bool ---
-        GetTextColor :: proc(text: ^Text, r, g, b, a: ^u8) -> bool ---
-        GetTextColorFloat :: proc(text: ^Text, r, g, b, a: ^f32) -> bool ---
-        SetTextPosition :: proc(text: ^Text, x, y: c.int) -> bool ---
-        GetTextPosition :: proc(text: ^Text, x, y: ^c.int) -> bool ---
-        SetTextWrapWidth :: proc(text: ^Text, wrap_width: c.int) -> bool ---
-        GetTextWrapWidth :: proc(text: ^Text, wrap_width: ^c.int) -> bool ---
-        SetTextWrapWhitespaceVisible :: proc(text: ^Text, visible: bool) -> bool ---
-
-        SetTextString :: proc(text: ^Text, string: cstring, length: c.size_t) -> bool ---
-        InsertTextString :: proc(text: ^Text, offset: c.int, string: cstring, length: c.size_t) -> bool ---
-        AppendTextString :: proc(text: ^Text, string: cstring, length: c.size_t) -> bool ---
-        DeleteTextString :: proc(text: ^Text, offset, length: c.int) -> bool ---
-
-        GetTextSize :: proc(text: ^Text, w, h: ^c.int) -> bool ---
-
-        GetTextSubString :: proc(text: ^Text, offset: c.int, substring: ^SubString) -> bool ---
-        GetTextSubStringForLine :: proc(text: ^Text, line: c.int, substring: ^SubString) -> bool ---
-        GetTextSubStringForPoint :: proc(text: ^Text, x, y: c.int, substring: ^SubString) -> bool ---
-        GetPreviousTextSubString :: proc(text: ^Text, #by_ptr substring: SubString, previous: ^SubString) -> bool ---
-        GetNextTextSubString :: proc(text: ^Text, #by_ptr substring: SubString, next: ^SubString) -> bool ---
-
-        UpdateText :: proc(text: ^Text) -> bool ---
-        DestroyText :: proc(text: ^Text) ---
-        CloseFont :: proc(font: ^Font) ---
-        Quit :: proc() ---
-    }
-} else {
-    @(default_calling_convention = "c", link_prefix = "TTF_")
+@(default_calling_convention = "c", link_prefix = "TTF_")
     foreign lib {
         GetFreeTypeVersion :: proc(major, minor, patch: ^c.int) ---
         GetHarfBuzzVersion :: proc(major, minor, patch: ^c.int) ---
@@ -489,4 +319,3 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         CloseFont :: proc(font: ^Font) ---
         Quit :: proc() ---
     }
-}

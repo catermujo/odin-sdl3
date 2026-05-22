@@ -111,84 +111,7 @@ PROP_GAMEPAD_CAP_RUMBLE_BOOLEAN :: PROP_JOYSTICK_CAP_RUMBLE_BOOLEAN
 PROP_GAMEPAD_CAP_TRIGGER_RUMBLE_BOOLEAN :: PROP_JOYSTICK_CAP_TRIGGER_RUMBLE_BOOLEAN
 
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign _ {
-        AddGamepadMapping :: proc(mapping: cstring) -> c.int ---
-        AddGamepadMappingsFromIO :: proc(src: ^IOStream, closeio: bool) -> c.int ---
-        AddGamepadMappingsFromFile :: proc(file: cstring) -> c.int ---
-        ReloadGamepadMappings :: proc() -> bool ---
-        GetGamepadMappings :: proc(count: ^c.int) -> [^][^]byte ---
-        GetGamepadMappingForGUID :: proc(guid: GUID) -> [^]byte ---
-        GetGamepadMapping :: proc(gamepad: ^Gamepad) -> [^]byte ---
-        SetGamepadMapping :: proc(instance_id: JoystickID, mapping: cstring) -> bool ---
-        HasGamepad :: proc() -> bool ---
-        GetGamepads :: proc(count: ^c.int) -> [^]JoystickID ---
-        IsGamepad :: proc(instance_id: JoystickID) -> bool ---
-        GetGamepadNameForID :: proc(instance_id: JoystickID) -> cstring ---
-        GetGamepadPathForID :: proc(instance_id: JoystickID) -> cstring ---
-        GetGamepadPlayerIndexForID :: proc(instance_id: JoystickID) -> c.int ---
-        GetGamepadGUIDForID :: proc(instance_id: JoystickID) -> GUID ---
-        GetGamepadVendorForID :: proc(instance_id: JoystickID) -> Uint16 ---
-        GetGamepadProductForID :: proc(instance_id: JoystickID) -> Uint16 ---
-        GetGamepadProductVersionForID :: proc(instance_id: JoystickID) -> Uint16 ---
-        GetGamepadTypeForID :: proc(instance_id: JoystickID) -> GamepadType ---
-        GetRealGamepadTypeForID :: proc(instance_id: JoystickID) -> GamepadType ---
-        GetGamepadMappingForID :: proc(instance_id: JoystickID) -> [^]byte ---
-        OpenGamepad :: proc(instance_id: JoystickID) -> ^Gamepad ---
-        GetGamepadFromID :: proc(instance_id: JoystickID) -> ^Gamepad ---
-        GetGamepadFromPlayerIndex :: proc(player_index: c.int) -> ^Gamepad ---
-        GetGamepadProperties :: proc(gamepad: ^Gamepad) -> PropertiesID ---
-        GetGamepadID :: proc(gamepad: ^Gamepad) -> JoystickID ---
-        GetGamepadName :: proc(gamepad: ^Gamepad) -> cstring ---
-        GetGamepadPath :: proc(gamepad: ^Gamepad) -> cstring ---
-        GetGamepadType :: proc(gamepad: ^Gamepad) -> GamepadType ---
-        GetRealGamepadType :: proc(gamepad: ^Gamepad) -> GamepadType ---
-        GetGamepadPlayerIndex :: proc(gamepad: ^Gamepad) -> c.int ---
-        SetGamepadPlayerIndex :: proc(gamepad: ^Gamepad, player_index: c.int) -> bool ---
-        GetGamepadVendor :: proc(gamepad: ^Gamepad) -> Uint16 ---
-        GetGamepadProduct :: proc(gamepad: ^Gamepad) -> Uint16 ---
-        GetGamepadProductVersion :: proc(gamepad: ^Gamepad) -> Uint16 ---
-        GetGamepadFirmwareVersion :: proc(gamepad: ^Gamepad) -> Uint16 ---
-        GetGamepadSerial :: proc(gamepad: ^Gamepad) -> cstring ---
-        GetGamepadSteamHandle :: proc(gamepad: ^Gamepad) -> Uint64 ---
-        GetGamepadConnectionState :: proc(gamepad: ^Gamepad) -> JoystickConnectionState ---
-        GetGamepadPowerInfo :: proc(gamepad: ^Gamepad, percent: ^c.int) -> PowerState ---
-        GamepadConnected :: proc(gamepad: ^Gamepad) -> bool ---
-        GetGamepadJoystick :: proc(gamepad: ^Gamepad) -> ^Joystick ---
-        SetGamepadEventsEnabled :: proc(enabled: bool) ---
-        GamepadEventsEnabled :: proc() -> bool ---
-        GetGamepadBindings :: proc(gamepad: ^Gamepad, count: ^c.int) -> [^]^GamepadBinding ---
-        UpdateGamepads :: proc() ---
-        GetGamepadTypeFromString :: proc(str: cstring) -> GamepadType ---
-        GetGamepadStringForType :: proc(type: GamepadType) -> cstring ---
-        GetGamepadAxisFromString :: proc(str: cstring) -> GamepadAxis ---
-        GetGamepadStringForAxis :: proc(axis: GamepadAxis) -> cstring ---
-        GamepadHasAxis :: proc(gamepad: ^Gamepad, axis: GamepadAxis) -> bool ---
-        GetGamepadAxis :: proc(gamepad: ^Gamepad, axis: GamepadAxis) -> Sint16 ---
-        GetGamepadButtonFromString :: proc(str: cstring) -> GamepadButton ---
-        GetGamepadStringForButton :: proc(button: GamepadButton) -> cstring ---
-        GamepadHasButton :: proc(gamepad: ^Gamepad, button: GamepadButton) -> bool ---
-        GetGamepadButton :: proc(gamepad: ^Gamepad, button: GamepadButton) -> bool ---
-        GetGamepadButtonLabelForType :: proc(type: GamepadType, button: GamepadButton) -> GamepadButtonLabel ---
-        GetGamepadButtonLabel :: proc(gamepad: ^Gamepad, button: GamepadButton) -> GamepadButtonLabel ---
-        GetNumGamepadTouchpads :: proc(gamepad: ^Gamepad) -> c.int ---
-        GetNumGamepadTouchpadFingers :: proc(gamepad: ^Gamepad, touchpad: c.int) -> c.int ---
-        GetGamepadTouchpadFinger :: proc(gamepad: ^Gamepad, touchpad: c.int, finger: c.int, down: ^bool, x, y: ^f32, pressure: ^f32) -> bool ---
-        GamepadHasSensor :: proc(gamepad: ^Gamepad, type: SensorType) -> bool ---
-        SetGamepadSensorEnabled :: proc(gamepad: ^Gamepad, type: SensorType, enabled: bool) -> bool ---
-        GamepadSensorEnabled :: proc(gamepad: ^Gamepad, type: SensorType) -> bool ---
-        GetGamepadSensorDataRate :: proc(gamepad: ^Gamepad, type: SensorType) -> f32 ---
-        GetGamepadSensorData :: proc(gamepad: ^Gamepad, type: SensorType, data: [^]f32, num_values: c.int) -> bool ---
-        RumbleGamepad :: proc(gamepad: ^Gamepad, low_frequency_rumble, high_frequency_rumble: Uint16, duration_ms: Uint32) -> bool ---
-        RumbleGamepadTriggers :: proc(gamepad: ^Gamepad, left_rumble, right_rumble: Uint16, duration_ms: Uint32) -> bool ---
-        SetGamepadLED :: proc(gamepad: ^Gamepad, red, green, blue: Uint8) -> bool ---
-        SendGamepadEffect :: proc(gamepad: ^Gamepad, data: rawptr, size: c.int) -> bool ---
-        CloseGamepad :: proc(gamepad: ^Gamepad) ---
-        GetGamepadAppleSFSymbolsNameForButton :: proc(gamepad: ^Gamepad, button: GamepadButton) -> cstring ---
-        GetGamepadAppleSFSymbolsNameForAxis :: proc(gamepad: ^Gamepad, axis: GamepadAxis) -> cstring ---
-    }} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_")
+@(default_calling_convention = "c", link_prefix = "SDL_")
     foreign lib {
         AddGamepadMapping :: proc(mapping: cstring) -> c.int ---
         AddGamepadMappingsFromIO :: proc(src: ^IOStream, closeio: bool) -> c.int ---
@@ -263,4 +186,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         CloseGamepad :: proc(gamepad: ^Gamepad) ---
         GetGamepadAppleSFSymbolsNameForButton :: proc(gamepad: ^Gamepad, button: GamepadButton) -> cstring ---
         GetGamepadAppleSFSymbolsNameForAxis :: proc(gamepad: ^Gamepad, axis: GamepadAxis) -> cstring ---
-    }}
+    }

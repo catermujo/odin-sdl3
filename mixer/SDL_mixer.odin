@@ -3,7 +3,7 @@ package mixer
 
 import "core:c"
 
-import sdl "../"
+import sdl ".."
 
 when sdl.MIXER {
     // Keep mixer optional while reusing the root SDL package's link-mode selection on native targets.
@@ -37,6 +37,7 @@ when sdl.MIXER {
             foreign import lib "system:SDL3_mixer"
         }
     } else when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
+        foreign import lib "SDL3_mixer.wasm.a"
     }
 
     Mixer :: struct {}
@@ -123,106 +124,7 @@ when sdl.MIXER {
     DURATION_UNKNOWN :: -1
     DURATION_INFINITE :: -2
 
-    when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-        @(default_calling_convention = "c", link_prefix = "MIX_", require_results)
-        foreign _ {
-            Version :: proc() -> c.int ---
-            Init :: proc() -> c.bool ---
-            Quit :: proc() ---
-            GetNumAudioDecoders :: proc() -> c.int ---
-            GetAudioDecoder :: proc(index: c.int) -> cstring ---
-            CreateMixerDevice :: proc(devid: sdl.AudioDeviceID, spec: ^sdl.AudioSpec) -> ^Mixer ---
-            CreateMixer :: proc(spec: ^sdl.AudioSpec) -> ^Mixer ---
-            DestroyMixer :: proc(mixer: ^Mixer) ---
-            GetMixerProperties :: proc(mixer: ^Mixer) -> sdl.PropertiesID ---
-            GetMixerFormat :: proc(mixer: ^Mixer, spec: ^sdl.AudioSpec) -> c.bool ---
-            LockMixer :: proc(mixer: ^Mixer) ---
-            UnlockMixer :: proc(mixer: ^Mixer) ---
-            LoadAudio_IO :: proc(mixer: ^Mixer, io: ^sdl.IOStream, predecode, closeio: c.bool) -> ^Audio ---
-            LoadAudio :: proc(mixer: ^Mixer, path: cstring, predecode: c.bool) -> ^Audio ---
-            LoadAudioNoCopy :: proc(mixer: ^Mixer, data: rawptr, datalen: c.size_t, free_when_done: c.bool) -> ^Audio ---
-            LoadAudioWithProperties :: proc(props: sdl.PropertiesID) -> ^Audio ---
-            LoadRawAudio_IO :: proc(mixer: ^Mixer, io: ^sdl.IOStream, spec: ^sdl.AudioSpec, closeio: c.bool) -> ^Audio ---
-            LoadRawAudio :: proc(mixer: ^Mixer, data: rawptr, datalen: c.size_t, spec: ^sdl.AudioSpec) -> ^Audio ---
-            LoadRawAudioNoCopy :: proc(mixer: ^Mixer, data: rawptr, datalen: c.size_t, spec: ^sdl.AudioSpec, free_when_done: c.bool) -> ^Audio ---
-            CreateSineWaveAudio :: proc(mixer: ^Mixer, hz: c.int, amplitude: c.float, ms: sdl.Sint64) -> ^Audio ---
-            GetAudioProperties :: proc(audio: ^Audio) -> sdl.PropertiesID ---
-            GetAudioDuration :: proc(audio: ^Audio) -> sdl.Sint64 ---
-            GetAudioFormat :: proc(audio: ^Audio, spec: ^sdl.AudioSpec) -> c.bool ---
-            DestroyAudio :: proc(audio: ^Audio) ---
-            CreateTrack :: proc(mixer: ^Mixer) -> ^Track ---
-            DestroyTrack :: proc(track: ^Track) ---
-            GetTrackProperties :: proc(track: ^Track) -> sdl.PropertiesID ---
-            GetTrackMixer :: proc(track: ^Track) -> ^Mixer ---
-            SetTrackAudio :: proc(track: ^Track, audio: ^Audio) -> c.bool ---
-            SetTrackAudioStream :: proc(track: ^Track, stream: ^sdl.AudioStream) -> c.bool ---
-            SetTrackIOStream :: proc(track: ^Track, io: ^sdl.IOStream, closeio: c.bool) -> c.bool ---
-            SetTrackRawIOStream :: proc(track: ^Track, io: ^sdl.IOStream, spec: ^sdl.AudioSpec, closeio: c.bool) -> c.bool ---
-            TagTrack :: proc(track: ^Track, tag: cstring) -> c.bool ---
-            UntagTrack :: proc(track: ^Track, tag: cstring) ---
-            GetTrackTags :: proc(track: ^Track, count: ^c.int) -> [^]cstring ---
-            GetTaggedTracks :: proc(mixer: ^Mixer, tag: cstring, count: ^c.int) -> [^]^Track ---
-            SetTrackPlaybackPosition :: proc(track: ^Track, frames: sdl.Sint64) -> c.bool ---
-            GetTrackPlaybackPosition :: proc(track: ^Track) -> sdl.Sint64 ---
-            GetTrackFadeFrames :: proc(track: ^Track) -> sdl.Sint64 ---
-            GetTrackLoops :: proc(track: ^Track) -> c.int ---
-            SetTrackLoops :: proc(track: ^Track, num_loops: c.int) -> c.bool ---
-            GetTrackAudio :: proc(track: ^Track) -> ^Audio ---
-            GetTrackAudioStream :: proc(track: ^Track) -> ^sdl.AudioStream ---
-            GetTrackRemaining :: proc(track: ^Track) -> sdl.Sint64 ---
-            TrackMSToFrames :: proc(track: ^Track, ms: sdl.Sint64) -> sdl.Sint64 ---
-            TrackFramesToMS :: proc(track: ^Track, frames: sdl.Sint64) -> sdl.Sint64 ---
-            AudioMSToFrames :: proc(audio: ^Audio, ms: sdl.Sint64) -> sdl.Sint64 ---
-            AudioFramesToMS :: proc(audio: ^Audio, frames: sdl.Sint64) -> sdl.Sint64 ---
-            MSToFrames :: proc(sample_rate: c.int, ms: sdl.Sint64) -> sdl.Sint64 ---
-            FramesToMS :: proc(sample_rate: c.int, frames: sdl.Sint64) -> sdl.Sint64 ---
-            PlayTrack :: proc(track: ^Track, options: sdl.PropertiesID) -> c.bool ---
-            PlayTag :: proc(mixer: ^Mixer, tag: cstring, options: sdl.PropertiesID) -> c.bool ---
-            PlayAudio :: proc(mixer: ^Mixer, audio: ^Audio) -> c.bool ---
-            StopTrack :: proc(track: ^Track, fade_out_frames: sdl.Sint64) -> c.bool ---
-            StopAllTracks :: proc(mixer: ^Mixer, fade_out_ms: sdl.Sint64) -> c.bool ---
-            StopTag :: proc(mixer: ^Mixer, tag: cstring, fade_out_ms: sdl.Sint64) -> c.bool ---
-            PauseTrack :: proc(track: ^Track) -> c.bool ---
-            PauseAllTracks :: proc(mixer: ^Mixer) -> c.bool ---
-            PauseTag :: proc(mixer: ^Mixer, tag: cstring) -> c.bool ---
-            ResumeTrack :: proc(track: ^Track) -> c.bool ---
-            ResumeAllTracks :: proc(mixer: ^Mixer) -> c.bool ---
-            ResumeTag :: proc(mixer: ^Mixer, tag: cstring) -> c.bool ---
-            TrackPlaying :: proc(track: ^Track) -> c.bool ---
-            TrackPaused :: proc(track: ^Track) -> c.bool ---
-            SetMixerGain :: proc(mixer: ^Mixer, gain: c.float) -> c.bool ---
-            GetMixerGain :: proc(mixer: ^Mixer) -> c.float ---
-            SetTrackGain :: proc(track: ^Track, gain: c.float) -> c.bool ---
-            GetTrackGain :: proc(track: ^Track) -> c.float ---
-            SetTagGain :: proc(mixer: ^Mixer, tag: cstring, gain: c.float) -> c.bool ---
-            SetMixerFrequencyRatio :: proc(mixer: ^Mixer, ratio: c.float) -> c.bool ---
-            GetMixerFrequencyRatio :: proc(mixer: ^Mixer) -> c.float ---
-            SetTrackFrequencyRatio :: proc(track: ^Track, ratio: c.float) -> c.bool ---
-            GetTrackFrequencyRatio :: proc(track: ^Track) -> c.float ---
-            SetTrackOutputChannelMap :: proc(track: ^Track, chmap: [^]c.int, count: c.int) -> c.bool ---
-            SetTrackStereo :: proc(track: ^Track, #by_ptr gains: StereoGains) -> c.bool ---
-            SetTrack3DPosition :: proc(track: ^Track, #by_ptr position: Point3D) -> c.bool ---
-            GetTrack3DPosition :: proc(track: ^Track, position: ^Point3D) -> c.bool ---
-            CreateGroup :: proc(mixer: ^Mixer) -> ^Group ---
-            DestroyGroup :: proc(group: ^Group) ---
-            GetGroupProperties :: proc(group: ^Group) -> sdl.PropertiesID ---
-            GetGroupMixer :: proc(group: ^Group) -> ^Mixer ---
-            SetTrackGroup :: proc(track: ^Track, group: ^Group) -> c.bool ---
-            SetTrackStoppedCallback :: proc(track: ^Track, cb: TrackStoppedCallback, userdata: rawptr) -> c.bool ---
-            SetTrackRawCallback :: proc(track: ^Track, cb: TrackMixCallback, userdata: rawptr) -> c.bool ---
-            SetTrackCookedCallback :: proc(track: ^Track, cb: TrackMixCallback, userdata: rawptr) -> c.bool ---
-            SetGroupPostMixCallback :: proc(group: ^Group, cb: GroupMixCallback, userdata: rawptr) -> c.bool ---
-            SetPostMixCallback :: proc(mixer: ^Mixer, cb: PostMixCallback, userdata: rawptr) -> c.bool ---
-            Generate :: proc(mixer: ^Mixer, buffer: rawptr, buflen: c.int) -> c.int ---
-            CreateAudioDecoder :: proc(path: cstring, props: sdl.PropertiesID) -> ^AudioDecoder ---
-            CreateAudioDecoder_IO :: proc(io: ^sdl.IOStream, closeio: c.bool, props: sdl.PropertiesID) -> ^AudioDecoder ---
-            DestroyAudioDecoder :: proc(audiodecoder: ^AudioDecoder) ---
-            GetAudioDecoderProperties :: proc(audiodecoder: ^AudioDecoder) -> sdl.PropertiesID ---
-            GetAudioDecoderFormat :: proc(audiodecoder: ^AudioDecoder, spec: ^sdl.AudioSpec) -> c.bool ---
-            DecodeAudio :: proc(audiodecoder: ^AudioDecoder, buffer: rawptr, buflen: c.int, spec: ^sdl.AudioSpec) -> c.int ---
-        }
-    } else {
-        @(default_calling_convention = "c", link_prefix = "MIX_", require_results)
+    @(default_calling_convention = "c", link_prefix = "MIX_", require_results)
         foreign lib {
             Version :: proc() -> c.int ---
             Init :: proc() -> c.bool ---
@@ -319,7 +221,6 @@ when sdl.MIXER {
             GetAudioDecoderFormat :: proc(audiodecoder: ^AudioDecoder, spec: ^sdl.AudioSpec) -> c.bool ---
             DecodeAudio :: proc(audiodecoder: ^AudioDecoder, buffer: rawptr, buflen: c.int, spec: ^sdl.AudioSpec) -> c.int ---
         }
-    }
 
     // Keep the older local helper names available while the repo converges on upstream SDL_mixer naming.
     SetMasterGain :: SetMixerGain

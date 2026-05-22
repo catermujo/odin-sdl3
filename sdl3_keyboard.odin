@@ -30,35 +30,7 @@ PROP_TEXTINPUT_MULTILINE_BOOLEAN :: "SDL.textinput.multiline"
 PROP_TEXTINPUT_ANDROID_INPUTTYPE_NUMBER :: "SDL.textinput.android.inputtype"
 
 
-when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign _ {
-        HasKeyboard :: proc() -> bool ---
-        GetKeyboards :: proc(count: ^c.int) -> [^]KeyboardID ---
-        GetKeyboardNameForID :: proc(instance_id: KeyboardID) -> cstring ---
-        GetKeyboardFocus :: proc() -> ^Window ---
-        GetKeyboardState :: proc(numkeys: ^c.int) -> [^]bool ---
-        ResetKeyboard :: proc() ---
-        GetModState :: proc() -> Keymod ---
-        SetModState :: proc(modstate: Keymod) ---
-        GetKeyFromScancode :: proc(scancode: Scancode, modstate: Keymod, key_event: bool) -> Keycode ---
-        GetScancodeFromKey :: proc(key: Keycode, modstate: ^Keymod) -> Scancode ---
-        SetScancodeName :: proc(scancode: Scancode, name: cstring) -> bool ---
-        GetScancodeName :: proc(scancode: Scancode) -> cstring ---
-        GetScancodeFromName :: proc(name: cstring) -> Scancode ---
-        GetKeyName :: proc(key: Keycode) -> cstring ---
-        GetKeyFromName :: proc(name: cstring) -> Keycode ---
-        StartTextInput :: proc(window: ^Window) -> bool ---
-        StartTextInputWithProperties :: proc(window: ^Window, props: PropertiesID) -> bool ---
-        TextInputActive :: proc(window: ^Window) -> bool ---
-        StopTextInput :: proc(window: ^Window) -> bool ---
-        ClearComposition :: proc(window: ^Window) -> bool ---
-        SetTextInputArea :: proc(window: ^Window, rect: Maybe(^Rect), cursor: c.int) -> bool ---
-        GetTextInputArea :: proc(window: ^Window, rect: ^Rect, cursor: ^c.int) -> bool ---
-        HasScreenKeyboardSupport :: proc() -> bool ---
-        ScreenKeyboardShown :: proc(window: ^Window) -> bool ---
-    }} else {
-    @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
+@(default_calling_convention = "c", link_prefix = "SDL_", require_results)
     foreign lib {
         HasKeyboard :: proc() -> bool ---
         GetKeyboards :: proc(count: ^c.int) -> [^]KeyboardID ---
@@ -84,4 +56,4 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         GetTextInputArea :: proc(window: ^Window, rect: ^Rect, cursor: ^c.int) -> bool ---
         HasScreenKeyboardSupport :: proc() -> bool ---
         ScreenKeyboardShown :: proc(window: ^Window) -> bool ---
-    }}
+    }
