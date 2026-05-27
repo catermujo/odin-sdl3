@@ -27,11 +27,25 @@ when sdl.MIXER {
         }
     } else when ODIN_OS == .Linux {
         when sdl.LINK == "static" {
-            @(export)
-            foreign import lib "SDL3_mixer.linux.a"
+            when ODIN_ARCH == .amd64 {
+                @(export)
+                foreign import lib "linux_x64/SDL3_mixer.linux.a"
+            } else when ODIN_ARCH == .arm64 {
+                @(export)
+                foreign import lib "linux_arm64/SDL3_mixer.linux.a"
+            } else {
+                #panic("vendor/sdl/mixer static link supports only linux amd64/arm64")
+            }
         } else when sdl.LINK == "shared" {
-            @(export)
-            foreign import lib "libSDL3_mixer.so"
+            when ODIN_ARCH == .amd64 {
+                @(export)
+                foreign import lib "linux_x64/libSDL3_mixer.so"
+            } else when ODIN_ARCH == .arm64 {
+                @(export)
+                foreign import lib "linux_arm64/libSDL3_mixer.so"
+            } else {
+                #panic("vendor/sdl/mixer shared link supports only linux amd64/arm64")
+            }
         } else {
             @(export)
             foreign import lib "system:SDL3_mixer"

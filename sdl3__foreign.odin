@@ -70,11 +70,25 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         }
     } else when ODIN_OS == .Linux {
         when LINK == "static" {
-            @(export)
-            foreign import lib "SDL3.linux.a"
+            when ODIN_ARCH == .amd64 {
+                @(export)
+                foreign import lib "linux_x64/SDL3.linux.a"
+            } else when ODIN_ARCH == .arm64 {
+                @(export)
+                foreign import lib "linux_arm64/SDL3.linux.a"
+            } else {
+                #panic("vendor/sdl static link supports only linux amd64/arm64")
+            }
         } else when LINK == "shared" {
-            @(export)
-            foreign import lib "libSDL3.so"
+            when ODIN_ARCH == .amd64 {
+                @(export)
+                foreign import lib "linux_x64/libSDL3.so"
+            } else when ODIN_ARCH == .arm64 {
+                @(export)
+                foreign import lib "linux_arm64/libSDL3.so"
+            } else {
+                #panic("vendor/sdl shared link supports only linux amd64/arm64")
+            }
         } else {
             @(export)
             foreign import lib "system:SDL3"

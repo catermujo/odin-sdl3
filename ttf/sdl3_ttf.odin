@@ -25,11 +25,25 @@ when ODIN_OS == .Windows {
     }
 } else when ODIN_OS == .Linux {
     when SDL.LINK == "static" {
-        @(export)
-        foreign import lib "SDL3_ttf.linux.a"
+        when ODIN_ARCH == .amd64 {
+            @(export)
+            foreign import lib "linux_x64/SDL3_ttf.linux.a"
+        } else when ODIN_ARCH == .arm64 {
+            @(export)
+            foreign import lib "linux_arm64/SDL3_ttf.linux.a"
+        } else {
+            #panic("vendor/sdl/ttf static link supports only linux amd64/arm64")
+        }
     } else when SDL.LINK == "shared" {
-        @(export)
-        foreign import lib "libSDL3_ttf.so"
+        when ODIN_ARCH == .amd64 {
+            @(export)
+            foreign import lib "linux_x64/libSDL3_ttf.so"
+        } else when ODIN_ARCH == .arm64 {
+            @(export)
+            foreign import lib "linux_arm64/libSDL3_ttf.so"
+        } else {
+            #panic("vendor/sdl/ttf shared link supports only linux amd64/arm64")
+        }
     } else {
         @(export)
         foreign import lib "system:SDL3_ttf"

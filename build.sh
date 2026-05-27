@@ -23,6 +23,14 @@ clone_at_revision SDL_image release-3.4.0 https://github.com/libsdl-org/SDL_imag
 clone_at_revision SDL_ttf 053bbc89517471427748a082583c9eada55c07b5 https://github.com/libsdl-org/SDL_ttf --depth=1 --recurse-submodules -j 10 --shallow-submodules
 clone_at_revision SDL_mixer release-3.2.0 https://github.com/libsdl-org/SDL_mixer --depth=1 --recurse-submodules -j 4 --shallow-submodules
 
+linux_arch_dir() {
+    case "$(uname -m)" in
+        x86_64 | amd64) echo "linux_x64" ;;
+        aarch64 | arm64) echo "linux_arm64" ;;
+        *) echo "linux_$(uname -m)" ;;
+    esac
+}
+
 # Apply patches
 for patch in patches/*.patch; do
     [ -f "$patch" ] && git -C SDL am --3way "$PWD/$patch" 2>/dev/null || true
@@ -50,10 +58,12 @@ if [ "$(uname -s)" = 'Darwin' ]; then
     cp libs/SDL_ttf/libSDL3_ttf.0.dylib ttf/
     cp libs/SDL_mixer/libSDL3_mixer.0.dylib mixer/
 else
-    cp libs/SDL/*.$LIB_EXT .
-    cp libs/SDL_image/*.$LIB_EXT image/
-    cp libs/SDL_ttf/*.$LIB_EXT ttf/
-    cp libs/SDL_mixer/*.$LIB_EXT mixer/
+    ARCH_DIR=$(linux_arch_dir)
+    mkdir -p "$ARCH_DIR" "image/$ARCH_DIR" "ttf/$ARCH_DIR" "mixer/$ARCH_DIR"
+    cp libs/SDL/*.$LIB_EXT "$ARCH_DIR"/
+    cp libs/SDL_image/*.$LIB_EXT "image/$ARCH_DIR"/
+    cp libs/SDL_ttf/*.$LIB_EXT "ttf/$ARCH_DIR"/
+    cp libs/SDL_mixer/*.$LIB_EXT "mixer/$ARCH_DIR"/
 fi
 if [ "$(uname -s)" = 'Darwin' ]; then
     # DUMBAI: Stage only ABI-major external SDL_image dylibs so vendor output does not duplicate unversioned and patch-level aliases.
@@ -72,7 +82,7 @@ if [ "$(uname -s)" = 'Darwin' ]; then
     done
 else
     # NOTE: do we actually need aom?
-    cp libs/SDL_image/external/**/*.$LIB_EXT image/
+    cp libs/SDL_image/external/**/*.$LIB_EXT "image/$ARCH_DIR"/
 fi
 
 cp -r SDL/include/SDL3/* include
