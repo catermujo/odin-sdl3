@@ -2,13 +2,26 @@
 
 set -e
 
-[ -d SDL ] || git clone https://github.com/libsdl-org/SDL --revision release-3.4.2 --depth=1 --recurse-submodules -j 4 &
-[ -d SDL_image ] || git clone https://github.com/libsdl-org/SDL_image --revision release-3.4.0 --depth=1 --recurse-submodules -j 10 &
-# SDL_mixer now publishes a release tag for this snapshot, so pin the build to the named 3.2.0 release instead of a floating commit hash.
-[ -d SDL_mixer ] || git clone https://github.com/libsdl-org/SDL_mixer --revision release-3.2.0 --depth=1 --recurse-submodules -j 4 &
-[ -d SDL_ttf ] || git clone https://github.com/libsdl-org/SDL_ttf --revision 053bbc89517471427748a082583c9eada55c07b5 --depth=1 --recurse-submodules -j 10 &
+clone_at_revision() {
+    local dir="$1"
+    local revision="$2"
+    local remote="$3"
+    shift 3
+    [ -d "$dir" ] && return
+    git clone "$@" "$remote" "$dir"
+    if ! git -C "$dir" checkout --detach "$revision"; then
+        git -C "$dir" fetch origin "$revision"
+        git -C "$dir" checkout --detach FETCH_HEAD
+    fi
+    if [ -f "$dir/.gitmodules" ]; then
+        git -C "$dir" submodule update --init --recursive
+    fi
+}
 
-wait
+clone_at_revision SDL release-3.4.2 https://github.com/libsdl-org/SDL --depth=1 --recurse-submodules -j 4
+clone_at_revision SDL_image release-3.4.0 https://github.com/libsdl-org/SDL_image --depth=1 --recurse-submodules -j 10
+clone_at_revision SDL_mixer release-3.2.0 https://github.com/libsdl-org/SDL_mixer --depth=1 --recurse-submodules -j 4
+clone_at_revision SDL_ttf 053bbc89517471427748a082583c9eada55c07b5 https://github.com/libsdl-org/SDL_ttf --depth=1 --recurse-submodules -j 10
 
 # Apply patches
 for patch in patches/*.patch; do
