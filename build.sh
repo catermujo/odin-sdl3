@@ -8,13 +8,33 @@ clone_at_revision() {
     local remote="$3"
     shift 3
     [ -d "$dir" ] && return
-    git clone "$@" "$remote" "$dir"
+    local clone_args=("$@")
+    if ! git clone "${clone_args[@]}" "$remote" "$dir"; then
+        local has_shallow_submodules=0
+        local fallback_args=()
+        local arg
+        for arg in "${clone_args[@]}"; do
+            if [ "$arg" = "--shallow-submodules" ]; then
+                has_shallow_submodules=1
+                continue
+            fi
+            fallback_args+=("$arg")
+        done
+        if [ "$has_shallow_submodules" -eq 0 ]; then
+            return 1
+        fi
+        rm -rf "$dir"
+        git clone "${fallback_args[@]}" "$remote" "$dir"
+    fi
     if ! git -C "$dir" checkout --detach "$revision"; then
         git -C "$dir" fetch origin "$revision"
         git -C "$dir" checkout --detach FETCH_HEAD
     fi
     if [ -f "$dir/.gitmodules" ]; then
-        git -C "$dir" submodule update --init --recursive
+        if ! git -C "$dir" submodule update --init --recursive; then
+            git -C "$dir" submodule sync --recursive
+            git -C "$dir" submodule update --init --recursive
+        fi
     fi
 }
 
