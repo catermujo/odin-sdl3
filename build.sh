@@ -97,6 +97,22 @@ linux_arch_dir() {
     esac
 }
 
+copy_shared_family() {
+    local src_dir="$1"
+    local lib_base="$2"
+    local dst_dir="$3"
+    local src
+    local copied=0
+    for src in "$src_dir"/"$lib_base".so*; do
+        [ -e "$src" ] || continue
+        cp -a "$src" "$dst_dir"/
+        copied=1
+    done
+    if [ "$copied" -eq 0 ]; then
+        echo "WARN: no files matched $src_dir/$lib_base.so*"
+    fi
+}
+
 # Apply patches
 for patch in patches/*.patch; do
     [ -f "$patch" ] && git -C SDL am --3way "$PWD/$patch" 2>/dev/null || true
@@ -126,10 +142,10 @@ if [ "$(uname -s)" = 'Darwin' ]; then
 else
     ARCH_DIR=$(linux_arch_dir)
     mkdir -p "$ARCH_DIR" "image/$ARCH_DIR" "ttf/$ARCH_DIR" "mixer/$ARCH_DIR"
-    cp libs/SDL/*.$LIB_EXT "$ARCH_DIR"/
-    cp libs/SDL_image/*.$LIB_EXT "image/$ARCH_DIR"/
-    cp libs/SDL_ttf/*.$LIB_EXT "ttf/$ARCH_DIR"/
-    cp libs/SDL_mixer/*.$LIB_EXT "mixer/$ARCH_DIR"/
+    copy_shared_family libs/SDL libSDL3 "$ARCH_DIR"
+    copy_shared_family libs/SDL_image libSDL3_image "image/$ARCH_DIR"
+    copy_shared_family libs/SDL_ttf libSDL3_ttf "ttf/$ARCH_DIR"
+    copy_shared_family libs/SDL_mixer libSDL3_mixer "mixer/$ARCH_DIR"
 fi
 if [ "$(uname -s)" = 'Darwin' ]; then
     # DUMBAI: Stage only ABI-major external SDL_image dylibs so vendor output does not duplicate unversioned and patch-level aliases.
@@ -148,7 +164,10 @@ if [ "$(uname -s)" = 'Darwin' ]; then
     done
 else
     # NOTE: do we actually need aom?
-    cp libs/SDL_image/external/**/*.$LIB_EXT "image/$ARCH_DIR"/
+    find libs/SDL_image/external \
+        \( -type f -o -type l \) \
+        -name "*.so*" \
+        -exec cp -a {} "image/$ARCH_DIR"/ \;
 fi
 
 cp -r SDL/include/SDL3/* include
