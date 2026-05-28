@@ -7,34 +7,68 @@ clone_at_revision() {
     local revision="$2"
     local remote="$3"
     shift 3
-    [ -d "$dir" ] && return
     local clone_args=("$@")
-    if ! git clone "${clone_args[@]}" "$remote" "$dir"; then
-        local has_shallow_submodules=0
-        local fallback_args=()
-        local arg
-        for arg in "${clone_args[@]}"; do
-            if [ "$arg" = "--shallow-submodules" ]; then
+    local filtered_clone_args=()
+    local has_recurse_submodules=0
+    local has_shallow_submodules=0
+    local arg
+    for arg in "${clone_args[@]}"; do
+        case "$arg" in
+            --recurse-submodules)
+                has_recurse_submodules=1
+                ;;
+            --shallow-submodules)
                 has_shallow_submodules=1
-                continue
-            fi
-            fallback_args+=("$arg")
-        done
-        if [ "$has_shallow_submodules" -eq 0 ]; then
-            return 1
-        fi
+                ;;
+            *)
+                filtered_clone_args+=("$arg")
+                ;;
+        esac
+    done
+
+    if [ -d "$dir" ] && [ ! -d "$dir/.git" ]; then
         rm -rf "$dir"
-        git clone "${fallback_args[@]}" "$remote" "$dir"
     fi
+
+    if [ ! -d "$dir/.git" ]; then
+        if ! git clone "${filtered_clone_args[@]}" "$remote" "$dir"; then
+            if [ "$has_shallow_submodules" -eq 0 ]; then
+                return 1
+            fi
+            local fallback_args=()
+            for arg in "${filtered_clone_args[@]}"; do
+                if [ "$arg" = "--depth=1" ] || [ "$arg" = "--depth" ]; then
+                    continue
+                fi
+                fallback_args+=("$arg")
+            done
+            rm -rf "$dir"
+            git clone "${fallback_args[@]}" "$remote" "$dir"
+        fi
+    fi
+
     if ! git -C "$dir" checkout --detach "$revision"; then
         git -C "$dir" fetch origin "$revision"
         git -C "$dir" checkout --detach FETCH_HEAD
     fi
-    if [ -f "$dir/.gitmodules" ]; then
-        if ! git -C "$dir" submodule update --init --recursive; then
-            git -C "$dir" submodule sync --recursive
-            git -C "$dir" submodule update --init --recursive
+
+    if [ "$has_recurse_submodules" -eq 1 ] && [ -f "$dir/.gitmodules" ]; then
+        if git -C "$dir" submodule update --init --recursive --depth 1; then
+            return
         fi
+        git -C "$dir" submodule sync --recursive
+        if git -C "$dir" submodule update --init --recursive; then
+            return
+        fi
+
+        echo "Submodule pinned revision fetch failed in $dir; retrying from remote heads"
+        git -C "$dir" submodule deinit -f --all || true
+        rm -rf "$dir/.git/modules"
+        git -C "$dir" submodule sync --recursive
+        if git -C "$dir" submodule update --init --recursive --remote --depth 1; then
+            return
+        fi
+        git -C "$dir" submodule update --init --recursive --remote
     fi
 }
 
