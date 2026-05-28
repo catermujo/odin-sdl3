@@ -116,8 +116,11 @@ copy_shared_family() {
 require_cmake_bool_on() {
     local cache_file="$1"
     local key="$2"
-    if ! grep -Eq "^${key}:[^=]*=ON$" "$cache_file"; then
+    if ! grep -Eq "^${key}:[^=]*=(ON|TRUE|1|YES)$" "$cache_file"; then
         echo "ERROR: ${key} is not ON in ${cache_file}"
+        echo "------ SDL CMake cache summary ------"
+        grep -E "^(CMAKE_SYSTEM_NAME|CMAKE_SYSTEM_PROCESSOR|UNIX|LINUX|SDL_VIDEO|SDL_X11|SDL_WAYLAND|SDL_VULKAN|SDL_RENDER_VULKAN):" "$cache_file" || true
+        echo "-------------------------------------"
         exit 1
     fi
 }
@@ -139,6 +142,9 @@ if [ "$(uname -s)" = 'Linux' ]; then
     )
 fi
 
+# DUMBAI: Reconfigure from a clean cache so host/platform flips (or old option values) cannot silently disable Vulkan/X11.
+rm -f libs/CMakeCache.txt
+rm -rf libs/CMakeFiles
 cmake -S . -B libs -DSDL_SHARED=ON -DSDL_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=ON "${EXTRA_CMAKE_FLAGS[@]}"
 if [ "$(uname -s)" = 'Linux' ]; then
     require_cmake_bool_on libs/CMakeCache.txt SDL_VULKAN
