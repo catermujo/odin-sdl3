@@ -113,6 +113,15 @@ copy_shared_family() {
     fi
 }
 
+require_cmake_bool_on() {
+    local cache_file="$1"
+    local key="$2"
+    if ! grep -Eq "^${key}:[^=]*=ON$" "$cache_file"; then
+        echo "ERROR: ${key} is not ON in ${cache_file}"
+        exit 1
+    fi
+}
+
 # Apply patches
 for patch in patches/*.patch; do
     [ -f "$patch" ] && git -C SDL am --3way "$PWD/$patch" 2>/dev/null || true
@@ -122,9 +131,19 @@ EXTRA_CMAKE_FLAGS=()
 if [ "$(uname -s)" = 'Linux' ]; then
     # DUMBAI: Vendored Vorbis in SDL_mixer expects HAVE_ALLOCA_H from autotools; define it explicitly in our CMake flow.
     EXTRA_CMAKE_FLAGS+=(-DCMAKE_C_FLAGS=-DHAVE_ALLOCA_H=1)
+    # DUMBAI: Linux runtime expects Vulkan-capable SDL window backend; force these toggles and fail during configure if not satisfiable.
+    EXTRA_CMAKE_FLAGS+=(
+        -DSDL_VULKAN=ON
+        -DSDL_RENDER_VULKAN=ON
+        -DSDL_X11=ON
+    )
 fi
 
 cmake -S . -B libs -DSDL_SHARED=ON -DSDL_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=ON "${EXTRA_CMAKE_FLAGS[@]}"
+if [ "$(uname -s)" = 'Linux' ]; then
+    require_cmake_bool_on libs/CMakeCache.txt SDL_VULKAN
+    require_cmake_bool_on libs/CMakeCache.txt SDL_X11
+fi
 if [ "$(uname -s)" = 'Darwin' ]; then
     cmake --build libs -j$(sysctl -n hw.ncpu) --config Release
     LIB_EXT=dylib
