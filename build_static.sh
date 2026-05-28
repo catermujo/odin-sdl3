@@ -47,17 +47,29 @@ clone_at_revision() {
         fi
     fi
 
-    if ! git -C "$dir" checkout --detach "$revision"; then
+    if ! git -C "$dir" -c advice.detachedHead=false checkout -f "$revision"; then
         git -C "$dir" fetch origin "$revision"
-        git -C "$dir" checkout --detach FETCH_HEAD
+        git -C "$dir" -c advice.detachedHead=false checkout -f FETCH_HEAD
     fi
 
     if [ "$has_recurse_submodules" -eq 1 ] && [ -f "$dir/.gitmodules" ]; then
-        if git -C "$dir" submodule update --init --recursive --depth 1; then
+        local submodule_args=(--init --recursive)
+        if [ "$dir" = "SDL_mixer" ]; then
+            submodule_args+=(
+                external/flac
+                external/ogg
+                external/opus
+                external/opusfile
+                external/tremor
+                external/vorbis
+            )
+        fi
+
+        if git -C "$dir" submodule update "${submodule_args[@]}" --depth 1; then
             return
         fi
         git -C "$dir" submodule sync --recursive
-        if git -C "$dir" submodule update --init --recursive; then
+        if git -C "$dir" submodule update "${submodule_args[@]}"; then
             return
         fi
 
@@ -65,10 +77,10 @@ clone_at_revision() {
         git -C "$dir" submodule deinit -f --all || true
         rm -rf "$dir/.git/modules"
         git -C "$dir" submodule sync --recursive
-        if git -C "$dir" submodule update --init --recursive --remote --depth 1; then
+        if git -C "$dir" submodule update "${submodule_args[@]}" --remote --depth 1; then
             return
         fi
-        git -C "$dir" submodule update --init --recursive --remote
+        git -C "$dir" submodule update "${submodule_args[@]}" --remote
     fi
 }
 
