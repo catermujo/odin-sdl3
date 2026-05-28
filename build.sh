@@ -125,6 +125,15 @@ require_cmake_bool_on() {
     fi
 }
 
+require_file_contains() {
+    local file="$1"
+    local needle="$2"
+    if ! strings "$file" | grep -Fq "$needle"; then
+        echo "ERROR: expected '$needle' in $file"
+        exit 1
+    fi
+}
+
 # Apply patches
 for patch in patches/*.patch; do
     [ -f "$patch" ] && git -C SDL am --3way "$PWD/$patch" 2>/dev/null || true
@@ -133,7 +142,9 @@ done
 EXTRA_CMAKE_FLAGS=()
 if [ "$(uname -s)" = 'Linux' ]; then
     # DUMBAI: Vendored Vorbis in SDL_mixer expects HAVE_ALLOCA_H from autotools; define it explicitly in our CMake flow.
-    EXTRA_CMAKE_FLAGS+=(-DCMAKE_C_FLAGS=-DHAVE_ALLOCA_H=1)
+    # DUMBAI: Force SDL's Vulkan codepaths at compile-definition level because SDL's dep_option gate can evaluate
+    # SDL_VULKAN=OFF on some modern CMake/policy combos despite Linux + SDL_VIDEO being enabled.
+    EXTRA_CMAKE_FLAGS+=(-DCMAKE_C_FLAGS=-DHAVE_ALLOCA_H=1\ -DSDL_VIDEO_VULKAN=1)
     # DUMBAI: SDL sets cmake_minimum_required(VERSION 3.16), so CMP0127 defaults to OLD and
     # cmake_dependent_option() OR-conditions (like SDL_VULKAN deps) can evaluate incorrectly to OFF on modern CMake.
     EXTRA_CMAKE_FLAGS+=(-DCMAKE_POLICY_DEFAULT_CMP0127=NEW)
@@ -150,7 +161,6 @@ rm -f libs/CMakeCache.txt
 rm -rf libs/CMakeFiles
 cmake -S . -B libs -DSDL_SHARED=ON -DSDL_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=ON "${EXTRA_CMAKE_FLAGS[@]}"
 if [ "$(uname -s)" = 'Linux' ]; then
-    require_cmake_bool_on libs/CMakeCache.txt SDL_VULKAN
     require_cmake_bool_on libs/CMakeCache.txt SDL_X11
 fi
 if [ "$(uname -s)" = 'Darwin' ]; then
@@ -159,6 +169,9 @@ if [ "$(uname -s)" = 'Darwin' ]; then
 else
     cmake --build libs -j$(nproc) --config Release
     LIB_EXT=so
+fi
+if [ "$(uname -s)" = 'Linux' ]; then
+    require_file_contains "libs/SDL/libSDL3.so" "vkCreateXlibSurfaceKHR failed"
 fi
 
 if [ "$(uname -s)" = 'Darwin' ]; then
