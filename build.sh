@@ -134,6 +134,9 @@ EXTRA_CMAKE_FLAGS=()
 if [ "$(uname -s)" = 'Linux' ]; then
     # DUMBAI: Vendored Vorbis in SDL_mixer expects HAVE_ALLOCA_H from autotools; define it explicitly in our CMake flow.
     EXTRA_CMAKE_FLAGS+=(-DCMAKE_C_FLAGS=-DHAVE_ALLOCA_H=1)
+    # DUMBAI: SDL sets cmake_minimum_required(VERSION 3.16), so CMP0127 defaults to OLD and
+    # cmake_dependent_option() OR-conditions (like SDL_VULKAN deps) can evaluate incorrectly to OFF on modern CMake.
+    EXTRA_CMAKE_FLAGS+=(-DCMAKE_POLICY_DEFAULT_CMP0127=NEW)
     # DUMBAI: Linux runtime expects Vulkan-capable SDL window backend; force these toggles and fail during configure if not satisfiable.
     EXTRA_CMAKE_FLAGS+=(
         -DSDL_VULKAN=ON
