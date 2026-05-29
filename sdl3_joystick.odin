@@ -3,9 +3,9 @@ package sdl3
 import "core:c"
 
 @(link_prefix = "SDL_")
-    foreign lib {
-        joystick_lock: ^Mutex
-    }
+foreign _ {
+    joystick_lock: ^Mutex
+}
 
 Joystick :: struct {}
 JoystickID :: distinct Uint32
@@ -38,23 +38,23 @@ JOYSTICK_AXIS_MIN :: -32768
 
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign lib {
-        LockJoysticks :: proc() ---
-        UnlockJoysticks :: proc() ---
-        HasJoystick :: proc() -> bool ---
-        GetJoysticks :: proc(count: ^c.int) -> [^]JoystickID ---
-        GetJoystickNameForID :: proc(instance_id: JoystickID) -> cstring ---
-        GetJoystickPathForID :: proc(instance_id: JoystickID) -> cstring ---
-        GetJoystickPlayerIndexForID :: proc(instance_id: JoystickID) -> c.int ---
-        GetJoystickGUIDForID :: proc(instance_id: JoystickID) -> GUID ---
-        GetJoystickVendorForID :: proc(instance_id: JoystickID) -> Uint16 ---
-        GetJoystickProductForID :: proc(instance_id: JoystickID) -> Uint16 ---
-        GetJoystickProductVersionForID :: proc(instance_id: JoystickID) -> Uint16 ---
-        GetJoystickTypeForID :: proc(instance_id: JoystickID) -> JoystickType ---
-        OpenJoystick :: proc(instance_id: JoystickID) -> ^Joystick ---
-        GetJoystickFromID :: proc(instance_id: JoystickID) -> ^Joystick ---
-        GetJoystickFromPlayerIndex :: proc(player_index: c.int) -> ^Joystick ---
-    }
+foreign lib {
+    LockJoysticks :: proc() ---
+    UnlockJoysticks :: proc() ---
+    HasJoystick :: proc() -> bool ---
+    GetJoysticks :: proc(count: ^c.int) -> [^]JoystickID ---
+    GetJoystickNameForID :: proc(instance_id: JoystickID) -> cstring ---
+    GetJoystickPathForID :: proc(instance_id: JoystickID) -> cstring ---
+    GetJoystickPlayerIndexForID :: proc(instance_id: JoystickID) -> c.int ---
+    GetJoystickGUIDForID :: proc(instance_id: JoystickID) -> GUID ---
+    GetJoystickVendorForID :: proc(instance_id: JoystickID) -> Uint16 ---
+    GetJoystickProductForID :: proc(instance_id: JoystickID) -> Uint16 ---
+    GetJoystickProductVersionForID :: proc(instance_id: JoystickID) -> Uint16 ---
+    GetJoystickTypeForID :: proc(instance_id: JoystickID) -> JoystickType ---
+    OpenJoystick :: proc(instance_id: JoystickID) -> ^Joystick ---
+    GetJoystickFromID :: proc(instance_id: JoystickID) -> ^Joystick ---
+    GetJoystickFromPlayerIndex :: proc(player_index: c.int) -> ^Joystick ---
+}
 
 VirtualJoystickTouchpadDesc :: struct {
     nfingers: Uint16, /**< the number of simultaneous fingers on this touchpad */
@@ -137,48 +137,48 @@ HAT_LEFTUP :: HAT_LEFT | HAT_UP
 HAT_LEFTDOWN :: HAT_LEFT | HAT_DOWN
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign lib {
-        AttachVirtualJoystick :: proc(#by_ptr desc: VirtualJoystickDesc) -> JoystickID ---
-        DetachVirtualJoystick :: proc(instance_id: JoystickID) -> bool ---
-        IsJoystickVirtual :: proc(instance_id: JoystickID) -> bool ---
-        SetJoystickVirtualAxis :: proc(joystick: ^Joystick, axis: c.int, value: Sint16) -> bool ---
-        SetJoystickVirtualBall :: proc(joystick: ^Joystick, ball: c.int, xrel, yrel: Sint16) -> bool ---
-        SetJoystickVirtualButton :: proc(joystick: ^Joystick, button: c.int, down: bool) -> bool ---
-        SetJoystickVirtualHat :: proc(joystick: ^Joystick, hat: c.int, value: Uint8) -> bool ---
-        SetJoystickVirtualTouchpad :: proc(joystick: ^Joystick, touchpad: c.int, finger: c.int, down: bool, x, y: f32, pressure: f32) -> bool ---
-        SendJoystickVirtualSensorData :: proc(joystick: ^Joystick, type: SensorType, sensor_timestamp: Uint64, data: [^]f32, num_values: c.int) -> bool ---
-        GetJoystickProperties :: proc(joystick: ^Joystick) -> PropertiesID ---
-        GetJoystickName :: proc(joystick: ^Joystick) -> cstring ---
-        GetJoystickPath :: proc(joystick: ^Joystick) -> cstring ---
-        GetJoystickPlayerIndex :: proc(joystick: ^Joystick) -> c.int ---
-        SetJoystickPlayerIndex :: proc(joystick: ^Joystick, player_index: c.int) -> bool ---
-        GetJoystickGUID :: proc(joystick: ^Joystick) -> GUID ---
-        GetJoystickVendor :: proc(joystick: ^Joystick) -> Uint16 ---
-        GetJoystickProduct :: proc(joystick: ^Joystick) -> Uint16 ---
-        GetJoystickProductVersion :: proc(joystick: ^Joystick) -> Uint16 ---
-        GetJoystickFirmwareVersion :: proc(joystick: ^Joystick) -> Uint16 ---
-        GetJoystickSerial :: proc(joystick: ^Joystick) -> cstring ---
-        GetJoystickType :: proc(joystick: ^Joystick) -> JoystickType ---
-        GetJoystickGUIDInfo :: proc(guid: GUID, vendor, product, version, crc16: ^Uint16) ---
-        JoystickConnected :: proc(joystick: ^Joystick) -> bool ---
-        GetJoystickID :: proc(joystick: ^Joystick) -> JoystickID ---
-        GetNumJoystickAxes :: proc(joystick: ^Joystick) -> c.int ---
-        GetNumJoystickBalls :: proc(joystick: ^Joystick) -> c.int ---
-        GetNumJoystickHats :: proc(joystick: ^Joystick) -> c.int ---
-        GetNumJoystickButtons :: proc(joystick: ^Joystick) -> c.int ---
-        SetJoystickEventsEnabled :: proc(enabled: bool) ---
-        JoystickEventsEnabled :: proc() -> bool ---
-        UpdateJoysticks :: proc() ---
-        GetJoystickAxis :: proc(joystick: ^Joystick, axis: c.int) -> Sint16 ---
-        GetJoystickAxisInitialState :: proc(joystick: ^Joystick, axis: c.int, state: ^Sint16) -> bool ---
-        GetJoystickBall :: proc(joystick: ^Joystick, ball: c.int, dx, dy: ^c.int) -> bool ---
-        GetJoystickHat :: proc(joystick: ^Joystick, hat: c.int) -> Uint8 ---
-        GetJoystickButton :: proc(joystick: ^Joystick, button: c.int) -> bool ---
-        RumbleJoystick :: proc(joystick: ^Joystick, low_frequency_rumble, high_frequency_rumble: Uint16, duration_ms: Uint32) -> bool ---
-        RumbleJoystickTriggers :: proc(joystick: ^Joystick, left_rumble, right_rumble: Uint16, duration_ms: Uint32) -> bool ---
-        SetJoystickLED :: proc(joystick: ^Joystick, red, green, blue: Uint8) -> bool ---
-        SendJoystickEffect :: proc(joystick: ^Joystick, data: rawptr, size: c.int) -> bool ---
-        CloseJoystick :: proc(joystick: ^Joystick) ---
-        GetJoystickConnectionState :: proc(joystick: ^Joystick) -> JoystickConnectionState ---
-        GetJoystickPowerInfo :: proc(joystick: ^Joystick, percent: c.int) -> PowerState ---
-    }
+foreign lib {
+    AttachVirtualJoystick :: proc(#by_ptr desc: VirtualJoystickDesc) -> JoystickID ---
+    DetachVirtualJoystick :: proc(instance_id: JoystickID) -> bool ---
+    IsJoystickVirtual :: proc(instance_id: JoystickID) -> bool ---
+    SetJoystickVirtualAxis :: proc(joystick: ^Joystick, axis: c.int, value: Sint16) -> bool ---
+    SetJoystickVirtualBall :: proc(joystick: ^Joystick, ball: c.int, xrel, yrel: Sint16) -> bool ---
+    SetJoystickVirtualButton :: proc(joystick: ^Joystick, button: c.int, down: bool) -> bool ---
+    SetJoystickVirtualHat :: proc(joystick: ^Joystick, hat: c.int, value: Uint8) -> bool ---
+    SetJoystickVirtualTouchpad :: proc(joystick: ^Joystick, touchpad: c.int, finger: c.int, down: bool, x, y: f32, pressure: f32) -> bool ---
+    SendJoystickVirtualSensorData :: proc(joystick: ^Joystick, type: SensorType, sensor_timestamp: Uint64, data: [^]f32, num_values: c.int) -> bool ---
+    GetJoystickProperties :: proc(joystick: ^Joystick) -> PropertiesID ---
+    GetJoystickName :: proc(joystick: ^Joystick) -> cstring ---
+    GetJoystickPath :: proc(joystick: ^Joystick) -> cstring ---
+    GetJoystickPlayerIndex :: proc(joystick: ^Joystick) -> c.int ---
+    SetJoystickPlayerIndex :: proc(joystick: ^Joystick, player_index: c.int) -> bool ---
+    GetJoystickGUID :: proc(joystick: ^Joystick) -> GUID ---
+    GetJoystickVendor :: proc(joystick: ^Joystick) -> Uint16 ---
+    GetJoystickProduct :: proc(joystick: ^Joystick) -> Uint16 ---
+    GetJoystickProductVersion :: proc(joystick: ^Joystick) -> Uint16 ---
+    GetJoystickFirmwareVersion :: proc(joystick: ^Joystick) -> Uint16 ---
+    GetJoystickSerial :: proc(joystick: ^Joystick) -> cstring ---
+    GetJoystickType :: proc(joystick: ^Joystick) -> JoystickType ---
+    GetJoystickGUIDInfo :: proc(guid: GUID, vendor, product, version, crc16: ^Uint16) ---
+    JoystickConnected :: proc(joystick: ^Joystick) -> bool ---
+    GetJoystickID :: proc(joystick: ^Joystick) -> JoystickID ---
+    GetNumJoystickAxes :: proc(joystick: ^Joystick) -> c.int ---
+    GetNumJoystickBalls :: proc(joystick: ^Joystick) -> c.int ---
+    GetNumJoystickHats :: proc(joystick: ^Joystick) -> c.int ---
+    GetNumJoystickButtons :: proc(joystick: ^Joystick) -> c.int ---
+    SetJoystickEventsEnabled :: proc(enabled: bool) ---
+    JoystickEventsEnabled :: proc() -> bool ---
+    UpdateJoysticks :: proc() ---
+    GetJoystickAxis :: proc(joystick: ^Joystick, axis: c.int) -> Sint16 ---
+    GetJoystickAxisInitialState :: proc(joystick: ^Joystick, axis: c.int, state: ^Sint16) -> bool ---
+    GetJoystickBall :: proc(joystick: ^Joystick, ball: c.int, dx, dy: ^c.int) -> bool ---
+    GetJoystickHat :: proc(joystick: ^Joystick, hat: c.int) -> Uint8 ---
+    GetJoystickButton :: proc(joystick: ^Joystick, button: c.int) -> bool ---
+    RumbleJoystick :: proc(joystick: ^Joystick, low_frequency_rumble, high_frequency_rumble: Uint16, duration_ms: Uint32) -> bool ---
+    RumbleJoystickTriggers :: proc(joystick: ^Joystick, left_rumble, right_rumble: Uint16, duration_ms: Uint32) -> bool ---
+    SetJoystickLED :: proc(joystick: ^Joystick, red, green, blue: Uint8) -> bool ---
+    SendJoystickEffect :: proc(joystick: ^Joystick, data: rawptr, size: c.int) -> bool ---
+    CloseJoystick :: proc(joystick: ^Joystick) ---
+    GetJoystickConnectionState :: proc(joystick: ^Joystick) -> JoystickConnectionState ---
+    GetJoystickPowerInfo :: proc(joystick: ^Joystick, percent: c.int) -> PowerState ---
+}

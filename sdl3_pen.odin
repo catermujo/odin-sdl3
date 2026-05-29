@@ -38,6 +38,6 @@ PenDeviceType :: enum c.int {
 }
 
 @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign lib {
-        GetPenDeviceType :: proc(instance_id: PenID) ---
-    }
+foreign lib {
+    GetPenDeviceType :: proc(instance_id: PenID) ---
+}

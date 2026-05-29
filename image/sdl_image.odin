@@ -108,140 +108,140 @@ PROP_METADATA_FRAME_COUNT_NUMBER :: "SDL_image.metadata.frame_count"
 PROP_METADATA_LOOP_COUNT_NUMBER :: "SDL_image.metadata.loop_count"
 
 @(default_calling_convention = "c", link_prefix = "IMG_")
-    foreign lib {
-        Version :: proc() -> c.int ---
+foreign lib {
+    Version :: proc() -> c.int ---
 
-        /* Load an image from an SDL data source.
+    /* Load an image from an SDL data source.
     	   The 'type' may be one of: "BMP", "GIF", "PNG", etc.
     	   If the image format supports a transparent pixel, SDL will set the
     	   colorkey for the surface.  You can enable RLE acceleration on the
     	   surface afterwards by calling:
     	    SDL_SetColorKey(image, SDL_RLEACCEL, image->format->colorkey);
     	 */
-        LoadTyped_IO :: proc(src: ^SDL.IOStream, closeio: bool, type: cstring) -> ^SDL.Surface ---
+    LoadTyped_IO :: proc(src: ^SDL.IOStream, closeio: bool, type: cstring) -> ^SDL.Surface ---
 
-        /* Convenience functions */
-        Load :: proc(file: cstring) -> ^SDL.Surface ---
-        Load_IO :: proc(src: ^SDL.IOStream, closeio: bool) -> ^SDL.Surface ---
+    /* Convenience functions */
+    Load :: proc(file: cstring) -> ^SDL.Surface ---
+    Load_IO :: proc(src: ^SDL.IOStream, closeio: bool) -> ^SDL.Surface ---
 
-        /* Load an image directly into a render texture. */
-        LoadTexture :: proc(renderer: ^SDL.Renderer, file: cstring) -> ^SDL.Texture ---
-        LoadTexture_IO :: proc(renderer: ^SDL.Renderer, src: ^SDL.IOStream, closeio: bool) -> ^SDL.Texture ---
-        LoadTextureTyped_IO :: proc(renderer: ^SDL.Renderer, src: ^SDL.IOStream, closeio: bool, type: cstring) -> ^SDL.Texture ---
+    /* Load an image directly into a render texture. */
+    LoadTexture :: proc(renderer: ^SDL.Renderer, file: cstring) -> ^SDL.Texture ---
+    LoadTexture_IO :: proc(renderer: ^SDL.Renderer, src: ^SDL.IOStream, closeio: bool) -> ^SDL.Texture ---
+    LoadTextureTyped_IO :: proc(renderer: ^SDL.Renderer, src: ^SDL.IOStream, closeio: bool, type: cstring) -> ^SDL.Texture ---
 
-        /* Load an image directly into a GPU texture. */
-        LoadGPUTexture :: proc(device: ^SDL.GPUDevice, copy_pass: ^SDL.GPUCopyPass, file: cstring, width: ^c.int, height: ^c.int) -> ^SDL.GPUTexture ---
-        LoadGPUTexture_IO :: proc(device: ^SDL.GPUDevice, copy_pass: ^SDL.GPUCopyPass, src: ^SDL.IOStream, closeio: bool, width: ^c.int, height: ^c.int) -> ^SDL.GPUTexture ---
-        LoadGPUTextureTyped_IO :: proc(device: ^SDL.GPUDevice, copy_pass: ^SDL.GPUCopyPass, src: ^SDL.IOStream, closeio: bool, type: cstring, width: ^c.int, height: ^c.int) -> ^SDL.GPUTexture ---
+    /* Load an image directly into a GPU texture. */
+    LoadGPUTexture :: proc(device: ^SDL.GPUDevice, copy_pass: ^SDL.GPUCopyPass, file: cstring, width: ^c.int, height: ^c.int) -> ^SDL.GPUTexture ---
+    LoadGPUTexture_IO :: proc(device: ^SDL.GPUDevice, copy_pass: ^SDL.GPUCopyPass, src: ^SDL.IOStream, closeio: bool, width: ^c.int, height: ^c.int) -> ^SDL.GPUTexture ---
+    LoadGPUTextureTyped_IO :: proc(device: ^SDL.GPUDevice, copy_pass: ^SDL.GPUCopyPass, src: ^SDL.IOStream, closeio: bool, type: cstring, width: ^c.int, height: ^c.int) -> ^SDL.GPUTexture ---
 
-        /* Get the image currently in the clipboard. */
-        GetClipboardImage :: proc() -> ^SDL.Surface ---
+    /* Get the image currently in the clipboard. */
+    GetClipboardImage :: proc() -> ^SDL.Surface ---
 
-        /* Functions to detect a file type, given a seekable source */
-        isANI :: proc(src: ^SDL.IOStream) -> bool ---
-        isAVIF :: proc(src: ^SDL.IOStream) -> bool ---
-        isICO :: proc(src: ^SDL.IOStream) -> bool ---
-        isCUR :: proc(src: ^SDL.IOStream) -> bool ---
-        isBMP :: proc(src: ^SDL.IOStream) -> bool ---
-        isGIF :: proc(src: ^SDL.IOStream) -> bool ---
-        isJPG :: proc(src: ^SDL.IOStream) -> bool ---
-        isJXL :: proc(src: ^SDL.IOStream) -> bool ---
-        isLBM :: proc(src: ^SDL.IOStream) -> bool ---
-        isPCX :: proc(src: ^SDL.IOStream) -> bool ---
-        isPNG :: proc(src: ^SDL.IOStream) -> bool ---
-        isPNM :: proc(src: ^SDL.IOStream) -> bool ---
-        isSVG :: proc(src: ^SDL.IOStream) -> bool ---
-        isQOI :: proc(src: ^SDL.IOStream) -> bool ---
-        isTIF :: proc(src: ^SDL.IOStream) -> bool ---
-        isXCF :: proc(src: ^SDL.IOStream) -> bool ---
-        isXPM :: proc(src: ^SDL.IOStream) -> bool ---
-        isXV :: proc(src: ^SDL.IOStream) -> bool ---
-        isWEBP :: proc(src: ^SDL.IOStream) -> bool ---
+    /* Functions to detect a file type, given a seekable source */
+    isANI :: proc(src: ^SDL.IOStream) -> bool ---
+    isAVIF :: proc(src: ^SDL.IOStream) -> bool ---
+    isICO :: proc(src: ^SDL.IOStream) -> bool ---
+    isCUR :: proc(src: ^SDL.IOStream) -> bool ---
+    isBMP :: proc(src: ^SDL.IOStream) -> bool ---
+    isGIF :: proc(src: ^SDL.IOStream) -> bool ---
+    isJPG :: proc(src: ^SDL.IOStream) -> bool ---
+    isJXL :: proc(src: ^SDL.IOStream) -> bool ---
+    isLBM :: proc(src: ^SDL.IOStream) -> bool ---
+    isPCX :: proc(src: ^SDL.IOStream) -> bool ---
+    isPNG :: proc(src: ^SDL.IOStream) -> bool ---
+    isPNM :: proc(src: ^SDL.IOStream) -> bool ---
+    isSVG :: proc(src: ^SDL.IOStream) -> bool ---
+    isQOI :: proc(src: ^SDL.IOStream) -> bool ---
+    isTIF :: proc(src: ^SDL.IOStream) -> bool ---
+    isXCF :: proc(src: ^SDL.IOStream) -> bool ---
+    isXPM :: proc(src: ^SDL.IOStream) -> bool ---
+    isXV :: proc(src: ^SDL.IOStream) -> bool ---
+    isWEBP :: proc(src: ^SDL.IOStream) -> bool ---
 
-        /* Individual loading functions */
-        LoadAVIF_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadICO_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadCUR_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadBMP_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadGIF_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadJPG_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadJXL_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadLBM_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadPCX_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadPNG_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadPNM_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadSVG_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadQOI_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadTGA_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadTIF_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadXCF_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadXPM_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadXV_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
-        LoadWEBP_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    /* Individual loading functions */
+    LoadAVIF_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadICO_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadCUR_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadBMP_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadGIF_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadJPG_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadJXL_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadLBM_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadPCX_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadPNG_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadPNM_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadSVG_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadQOI_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadTGA_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadTIF_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadXCF_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadXPM_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadXV_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
+    LoadWEBP_IO :: proc(src: ^SDL.IOStream) -> ^SDL.Surface ---
 
-        LoadSizedSVG_IO :: proc(src: ^SDL.IOStream, width, height: c.int) -> ^SDL.Surface ---
+    LoadSizedSVG_IO :: proc(src: ^SDL.IOStream, width, height: c.int) -> ^SDL.Surface ---
 
-        ReadXPMFromArray :: proc(xpm: [^]cstring) -> ^SDL.Surface ---
-        ReadXPMFromArrayToRGB888 :: proc(xpm: [^]cstring) -> ^SDL.Surface ---
+    ReadXPMFromArray :: proc(xpm: [^]cstring) -> ^SDL.Surface ---
+    ReadXPMFromArrayToRGB888 :: proc(xpm: [^]cstring) -> ^SDL.Surface ---
 
-        /* Individual saving functions */
-        Save :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
-        SaveTyped_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool, type: cstring) -> c.bool ---
-        SaveAVIF :: proc(surface: ^SDL.Surface, file: cstring, quality: c.int) -> c.bool ---
-        SaveAVIF_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool, quality: c.int) -> c.bool ---
-        SaveBMP :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
-        SaveBMP_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
-        SaveCUR :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
-        SaveCUR_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
-        SaveGIF :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
-        SaveGIF_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
-        SaveICO :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
-        SaveICO_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
-        SaveJPG :: proc(surface: ^SDL.Surface, file: cstring, quality: c.int) -> c.bool ---
-        SaveJPG_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool, quality: c.int) -> c.bool ---
-        SavePNG :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
-        SavePNG_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
-        SaveTGA :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
-        SaveTGA_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
-        SaveWEBP :: proc(surface: ^SDL.Surface, file: cstring, quality: f32) -> c.bool ---
-        SaveWEBP_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool, quality: f32) -> c.bool ---
+    /* Individual saving functions */
+    Save :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
+    SaveTyped_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool, type: cstring) -> c.bool ---
+    SaveAVIF :: proc(surface: ^SDL.Surface, file: cstring, quality: c.int) -> c.bool ---
+    SaveAVIF_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool, quality: c.int) -> c.bool ---
+    SaveBMP :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
+    SaveBMP_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
+    SaveCUR :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
+    SaveCUR_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
+    SaveGIF :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
+    SaveGIF_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
+    SaveICO :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
+    SaveICO_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
+    SaveJPG :: proc(surface: ^SDL.Surface, file: cstring, quality: c.int) -> c.bool ---
+    SaveJPG_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool, quality: c.int) -> c.bool ---
+    SavePNG :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
+    SavePNG_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
+    SaveTGA :: proc(surface: ^SDL.Surface, file: cstring) -> c.bool ---
+    SaveTGA_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
+    SaveWEBP :: proc(surface: ^SDL.Surface, file: cstring, quality: f32) -> c.bool ---
+    SaveWEBP_IO :: proc(surface: ^SDL.Surface, dst: ^SDL.IOStream, closeio: bool, quality: f32) -> c.bool ---
 
-        LoadAnimation :: proc(file: cstring) -> ^Animation ---
-        LoadAnimation_IO :: proc(src: ^SDL.IOStream, closeio: bool) -> ^Animation ---
-        LoadAnimationTyped_IO :: proc(src: ^SDL.IOStream, closeio: bool, type: cstring) -> ^Animation ---
-        SaveAnimation :: proc(anim: ^Animation, file: cstring) -> c.bool ---
-        SaveAnimationTyped_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool, type: cstring) -> c.bool ---
-        CreateAnimatedCursor :: proc(anim: ^Animation, hot_x: c.int, hot_y: c.int) -> ^SDL.Cursor ---
-        FreeAnimation :: proc(anim: ^Animation) ---
+    LoadAnimation :: proc(file: cstring) -> ^Animation ---
+    LoadAnimation_IO :: proc(src: ^SDL.IOStream, closeio: bool) -> ^Animation ---
+    LoadAnimationTyped_IO :: proc(src: ^SDL.IOStream, closeio: bool, type: cstring) -> ^Animation ---
+    SaveAnimation :: proc(anim: ^Animation, file: cstring) -> c.bool ---
+    SaveAnimationTyped_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool, type: cstring) -> c.bool ---
+    CreateAnimatedCursor :: proc(anim: ^Animation, hot_x: c.int, hot_y: c.int) -> ^SDL.Cursor ---
+    FreeAnimation :: proc(anim: ^Animation) ---
 
-        /* Animation encoder functions */
-        CreateAnimationEncoder :: proc(file: cstring) -> ^AnimationEncoder ---
-        CreateAnimationEncoder_IO :: proc(dst: ^SDL.IOStream, closeio: bool, type: cstring) -> ^AnimationEncoder ---
-        CreateAnimationEncoderWithProperties :: proc(props: SDL.PropertiesID) -> ^AnimationEncoder ---
-        AddAnimationEncoderFrame :: proc(encoder: ^AnimationEncoder, surface: ^SDL.Surface, duration: u64) -> c.bool ---
-        CloseAnimationEncoder :: proc(encoder: ^AnimationEncoder) -> c.bool ---
+    /* Animation encoder functions */
+    CreateAnimationEncoder :: proc(file: cstring) -> ^AnimationEncoder ---
+    CreateAnimationEncoder_IO :: proc(dst: ^SDL.IOStream, closeio: bool, type: cstring) -> ^AnimationEncoder ---
+    CreateAnimationEncoderWithProperties :: proc(props: SDL.PropertiesID) -> ^AnimationEncoder ---
+    AddAnimationEncoderFrame :: proc(encoder: ^AnimationEncoder, surface: ^SDL.Surface, duration: u64) -> c.bool ---
+    CloseAnimationEncoder :: proc(encoder: ^AnimationEncoder) -> c.bool ---
 
-        /* Animation decoder functions */
-        CreateAnimationDecoder :: proc(file: cstring) -> ^AnimationDecoder ---
-        CreateAnimationDecoder_IO :: proc(src: ^SDL.IOStream, closeio: bool, type: cstring) -> ^AnimationDecoder ---
-        CreateAnimationDecoderWithProperties :: proc(props: SDL.PropertiesID) -> ^AnimationDecoder ---
-        GetAnimationDecoderProperties :: proc(decoder: ^AnimationDecoder) -> SDL.PropertiesID ---
-        GetAnimationDecoderFrame :: proc(decoder: ^AnimationDecoder, frame: ^^SDL.Surface, duration: ^u64) -> c.bool ---
-        GetAnimationDecoderStatus :: proc(decoder: ^AnimationDecoder) -> AnimationDecoderStatus ---
-        ResetAnimationDecoder :: proc(decoder: ^AnimationDecoder) -> c.bool ---
-        CloseAnimationDecoder :: proc(decoder: ^AnimationDecoder) -> c.bool ---
+    /* Animation decoder functions */
+    CreateAnimationDecoder :: proc(file: cstring) -> ^AnimationDecoder ---
+    CreateAnimationDecoder_IO :: proc(src: ^SDL.IOStream, closeio: bool, type: cstring) -> ^AnimationDecoder ---
+    CreateAnimationDecoderWithProperties :: proc(props: SDL.PropertiesID) -> ^AnimationDecoder ---
+    GetAnimationDecoderProperties :: proc(decoder: ^AnimationDecoder) -> SDL.PropertiesID ---
+    GetAnimationDecoderFrame :: proc(decoder: ^AnimationDecoder, frame: ^^SDL.Surface, duration: ^u64) -> c.bool ---
+    GetAnimationDecoderStatus :: proc(decoder: ^AnimationDecoder) -> AnimationDecoderStatus ---
+    ResetAnimationDecoder :: proc(decoder: ^AnimationDecoder) -> c.bool ---
+    CloseAnimationDecoder :: proc(decoder: ^AnimationDecoder) -> c.bool ---
 
-        /* Individual loading functions */
-        LoadANIAnimation_IO :: proc(src: ^SDL.IOStream) -> ^Animation ---
-        LoadAPNGAnimation_IO :: proc(src: ^SDL.IOStream) -> ^Animation ---
-        LoadAVIFAnimation_IO :: proc(src: ^SDL.IOStream) -> ^Animation ---
-        LoadGIFAnimation_IO :: proc(src: ^SDL.IOStream) -> ^Animation ---
-        LoadWEBPAnimation_IO :: proc(src: ^SDL.IOStream) -> ^Animation ---
+    /* Individual loading functions */
+    LoadANIAnimation_IO :: proc(src: ^SDL.IOStream) -> ^Animation ---
+    LoadAPNGAnimation_IO :: proc(src: ^SDL.IOStream) -> ^Animation ---
+    LoadAVIFAnimation_IO :: proc(src: ^SDL.IOStream) -> ^Animation ---
+    LoadGIFAnimation_IO :: proc(src: ^SDL.IOStream) -> ^Animation ---
+    LoadWEBPAnimation_IO :: proc(src: ^SDL.IOStream) -> ^Animation ---
 
-        /* Individual saving functions */
-        SaveANIAnimation_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
-        SaveAPNGAnimation_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
-        SaveAVIFAnimation_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool, quality: c.int) -> c.bool ---
-        SaveGIFAnimation_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
-        SaveWEBPAnimation_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool, quality: c.int) -> c.bool ---
-    }
+    /* Individual saving functions */
+    SaveANIAnimation_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
+    SaveAPNGAnimation_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
+    SaveAVIFAnimation_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool, quality: c.int) -> c.bool ---
+    SaveGIFAnimation_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool) -> c.bool ---
+    SaveWEBPAnimation_IO :: proc(anim: ^Animation, dst: ^SDL.IOStream, closeio: bool, quality: c.int) -> c.bool ---
+}

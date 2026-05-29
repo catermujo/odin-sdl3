@@ -25,15 +25,15 @@ TimerCallback :: #type proc "c" (userdata: rawptr, timerID: TimerID, interval: U
 NSTimerCallback :: #type proc "c" (userdata: rawptr, timerID: TimerID, interval: Uint64) -> Uint64
 
 @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign lib {
-        GetTicks :: proc() -> Uint64 ---
-        GetTicksNS :: proc() -> Uint64 ---
-        GetPerformanceCounter :: proc() -> Uint64 ---
-        GetPerformanceFrequency :: proc() -> Uint64 ---
-        Delay :: proc(ms: Uint32) ---
-        DelayNS :: proc(ns: Uint64) ---
-        DelayPrecise :: proc(ns: Uint64) ---
-        AddTimer :: proc(interval: Uint32, callback: TimerCallback, userdata: rawptr) -> TimerID ---
-        AddTimerNS :: proc(interval: Uint64, callback: NSTimerCallback, userdata: rawptr) -> TimerID ---
-        RemoveTimer :: proc(id: TimerID) -> bool ---
-    }
+foreign lib {
+    GetTicks :: proc() -> Uint64 ---
+    GetTicksNS :: proc() -> Uint64 ---
+    GetPerformanceCounter :: proc() -> Uint64 ---
+    GetPerformanceFrequency :: proc() -> Uint64 ---
+    Delay :: proc(ms: Uint32) ---
+    DelayNS :: proc(ns: Uint64) ---
+    DelayPrecise :: proc(ns: Uint64) ---
+    AddTimer :: proc(interval: Uint32, callback: TimerCallback, userdata: rawptr) -> TimerID ---
+    AddTimerNS :: proc(interval: Uint64, callback: NSTimerCallback, userdata: rawptr) -> TimerID ---
+    RemoveTimer :: proc(id: TimerID) -> bool ---
+}

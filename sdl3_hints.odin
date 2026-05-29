@@ -269,17 +269,17 @@ HintPriority :: enum c.int {
 HintCallback :: #type proc "c" (userdata: rawptr, name: cstring, oldValue, newValue: cstring)
 
 @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign lib {
-        GetHint :: proc(name: cstring) -> cstring ---
-        GetHintBoolean :: proc(name: cstring, default_value: bool) -> bool ---
-    }
+foreign lib {
+    GetHint :: proc(name: cstring) -> cstring ---
+    GetHintBoolean :: proc(name: cstring, default_value: bool) -> bool ---
+}
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign lib {
-        SetHintWithPriority :: proc(name: cstring, value: cstring, priority: HintPriority) -> bool ---
-        SetHint :: proc(name: cstring, value: cstring) -> bool ---
-        ResetHint :: proc(name: cstring) -> bool ---
-        ResetHints :: proc() ---
-        AddHintCallback :: proc(name: cstring, callback: HintCallback, userdata: rawptr) -> bool ---
-        RemoveHintCallback :: proc(name: cstring, callback: HintCallback, userdata: rawptr) ---
-    }
+foreign lib {
+    SetHintWithPriority :: proc(name: cstring, value: cstring, priority: HintPriority) -> bool ---
+    SetHint :: proc(name: cstring, value: cstring) -> bool ---
+    ResetHint :: proc(name: cstring) -> bool ---
+    ResetHints :: proc() ---
+    AddHintCallback :: proc(name: cstring, callback: HintCallback, userdata: rawptr) -> bool ---
+    RemoveHintCallback :: proc(name: cstring, callback: HintCallback, userdata: rawptr) ---
+}

@@ -26,10 +26,10 @@ ThreadFunction :: #type proc "c" (data: rawptr) -> c.int
 TLSDestructorCallback :: #type proc "c" (value: rawptr)
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign lib {
-        CreateThreadRuntime :: proc(fn: ThreadFunction, name: cstring, data: rawptr, pfnBeginThread: FunctionPointer, pfnEndThread: FunctionPointer) -> ^Thread ---
-        CreateThreadWithPropertiesRuntime :: proc(props: PropertiesID, pfnBeginThread: FunctionPointer, pfnEndThread: FunctionPointer) -> ^Thread ---
-    }
+foreign lib {
+    CreateThreadRuntime :: proc(fn: ThreadFunction, name: cstring, data: rawptr, pfnBeginThread: FunctionPointer, pfnEndThread: FunctionPointer) -> ^Thread ---
+    CreateThreadWithPropertiesRuntime :: proc(props: PropertiesID, pfnBeginThread: FunctionPointer, pfnEndThread: FunctionPointer) -> ^Thread ---
+}
 
 @(require_results)
 CreateThread :: proc "c" (fn: ThreadFunction, name: cstring, data: rawptr) -> ^Thread {
@@ -69,19 +69,19 @@ EndThreadFunction :: proc "c" () -> FunctionPointer {
 }
 
 @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign lib {
-        GetThreadName :: proc(thread: ^Thread) -> cstring ---
-        GetCurrentThreadID :: proc() -> ThreadID ---
-        GetThreadID :: proc(thread: ^Thread) -> ThreadID ---
-        GetThreadState :: proc(thread: ^Thread) -> ThreadState ---
-        GetTLS :: proc(id: ^TLSID) -> rawptr ---
-        SetTLS :: proc(id: ^TLSID, value: rawptr, destructor: TLSDestructorCallback) -> bool ---
-    }
+foreign lib {
+    GetThreadName :: proc(thread: ^Thread) -> cstring ---
+    GetCurrentThreadID :: proc() -> ThreadID ---
+    GetThreadID :: proc(thread: ^Thread) -> ThreadID ---
+    GetThreadState :: proc(thread: ^Thread) -> ThreadState ---
+    GetTLS :: proc(id: ^TLSID) -> rawptr ---
+    SetTLS :: proc(id: ^TLSID, value: rawptr, destructor: TLSDestructorCallback) -> bool ---
+}
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign lib {
-        SetCurrentThreadPriority :: proc(priority: ThreadPriority) -> bool ---
-        WaitThread :: proc(thread: ^Thread, status: ^c.int) ---
-        DetachThread :: proc(thread: ^Thread) ---
-        CleanupTLS :: proc() ---
-    }
+foreign lib {
+    SetCurrentThreadPriority :: proc(priority: ThreadPriority) -> bool ---
+    WaitThread :: proc(thread: ^Thread, status: ^c.int) ---
+    DetachThread :: proc(thread: ^Thread) ---
+    CleanupTLS :: proc() ---
+}

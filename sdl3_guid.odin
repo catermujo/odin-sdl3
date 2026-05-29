@@ -7,7 +7,7 @@ GUID :: struct {
 }
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign lib {
-        GUIDToString :: proc(guid: GUID, pszGUID: [^]c.char, cbGUID: c.int) ---
-        StringToGUID :: proc(pchGUID: cstring) -> GUID ---
-    }
+foreign lib {
+    GUIDToString :: proc(guid: GUID, pszGUID: [^]c.char, cbGUID: c.int) ---
+    StringToGUID :: proc(pchGUID: cstring) -> GUID ---
+}

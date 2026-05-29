@@ -13,18 +13,18 @@ Sandbox :: enum c.int {
 }
 
 @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign lib {
-        IsTablet :: proc() -> bool ---
-        IsTV :: proc() -> bool ---
-        GetSandbox :: proc() -> Sandbox ---
-        OnApplicationWillTerminate :: proc() ---
-        OnApplicationDidReceiveMemoryWarning :: proc() ---
-        OnApplicationWillEnterBackground :: proc() ---
-        OnApplicationDidEnterBackground :: proc() ---
-        OnApplicationWillEnterForeground :: proc() ---
-        OnApplicationDidEnterForeground :: proc() ---
-        OnApplicationDidChangeStatusBarOrientation :: proc() ---
-    }
+foreign lib {
+    IsTablet :: proc() -> bool ---
+    IsTV :: proc() -> bool ---
+    GetSandbox :: proc() -> Sandbox ---
+    OnApplicationWillTerminate :: proc() ---
+    OnApplicationDidReceiveMemoryWarning :: proc() ---
+    OnApplicationWillEnterBackground :: proc() ---
+    OnApplicationDidEnterBackground :: proc() ---
+    OnApplicationWillEnterForeground :: proc() ---
+    OnApplicationDidEnterForeground :: proc() ---
+    OnApplicationDidChangeStatusBarOrientation :: proc() ---
+}
 
 // GDK
 
@@ -32,7 +32,7 @@ XTaskQueueHandle :: distinct rawptr
 XUserHandle :: distinct rawptr
 
 @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign lib {
-        GetGDKTaskQueue :: proc(outTaskQueue: ^XTaskQueueHandle) -> bool ---
-        GetGDKDefaultUser :: proc(outUserHandle: ^XUserHandle) -> bool ---
-    }
+foreign lib {
+    GetGDKTaskQueue :: proc(outTaskQueue: ^XTaskQueueHandle) -> bool ---
+    GetGDKDefaultUser :: proc(outUserHandle: ^XUserHandle) -> bool ---
+}

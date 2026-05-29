@@ -199,36 +199,36 @@ HapticID :: distinct Uint32
 
 
 @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign lib {
-        GetHaptics :: proc(count: ^c.int) -> ^HapticID ---
-        GetHapticNameForID :: proc(instance_id: HapticID) -> cstring ---
-        OpenHaptic :: proc(instance_id: HapticID) -> ^Haptic ---
-        GetHapticFromID :: proc(instance_id: HapticID) -> ^Haptic ---
-        GetHapticID :: proc(haptic: ^Haptic) -> HapticID ---
-        GetHapticName :: proc(haptic: ^Haptic) -> cstring ---
-        IsMouseHaptic :: proc() -> bool ---
-        OpenHapticFromMouse :: proc() -> ^Haptic ---
-        IsJoystickHaptic :: proc(joystick: ^Joystick) -> bool ---
-        OpenHapticFromJoystick :: proc(joystick: ^Joystick) -> ^Haptic ---
-        CloseHaptic :: proc(haptic: ^Haptic) ---
-        GetMaxHapticEffects :: proc(haptic: ^Haptic) -> c.int ---
-        GetMaxHapticEffectsPlaying :: proc(haptic: ^Haptic) -> c.int ---
-        GetHapticFeatures :: proc(haptic: ^Haptic) -> Uint32 ---
-        GetNumHapticAxes :: proc(haptic: ^Haptic) -> c.int ---
-        HapticEffectSupported :: proc(haptic: ^Haptic, #by_ptr effect: HapticEffect) -> bool ---
-        CreateHapticEffect :: proc(haptic: ^Haptic, #by_ptr effect: HapticEffect) -> HapticEffectId ---
-        UpdateHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId, #by_ptr data: HapticEffect) -> bool ---
-        RunHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId, iterations: Uint32) -> bool ---
-        StopHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId) -> bool ---
-        DestroyHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId) ---
-        GetHapticEffectStatus :: proc(haptic: ^Haptic, effect: HapticEffectId) -> bool ---
-        SetHapticGain :: proc(haptic: ^Haptic, gain: c.int) -> bool ---
-        SetHapticAutocenter :: proc(haptic: ^Haptic, autocenter: c.int) -> bool ---
-        PauseHaptic :: proc(haptic: ^Haptic) -> bool ---
-        ResumeHaptic :: proc(haptic: ^Haptic) -> bool ---
-        StopHapticEffects :: proc(haptic: ^Haptic) -> bool ---
-        HapticRumbleSupported :: proc(haptic: ^Haptic) -> bool ---
-        InitHapticRumble :: proc(haptic: ^Haptic) -> bool ---
-        PlayHapticRumble :: proc(haptic: ^Haptic, strength: f32, length: Uint32) -> bool ---
-        StopHapticRumble :: proc(haptic: ^Haptic) -> bool ---
-    }
+foreign lib {
+    GetHaptics :: proc(count: ^c.int) -> ^HapticID ---
+    GetHapticNameForID :: proc(instance_id: HapticID) -> cstring ---
+    OpenHaptic :: proc(instance_id: HapticID) -> ^Haptic ---
+    GetHapticFromID :: proc(instance_id: HapticID) -> ^Haptic ---
+    GetHapticID :: proc(haptic: ^Haptic) -> HapticID ---
+    GetHapticName :: proc(haptic: ^Haptic) -> cstring ---
+    IsMouseHaptic :: proc() -> bool ---
+    OpenHapticFromMouse :: proc() -> ^Haptic ---
+    IsJoystickHaptic :: proc(joystick: ^Joystick) -> bool ---
+    OpenHapticFromJoystick :: proc(joystick: ^Joystick) -> ^Haptic ---
+    CloseHaptic :: proc(haptic: ^Haptic) ---
+    GetMaxHapticEffects :: proc(haptic: ^Haptic) -> c.int ---
+    GetMaxHapticEffectsPlaying :: proc(haptic: ^Haptic) -> c.int ---
+    GetHapticFeatures :: proc(haptic: ^Haptic) -> Uint32 ---
+    GetNumHapticAxes :: proc(haptic: ^Haptic) -> c.int ---
+    HapticEffectSupported :: proc(haptic: ^Haptic, #by_ptr effect: HapticEffect) -> bool ---
+    CreateHapticEffect :: proc(haptic: ^Haptic, #by_ptr effect: HapticEffect) -> HapticEffectId ---
+    UpdateHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId, #by_ptr data: HapticEffect) -> bool ---
+    RunHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId, iterations: Uint32) -> bool ---
+    StopHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId) -> bool ---
+    DestroyHapticEffect :: proc(haptic: ^Haptic, effect: HapticEffectId) ---
+    GetHapticEffectStatus :: proc(haptic: ^Haptic, effect: HapticEffectId) -> bool ---
+    SetHapticGain :: proc(haptic: ^Haptic, gain: c.int) -> bool ---
+    SetHapticAutocenter :: proc(haptic: ^Haptic, autocenter: c.int) -> bool ---
+    PauseHaptic :: proc(haptic: ^Haptic) -> bool ---
+    ResumeHaptic :: proc(haptic: ^Haptic) -> bool ---
+    StopHapticEffects :: proc(haptic: ^Haptic) -> bool ---
+    HapticRumbleSupported :: proc(haptic: ^Haptic) -> bool ---
+    InitHapticRumble :: proc(haptic: ^Haptic) -> bool ---
+    PlayHapticRumble :: proc(haptic: ^Haptic, strength: f32, length: Uint32) -> bool ---
+    StopHapticRumble :: proc(haptic: ^Haptic) -> bool ---
+}

@@ -78,28 +78,28 @@ hid_device_info :: struct {
 PROP_HIDAPI_LIBUSB_DEVICE_HANDLE_POINTER :: "SDL.hidapi.libusb.device.handle"
 
 @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign lib {
-        hid_init :: proc() -> c.int ---
-        hid_exit :: proc() -> c.int ---
-        hid_device_change_count :: proc() -> Uint32 ---
-        hid_enumerate :: proc(vendor_id, product_id: c.ushort) -> ^hid_device_info ---
-        hid_free_enumeration :: proc(devs: ^hid_device_info) ---
-        hid_open :: proc(vendor_id, product_id: c.ushort, serial_number: [^]c.wchar_t) -> ^hid_device ---
-        hid_open_path :: proc(path: cstring) -> ^hid_device ---
-        hid_get_properties :: proc(dev: ^hid_device) -> PropertiesID ---
-        hid_write :: proc(dev: ^hid_device, data: [^]byte, length: uint) -> c.int ---
-        hid_read_timeout :: proc(dev: ^hid_device, data: [^]byte, length: uint, milliseconds: c.int) -> c.int ---
-        hid_read :: proc(dev: ^hid_device, data: [^]byte, length: uint) -> c.int ---
-        hid_set_nonblocking :: proc(dev: ^hid_device, nonblock: c.int) -> c.int ---
-        hid_send_feature_report :: proc(dev: ^hid_device, data: [^]byte, length: uint) -> c.int ---
-        hid_get_feature_report :: proc(dev: ^hid_device, data: [^]byte, length: uint) -> c.int ---
-        hid_get_input_report :: proc(dev: ^hid_device, data: [^]byte, length: uint) -> c.int ---
-        hid_close :: proc(dev: ^hid_device) -> c.int ---
-        hid_get_manufacturer_string :: proc(dev: ^hid_device, string: [^]c.wchar_t, maxlen: uint) -> c.int ---
-        hid_get_product_string :: proc(dev: ^hid_device, string: [^]c.wchar_t, maxlen: uint) -> c.int ---
-        hid_get_serial_number_string :: proc(dev: ^hid_device, string: [^]c.wchar_t, maxlen: uint) -> c.int ---
-        hid_get_indexed_string :: proc(dev: ^hid_device, string_index: c.int, string: [^]c.wchar_t, maxlen: uint) -> c.int ---
-        hid_get_device_info :: proc(dev: ^hid_device) -> ^hid_device_info ---
-        hid_get_report_descriptor :: proc(dev: ^hid_device, buf: [^]byte, buf_size: uint) -> c.int ---
-        hid_ble_scan :: proc(active: bool) ---
-    }
+foreign lib {
+    hid_init :: proc() -> c.int ---
+    hid_exit :: proc() -> c.int ---
+    hid_device_change_count :: proc() -> Uint32 ---
+    hid_enumerate :: proc(vendor_id, product_id: c.ushort) -> ^hid_device_info ---
+    hid_free_enumeration :: proc(devs: ^hid_device_info) ---
+    hid_open :: proc(vendor_id, product_id: c.ushort, serial_number: [^]c.wchar_t) -> ^hid_device ---
+    hid_open_path :: proc(path: cstring) -> ^hid_device ---
+    hid_get_properties :: proc(dev: ^hid_device) -> PropertiesID ---
+    hid_write :: proc(dev: ^hid_device, data: [^]byte, length: uint) -> c.int ---
+    hid_read_timeout :: proc(dev: ^hid_device, data: [^]byte, length: uint, milliseconds: c.int) -> c.int ---
+    hid_read :: proc(dev: ^hid_device, data: [^]byte, length: uint) -> c.int ---
+    hid_set_nonblocking :: proc(dev: ^hid_device, nonblock: c.int) -> c.int ---
+    hid_send_feature_report :: proc(dev: ^hid_device, data: [^]byte, length: uint) -> c.int ---
+    hid_get_feature_report :: proc(dev: ^hid_device, data: [^]byte, length: uint) -> c.int ---
+    hid_get_input_report :: proc(dev: ^hid_device, data: [^]byte, length: uint) -> c.int ---
+    hid_close :: proc(dev: ^hid_device) -> c.int ---
+    hid_get_manufacturer_string :: proc(dev: ^hid_device, string: [^]c.wchar_t, maxlen: uint) -> c.int ---
+    hid_get_product_string :: proc(dev: ^hid_device, string: [^]c.wchar_t, maxlen: uint) -> c.int ---
+    hid_get_serial_number_string :: proc(dev: ^hid_device, string: [^]c.wchar_t, maxlen: uint) -> c.int ---
+    hid_get_indexed_string :: proc(dev: ^hid_device, string_index: c.int, string: [^]c.wchar_t, maxlen: uint) -> c.int ---
+    hid_get_device_info :: proc(dev: ^hid_device) -> ^hid_device_info ---
+    hid_get_report_descriptor :: proc(dev: ^hid_device, buf: [^]byte, buf_size: uint) -> c.int ---
+    hid_ble_scan :: proc(active: bool) ---
+}

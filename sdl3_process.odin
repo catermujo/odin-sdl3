@@ -31,14 +31,14 @@ PROP_PROCESS_STDERR_POINTER :: "SDL.process.stderr"
 PROP_PROCESS_BACKGROUND_BOOLEAN :: "SDL.process.background"
 
 @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign lib {
-        CreateProcess :: proc(args: [^]cstring, pipe_stdio: bool) -> ^Process ---
-        CreateProcessWithProperties :: proc(props: PropertiesID) -> ^Process ---
-        GetProcessProperties :: proc(process: ^Process) -> PropertiesID ---
-        ReadProcess :: proc(process: ^Process, datasize: ^uint, exitcode: ^c.int) -> rawptr ---
-        GetProcessInput :: proc(process: ^Process) -> ^IOStream ---
-        GetProcessOutput :: proc(process: ^Process) -> ^IOStream ---
-        KillProcess :: proc(process: ^Process, force: bool) -> bool ---
-        WaitProcess :: proc(process: ^Process, block: bool, exitcode: ^c.int) -> bool ---
-        DestroyProcess :: proc(process: ^Process) ---
-    }
+foreign lib {
+    CreateProcess :: proc(args: [^]cstring, pipe_stdio: bool) -> ^Process ---
+    CreateProcessWithProperties :: proc(props: PropertiesID) -> ^Process ---
+    GetProcessProperties :: proc(process: ^Process) -> PropertiesID ---
+    ReadProcess :: proc(process: ^Process, datasize: ^uint, exitcode: ^c.int) -> rawptr ---
+    GetProcessInput :: proc(process: ^Process) -> ^IOStream ---
+    GetProcessOutput :: proc(process: ^Process) -> ^IOStream ---
+    KillProcess :: proc(process: ^Process, force: bool) -> bool ---
+    WaitProcess :: proc(process: ^Process, block: bool, exitcode: ^c.int) -> bool ---
+    DestroyProcess :: proc(process: ^Process) ---
+}

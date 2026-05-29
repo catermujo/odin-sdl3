@@ -27,14 +27,14 @@ TimeFormat :: enum c.int {
 
 
 @(default_calling_convention = "c", link_prefix = "SDL_", require_results)
-    foreign lib {
-        GetDateTimeLocalePreferences :: proc(dateFormat: ^DateFormat, timeFormat: ^TimeFormat) -> bool ---
-        GetCurrentTime :: proc(ticks: ^Time) -> bool ---
-        TimeToDateTime :: proc(ticks: Time, dt: ^DateTime, localTime: bool) -> bool ---
-        DateTimeToTime :: proc(#by_ptr dt: DateTime, ticks: ^Time) -> bool ---
-        TimeToWindows :: proc(ticks: Time, dwLowDateTime, dwHighDateTime: ^Uint32) ---
-        TimeFromWindows :: proc(dwLowDateTime, dwHighDateTime: Uint32) -> Time ---
-        GetDaysInMonth :: proc(year, month: c.int) -> c.int ---
-        GetDayOfYear :: proc(year, month, day: c.int) -> c.int ---
-        GetDayOfWeek :: proc(year, month, day: c.int) -> c.int ---
-    }
+foreign lib {
+    GetDateTimeLocalePreferences :: proc(dateFormat: ^DateFormat, timeFormat: ^TimeFormat) -> bool ---
+    GetCurrentTime :: proc(ticks: ^Time) -> bool ---
+    TimeToDateTime :: proc(ticks: Time, dt: ^DateTime, localTime: bool) -> bool ---
+    DateTimeToTime :: proc(#by_ptr dt: DateTime, ticks: ^Time) -> bool ---
+    TimeToWindows :: proc(ticks: Time, dwLowDateTime, dwHighDateTime: ^Uint32) ---
+    TimeFromWindows :: proc(dwLowDateTime, dwHighDateTime: Uint32) -> Time ---
+    GetDaysInMonth :: proc(year, month: c.int) -> c.int ---
+    GetDayOfYear :: proc(year, month, day: c.int) -> c.int ---
+    GetDayOfWeek :: proc(year, month, day: c.int) -> c.int ---
+}

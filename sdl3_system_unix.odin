@@ -10,6 +10,6 @@ X11EventHook :: #type proc "c" (
 ) -> bool
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign lib {
-        SetX11EventHook :: proc(callback: X11EventHook, userdata: rawptr) ---
-    }
+foreign lib {
+    SetX11EventHook :: proc(callback: X11EventHook, userdata: rawptr) ---
+}

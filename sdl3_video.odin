@@ -345,91 +345,91 @@ WINDOW_SURFACE_VSYNC_DISABLED :: 0
 WINDOW_SURFACE_VSYNC_ADAPTIVE :: -1
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign lib {
-        GetNumVideoDrivers :: proc() -> c.int ---
-        GetVideoDriver :: proc(index: c.int) -> cstring ---
-        GetCurrentVideoDriver :: proc() -> cstring ---
-        GetSystemTheme :: proc() -> SystemTheme ---
-        GetDisplays :: proc(count: ^c.int) -> [^]DisplayID ---
-        GetPrimaryDisplay :: proc() -> DisplayID ---
-        GetDisplayProperties :: proc(displayID: DisplayID) -> PropertiesID ---
-        GetDisplayName :: proc(displayID: DisplayID) -> cstring ---
-        GetDisplayBounds :: proc(displayID: DisplayID, rect: ^Rect) -> bool ---
-        GetDisplayUsableBounds :: proc(displayID: DisplayID, rect: ^Rect) -> bool ---
-        GetNaturalDisplayOrientation :: proc(displayID: DisplayID) -> DisplayOrientation ---
-        GetCurrentDisplayOrientation :: proc(displayID: DisplayID) -> DisplayOrientation ---
-        GetDisplayContentScale :: proc(displayID: DisplayID) -> f32 ---
-        GetFullscreenDisplayModes :: proc(displayID: DisplayID, count: ^c.int) -> [^]^DisplayMode ---
-        GetClosestFullscreenDisplayMode :: proc(displayID: DisplayID, w, h: c.int, refresh_rate: f32, include_high_density_modes: bool, closest: ^DisplayMode) -> bool ---
-        GetDesktopDisplayMode :: proc(displayID: DisplayID) -> ^DisplayMode ---
-        GetCurrentDisplayMode :: proc(displayID: DisplayID) -> ^DisplayMode ---
-        GetDisplayForPoint :: proc(#by_ptr point: Point) -> DisplayID ---
-        GetDisplayForRect :: proc(#by_ptr rect: Rect) -> DisplayID ---
-        GetDisplayForWindow :: proc(window: ^Window) -> DisplayID ---
-        GetWindowPixelDensity :: proc(window: ^Window) -> f32 ---
-        GetWindowDisplayScale :: proc(window: ^Window) -> f32 ---
-        SetWindowFullscreenMode :: proc(window: ^Window, #by_ptr mode: DisplayMode) -> bool ---
-        GetWindowFullscreenMode :: proc(window: ^Window) -> ^DisplayMode ---
-        GetWindowICCProfile :: proc(window: ^Window, size: ^uint) -> rawptr ---
-        GetWindowPixelFormat :: proc(window: ^Window) -> PixelFormat ---
-        GetWindows :: proc(count: ^c.int) -> [^]^Window ---
-        CreateWindow :: proc(title: cstring, w, h: c.int, flags: WindowFlags) -> ^Window ---
-        CreatePopupWindow :: proc(parent: ^Window, offset_x, offset_y: c.int, w, h: c.int, flags: WindowFlags) -> ^Window ---
-        CreateWindowWithProperties :: proc(props: PropertiesID) -> ^Window ---
-        GetWindowID :: proc(window: ^Window) -> WindowID ---
-        GetWindowFromID :: proc(id: WindowID) -> ^Window ---
-        GetWindowParent :: proc(window: ^Window) -> ^Window ---
-        GetWindowProperties :: proc(window: ^Window) -> PropertiesID ---
-        GetWindowFlags :: proc(window: ^Window) -> WindowFlags ---
-        SetWindowTitle :: proc(window: ^Window, title: cstring) -> bool ---
-        GetWindowTitle :: proc(window: ^Window) -> cstring ---
-        SetWindowIcon :: proc(window: ^Window, icon: ^Surface) -> bool ---
-        SetWindowPosition :: proc(window: ^Window, x, y: c.int) -> bool ---
-        GetWindowPosition :: proc(window: ^Window, x, y: ^c.int) -> bool ---
-        SetWindowSize :: proc(window: ^Window, w, h: c.int) -> bool ---
-        GetWindowSize :: proc(window: ^Window, w, h: ^c.int) -> bool ---
-        GetWindowSafeArea :: proc(window: ^Window, rect: ^Rect) -> bool ---
-        SetWindowAspectRatio :: proc(window: ^Window, min_aspect, max_aspect: f32) -> bool ---
-        GetWindowAspectRatio :: proc(window: ^Window, min_aspect, max_aspect: ^f32) -> bool ---
-        GetWindowBordersSize :: proc(window: ^Window, top, left, bottom, right: ^c.int) -> bool ---
-        GetWindowSizeInPixels :: proc(window: ^Window, w, h: ^c.int) -> bool ---
-        SetWindowMinimumSize :: proc(window: ^Window, min_w, min_h: c.int) -> bool ---
-        GetWindowMinimumSize :: proc(window: ^Window, w, h: ^c.int) -> bool ---
-        SetWindowMaximumSize :: proc(window: ^Window, max_w, max_h: c.int) -> bool ---
-        GetWindowMaximumSize :: proc(window: ^Window, w, h: ^c.int) -> bool ---
-        SetWindowBordered :: proc(window: ^Window, bordered: bool) -> bool ---
-        SetWindowResizable :: proc(window: ^Window, resizable: bool) -> bool ---
-        SetWindowAlwaysOnTop :: proc(window: ^Window, on_top: bool) -> bool ---
-        SetWindowFillDocument :: proc(window: ^Window, fill: bool) -> bool ---
-        ShowWindow :: proc(window: ^Window) -> bool ---
-        HideWindow :: proc(window: ^Window) -> bool ---
-        RaiseWindow :: proc(window: ^Window) -> bool ---
-        MaximizeWindow :: proc(window: ^Window) -> bool ---
-        MinimizeWindow :: proc(window: ^Window) -> bool ---
-        RestoreWindow :: proc(window: ^Window) -> bool ---
-        SetWindowFullscreen :: proc(window: ^Window, fullscreen: bool) -> bool ---
-        SyncWindow :: proc(window: ^Window) -> bool ---
-        WindowHasSurface :: proc(window: ^Window) -> bool ---
-        GetWindowSurface :: proc(window: ^Window) -> ^Surface ---
-        SetWindowSurfaceVSync :: proc(window: ^Window, vsync: c.int) -> bool ---
-        GetWindowSurfaceVSync :: proc(window: ^Window, vsync: ^c.int) -> bool ---
-        UpdateWindowSurface :: proc(window: ^Window) -> bool ---
-        UpdateWindowSurfaceRects :: proc(window: ^Window, rects: [^]Rect, numrects: c.int) -> bool ---
-        DestroyWindowSurface :: proc(window: ^Window) -> bool ---
-        SetWindowKeyboardGrab :: proc(window: ^Window, grabbed: bool) -> bool ---
-        SetWindowMouseGrab :: proc(window: ^Window, grabbed: bool) -> bool ---
-        GetWindowKeyboardGrab :: proc(window: ^Window) -> bool ---
-        GetWindowMouseGrab :: proc(window: ^Window) -> bool ---
-        GetGrabbedWindow :: proc() -> ^Window ---
-        SetWindowMouseRect :: proc(window: ^Window, rect: ^Rect) -> bool ---
-        GetWindowMouseRect :: proc(window: ^Window) -> ^Rect ---
-        SetWindowOpacity :: proc(window: ^Window, opacity: f32) -> bool ---
-        GetWindowOpacity :: proc(window: ^Window) -> f32 ---
-        SetWindowParent :: proc(window: ^Window, parent: ^Window) -> bool ---
-        SetWindowModal :: proc(window: ^Window, modal: bool) -> bool ---
-        SetWindowFocusable :: proc(window: ^Window, focusable: bool) -> bool ---
-        ShowWindowSystemMenu :: proc(window: ^Window, x, y: c.int) -> bool ---
-    }
+foreign lib {
+    GetNumVideoDrivers :: proc() -> c.int ---
+    GetVideoDriver :: proc(index: c.int) -> cstring ---
+    GetCurrentVideoDriver :: proc() -> cstring ---
+    GetSystemTheme :: proc() -> SystemTheme ---
+    GetDisplays :: proc(count: ^c.int) -> [^]DisplayID ---
+    GetPrimaryDisplay :: proc() -> DisplayID ---
+    GetDisplayProperties :: proc(displayID: DisplayID) -> PropertiesID ---
+    GetDisplayName :: proc(displayID: DisplayID) -> cstring ---
+    GetDisplayBounds :: proc(displayID: DisplayID, rect: ^Rect) -> bool ---
+    GetDisplayUsableBounds :: proc(displayID: DisplayID, rect: ^Rect) -> bool ---
+    GetNaturalDisplayOrientation :: proc(displayID: DisplayID) -> DisplayOrientation ---
+    GetCurrentDisplayOrientation :: proc(displayID: DisplayID) -> DisplayOrientation ---
+    GetDisplayContentScale :: proc(displayID: DisplayID) -> f32 ---
+    GetFullscreenDisplayModes :: proc(displayID: DisplayID, count: ^c.int) -> [^]^DisplayMode ---
+    GetClosestFullscreenDisplayMode :: proc(displayID: DisplayID, w, h: c.int, refresh_rate: f32, include_high_density_modes: bool, closest: ^DisplayMode) -> bool ---
+    GetDesktopDisplayMode :: proc(displayID: DisplayID) -> ^DisplayMode ---
+    GetCurrentDisplayMode :: proc(displayID: DisplayID) -> ^DisplayMode ---
+    GetDisplayForPoint :: proc(#by_ptr point: Point) -> DisplayID ---
+    GetDisplayForRect :: proc(#by_ptr rect: Rect) -> DisplayID ---
+    GetDisplayForWindow :: proc(window: ^Window) -> DisplayID ---
+    GetWindowPixelDensity :: proc(window: ^Window) -> f32 ---
+    GetWindowDisplayScale :: proc(window: ^Window) -> f32 ---
+    SetWindowFullscreenMode :: proc(window: ^Window, #by_ptr mode: DisplayMode) -> bool ---
+    GetWindowFullscreenMode :: proc(window: ^Window) -> ^DisplayMode ---
+    GetWindowICCProfile :: proc(window: ^Window, size: ^uint) -> rawptr ---
+    GetWindowPixelFormat :: proc(window: ^Window) -> PixelFormat ---
+    GetWindows :: proc(count: ^c.int) -> [^]^Window ---
+    CreateWindow :: proc(title: cstring, w, h: c.int, flags: WindowFlags) -> ^Window ---
+    CreatePopupWindow :: proc(parent: ^Window, offset_x, offset_y: c.int, w, h: c.int, flags: WindowFlags) -> ^Window ---
+    CreateWindowWithProperties :: proc(props: PropertiesID) -> ^Window ---
+    GetWindowID :: proc(window: ^Window) -> WindowID ---
+    GetWindowFromID :: proc(id: WindowID) -> ^Window ---
+    GetWindowParent :: proc(window: ^Window) -> ^Window ---
+    GetWindowProperties :: proc(window: ^Window) -> PropertiesID ---
+    GetWindowFlags :: proc(window: ^Window) -> WindowFlags ---
+    SetWindowTitle :: proc(window: ^Window, title: cstring) -> bool ---
+    GetWindowTitle :: proc(window: ^Window) -> cstring ---
+    SetWindowIcon :: proc(window: ^Window, icon: ^Surface) -> bool ---
+    SetWindowPosition :: proc(window: ^Window, x, y: c.int) -> bool ---
+    GetWindowPosition :: proc(window: ^Window, x, y: ^c.int) -> bool ---
+    SetWindowSize :: proc(window: ^Window, w, h: c.int) -> bool ---
+    GetWindowSize :: proc(window: ^Window, w, h: ^c.int) -> bool ---
+    GetWindowSafeArea :: proc(window: ^Window, rect: ^Rect) -> bool ---
+    SetWindowAspectRatio :: proc(window: ^Window, min_aspect, max_aspect: f32) -> bool ---
+    GetWindowAspectRatio :: proc(window: ^Window, min_aspect, max_aspect: ^f32) -> bool ---
+    GetWindowBordersSize :: proc(window: ^Window, top, left, bottom, right: ^c.int) -> bool ---
+    GetWindowSizeInPixels :: proc(window: ^Window, w, h: ^c.int) -> bool ---
+    SetWindowMinimumSize :: proc(window: ^Window, min_w, min_h: c.int) -> bool ---
+    GetWindowMinimumSize :: proc(window: ^Window, w, h: ^c.int) -> bool ---
+    SetWindowMaximumSize :: proc(window: ^Window, max_w, max_h: c.int) -> bool ---
+    GetWindowMaximumSize :: proc(window: ^Window, w, h: ^c.int) -> bool ---
+    SetWindowBordered :: proc(window: ^Window, bordered: bool) -> bool ---
+    SetWindowResizable :: proc(window: ^Window, resizable: bool) -> bool ---
+    SetWindowAlwaysOnTop :: proc(window: ^Window, on_top: bool) -> bool ---
+    SetWindowFillDocument :: proc(window: ^Window, fill: bool) -> bool ---
+    ShowWindow :: proc(window: ^Window) -> bool ---
+    HideWindow :: proc(window: ^Window) -> bool ---
+    RaiseWindow :: proc(window: ^Window) -> bool ---
+    MaximizeWindow :: proc(window: ^Window) -> bool ---
+    MinimizeWindow :: proc(window: ^Window) -> bool ---
+    RestoreWindow :: proc(window: ^Window) -> bool ---
+    SetWindowFullscreen :: proc(window: ^Window, fullscreen: bool) -> bool ---
+    SyncWindow :: proc(window: ^Window) -> bool ---
+    WindowHasSurface :: proc(window: ^Window) -> bool ---
+    GetWindowSurface :: proc(window: ^Window) -> ^Surface ---
+    SetWindowSurfaceVSync :: proc(window: ^Window, vsync: c.int) -> bool ---
+    GetWindowSurfaceVSync :: proc(window: ^Window, vsync: ^c.int) -> bool ---
+    UpdateWindowSurface :: proc(window: ^Window) -> bool ---
+    UpdateWindowSurfaceRects :: proc(window: ^Window, rects: [^]Rect, numrects: c.int) -> bool ---
+    DestroyWindowSurface :: proc(window: ^Window) -> bool ---
+    SetWindowKeyboardGrab :: proc(window: ^Window, grabbed: bool) -> bool ---
+    SetWindowMouseGrab :: proc(window: ^Window, grabbed: bool) -> bool ---
+    GetWindowKeyboardGrab :: proc(window: ^Window) -> bool ---
+    GetWindowMouseGrab :: proc(window: ^Window) -> bool ---
+    GetGrabbedWindow :: proc() -> ^Window ---
+    SetWindowMouseRect :: proc(window: ^Window, rect: ^Rect) -> bool ---
+    GetWindowMouseRect :: proc(window: ^Window) -> ^Rect ---
+    SetWindowOpacity :: proc(window: ^Window, opacity: f32) -> bool ---
+    GetWindowOpacity :: proc(window: ^Window) -> f32 ---
+    SetWindowParent :: proc(window: ^Window, parent: ^Window) -> bool ---
+    SetWindowModal :: proc(window: ^Window, modal: bool) -> bool ---
+    SetWindowFocusable :: proc(window: ^Window, focusable: bool) -> bool ---
+    ShowWindowSystemMenu :: proc(window: ^Window, x, y: c.int) -> bool ---
+}
 
 HitTestResult :: enum c.int {
     NORMAL, /**< Region is normal. No special properties. */
@@ -447,43 +447,43 @@ HitTestResult :: enum c.int {
 HitTest :: #type proc "c" (win: ^Window, area: ^Point, data: rawptr) -> HitTestResult
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign lib {
-        SetWindowHitTest :: proc(window: ^Window, callback: HitTest, callback_data: rawptr) -> bool ---
-        SetWindowShape :: proc(window: ^Window, shape: ^Surface) -> bool ---
-        FlashWindow :: proc(window: ^Window, operation: FlashOperation) -> bool ---
-        SetWindowProgressState :: proc(window: ^Window, state: ProgressState) -> bool ---
-        GetWindowProgressState :: proc(window: ^Window) -> ProgressState ---
-        SetWindowProgressValue :: proc(window: ^Window, value: f32) -> bool ---
-        GetWindowProgressValue :: proc(window: ^Window) -> f32 ---
-        DestroyWindow :: proc(window: ^Window) ---
-        ScreenSaverEnabled :: proc() -> bool ---
-        EnableScreenSaver :: proc() -> bool ---
-        DisableScreenSaver :: proc() -> bool ---
-    }
+foreign lib {
+    SetWindowHitTest :: proc(window: ^Window, callback: HitTest, callback_data: rawptr) -> bool ---
+    SetWindowShape :: proc(window: ^Window, shape: ^Surface) -> bool ---
+    FlashWindow :: proc(window: ^Window, operation: FlashOperation) -> bool ---
+    SetWindowProgressState :: proc(window: ^Window, state: ProgressState) -> bool ---
+    GetWindowProgressState :: proc(window: ^Window) -> ProgressState ---
+    SetWindowProgressValue :: proc(window: ^Window, value: f32) -> bool ---
+    GetWindowProgressValue :: proc(window: ^Window) -> f32 ---
+    DestroyWindow :: proc(window: ^Window) ---
+    ScreenSaverEnabled :: proc() -> bool ---
+    EnableScreenSaver :: proc() -> bool ---
+    DisableScreenSaver :: proc() -> bool ---
+}
 
 @(default_calling_convention = "c", link_prefix = "SDL_")
-    foreign lib {
-        GL_LoadLibrary :: proc(path: cstring) -> bool ---
-        GL_GetProcAddress :: proc(procName: cstring) -> FunctionPointer ---
-        EGL_GetProcAddress :: proc(procName: cstring) -> FunctionPointer ---
-        GL_UnloadLibrary :: proc() ---
-        GL_ExtensionSupported :: proc(extension: cstring) -> bool ---
-        GL_ResetAttributes :: proc() ---
-        GL_SetAttribute :: proc(attr: GLAttr, value: c.int) -> bool ---
-        GL_GetAttribute :: proc(attr: GLAttr, value: ^c.int) -> bool ---
-        GL_CreateContext :: proc(window: ^Window) -> GLContext ---
-        GL_MakeCurrent :: proc(window: ^Window, ctx: GLContext) -> bool ---
-        GL_GetCurrentWindow :: proc() -> ^Window ---
-        GL_GetCurrentContext :: proc() -> GLContext ---
-        EGL_GetCurrentDisplay :: proc() -> EGLDisplay ---
-        EGL_GetCurrentConfig :: proc() -> EGLConfig ---
-        EGL_GetWindowSurface :: proc(window: ^Window) -> EGLSurface ---
-        EGL_SetAttributeCallbacks :: proc(platformAttribCallback: EGLAttribArrayCallback, surfaceAttribCallback: EGLIntArrayCallback, contextAttribCallback: EGLIntArrayCallback, userdata: rawptr) ---
-        GL_SetSwapInterval :: proc(interval: c.int) -> bool ---
-        GL_GetSwapInterval :: proc(interval: ^c.int) -> bool ---
-        GL_SwapWindow :: proc(window: ^Window) -> bool ---
-        GL_DestroyContext :: proc(ctx: GLContext) -> bool ---
-    }
+foreign lib {
+    GL_LoadLibrary :: proc(path: cstring) -> bool ---
+    GL_GetProcAddress :: proc(procName: cstring) -> FunctionPointer ---
+    EGL_GetProcAddress :: proc(procName: cstring) -> FunctionPointer ---
+    GL_UnloadLibrary :: proc() ---
+    GL_ExtensionSupported :: proc(extension: cstring) -> bool ---
+    GL_ResetAttributes :: proc() ---
+    GL_SetAttribute :: proc(attr: GLAttr, value: c.int) -> bool ---
+    GL_GetAttribute :: proc(attr: GLAttr, value: ^c.int) -> bool ---
+    GL_CreateContext :: proc(window: ^Window) -> GLContext ---
+    GL_MakeCurrent :: proc(window: ^Window, ctx: GLContext) -> bool ---
+    GL_GetCurrentWindow :: proc() -> ^Window ---
+    GL_GetCurrentContext :: proc() -> GLContext ---
+    EGL_GetCurrentDisplay :: proc() -> EGLDisplay ---
+    EGL_GetCurrentConfig :: proc() -> EGLConfig ---
+    EGL_GetWindowSurface :: proc(window: ^Window) -> EGLSurface ---
+    EGL_SetAttributeCallbacks :: proc(platformAttribCallback: EGLAttribArrayCallback, surfaceAttribCallback: EGLIntArrayCallback, contextAttribCallback: EGLIntArrayCallback, userdata: rawptr) ---
+    GL_SetSwapInterval :: proc(interval: c.int) -> bool ---
+    GL_GetSwapInterval :: proc(interval: ^c.int) -> bool ---
+    GL_SwapWindow :: proc(window: ^Window) -> bool ---
+    GL_DestroyContext :: proc(ctx: GLContext) -> bool ---
+}
 
 
 // Used by vendor:OpenGL

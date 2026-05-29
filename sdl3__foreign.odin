@@ -2,6 +2,7 @@ package sdl3
 
 MIXER :: #config(SDL3_MIXER, false)
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
+    @(export)
     foreign import lib "SDL3.wasm.a"
     SYSTEM_SUPPORT :: false
 } else {
