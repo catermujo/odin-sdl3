@@ -47,8 +47,16 @@ clone_at_revision() {
         fi
     fi
 
+    local fetch_ref="$revision"
+    if [ "${revision#refs/}" != "$revision" ]; then
+        fetch_ref="$revision:$revision"
+    fi
+
+    if ! git -C "$dir" rev-parse -q --verify "$revision^{commit}" >/dev/null; then
+        git -C "$dir" fetch origin "$fetch_ref"
+    fi
+
     if ! git -C "$dir" -c advice.detachedHead=false checkout -f "$revision"; then
-        git -C "$dir" fetch origin "$revision"
         git -C "$dir" -c advice.detachedHead=false checkout -f FETCH_HEAD
     fi
 
@@ -73,20 +81,17 @@ clone_at_revision() {
             return
         fi
 
-        echo "Submodule pinned revision fetch failed in $dir; retrying from remote heads"
+        echo "Submodule pinned revision fetch failed in $dir; retrying pinned refs without shallow mode"
         git -C "$dir" submodule deinit -f --all || true
         rm -rf "$dir/.git/modules"
         git -C "$dir" submodule sync --recursive
-        if git -C "$dir" submodule update "${submodule_args[@]}" --remote --depth 1; then
-            return
-        fi
-        git -C "$dir" submodule update "${submodule_args[@]}" --remote
+        git -C "$dir" submodule update "${submodule_args[@]}"
     fi
 }
 
-clone_at_revision SDL release-3.4.2 https://github.com/libsdl-org/SDL --depth=1 --recurse-submodules -j 4 --shallow-submodules
-clone_at_revision SDL_image release-3.4.0 https://github.com/libsdl-org/SDL_image --depth=1 --recurse-submodules -j 10 --shallow-submodules
-clone_at_revision SDL_mixer release-3.2.0 https://github.com/libsdl-org/SDL_mixer --depth=1 --recurse-submodules -j 4 --shallow-submodules
+clone_at_revision SDL refs/tags/release-3.4.2 https://github.com/libsdl-org/SDL --depth=1 --recurse-submodules -j 4 --shallow-submodules
+clone_at_revision SDL_image refs/tags/release-3.4.0 https://github.com/libsdl-org/SDL_image --depth=1 --recurse-submodules -j 10 --shallow-submodules
+clone_at_revision SDL_mixer refs/tags/release-3.2.0 https://github.com/libsdl-org/SDL_mixer --depth=1 --recurse-submodules -j 4 --shallow-submodules
 clone_at_revision SDL_ttf 053bbc89517471427748a082583c9eada55c07b5 https://github.com/libsdl-org/SDL_ttf --depth=1 --recurse-submodules -j 10 --shallow-submodules
 
 linux_arch_dir() {

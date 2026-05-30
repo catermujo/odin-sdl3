@@ -9,18 +9,26 @@ clone_at_revision() {
     shift 3
     [ -d "$dir" ] && return
     git clone "$@" "$remote" "$dir"
-    if ! git -C "$dir" checkout --detach "$revision"; then
-        git -C "$dir" fetch origin "$revision"
-        git -C "$dir" checkout --detach FETCH_HEAD
+    local fetch_ref="$revision"
+    if [ "${revision#refs/}" != "$revision" ]; then
+        fetch_ref="$revision:$revision"
+    fi
+
+    if ! git -C "$dir" rev-parse -q --verify "$revision^{commit}" >/dev/null; then
+        git -C "$dir" fetch origin "$fetch_ref"
+    fi
+
+    if ! git -C "$dir" -c advice.detachedHead=false checkout -f "$revision"; then
+        git -C "$dir" -c advice.detachedHead=false checkout -f FETCH_HEAD
     fi
     if [ -f "$dir/.gitmodules" ]; then
         git -C "$dir" submodule update --init --recursive
     fi
 }
 
-clone_at_revision SDL release-3.4.2 https://github.com/libsdl-org/SDL --depth=1 --recurse-submodules -j 4 --shallow-submodules
-clone_at_revision SDL_image release-3.4.0 https://github.com/libsdl-org/SDL_image --depth=1 --recurse-submodules -j 10 --shallow-submodules
-clone_at_revision SDL_mixer release-3.2.0 https://github.com/libsdl-org/SDL_mixer --depth=1 --recurse-submodules -j 4 --shallow-submodules
+clone_at_revision SDL refs/tags/release-3.4.2 https://github.com/libsdl-org/SDL --depth=1 --recurse-submodules -j 4 --shallow-submodules
+clone_at_revision SDL_image refs/tags/release-3.4.0 https://github.com/libsdl-org/SDL_image --depth=1 --recurse-submodules -j 10 --shallow-submodules
+clone_at_revision SDL_mixer refs/tags/release-3.2.0 https://github.com/libsdl-org/SDL_mixer --depth=1 --recurse-submodules -j 4 --shallow-submodules
 clone_at_revision SDL_ttf 053bbc89517471427748a082583c9eada55c07b5 https://github.com/libsdl-org/SDL_ttf --depth=1 --recurse-submodules -j 10 --shallow-submodules
 
 # Apply patches
