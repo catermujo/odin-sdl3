@@ -6,22 +6,48 @@ import "core:c"
 import SDL ".."
 
 when ODIN_OS == .Windows {
-    when SDL.LINK == "shared" {
-        foreign import lib "SDL3_ttf.lib"
-    } else when SDL.LINK == "static" {
-        foreign import lib "SDL3_ttf_static.lib"
+    when ODIN_ARCH == .amd64 {
+        when SDL.LINK == "shared" {
+            foreign import lib "windows_x64/SDL3_ttf.lib"
+        } else when SDL.LINK == "static" {
+            foreign import lib "windows_x64/SDL3_ttf_static.lib"
+        }
+    } else when ODIN_ARCH == .arm64 {
+        when SDL.LINK == "shared" {
+            foreign import lib "windows_arm64/SDL3_ttf.lib"
+        } else when SDL.LINK == "static" {
+            foreign import lib "windows_arm64/SDL3_ttf_static.lib"
+        }
+    } else {
+        #panic("vendor/sdl/ttf supports windows amd64/arm64 only")
     }
 } else when ODIN_OS == .Darwin {
-    when SDL.LINK == "static" {
-        @(export)
-        foreign import lib "SDL3_ttf.darwin.a"
-    } else when SDL.LINK == "shared" {
-        // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
-        @(export)
-        foreign import lib "libSDL3_ttf.0.dylib"
+    when ODIN_ARCH == .amd64 {
+        when SDL.LINK == "static" {
+            @(export)
+            foreign import lib "darwin_x64/SDL3_ttf.darwin.a"
+        } else when SDL.LINK == "shared" {
+            // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
+            @(export)
+            foreign import lib "darwin_x64/libSDL3_ttf.0.dylib"
+        } else {
+            @(export)
+            foreign import lib "system:SDL3_ttf"
+        }
+    } else when ODIN_ARCH == .arm64 {
+        when SDL.LINK == "static" {
+            @(export)
+            foreign import lib "darwin_arm64/SDL3_ttf.darwin.a"
+        } else when SDL.LINK == "shared" {
+            // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
+            @(export)
+            foreign import lib "darwin_arm64/libSDL3_ttf.0.dylib"
+        } else {
+            @(export)
+            foreign import lib "system:SDL3_ttf"
+        }
     } else {
-        @(export)
-        foreign import lib "system:SDL3_ttf"
+        #panic("vendor/sdl/ttf supports Darwin amd64/arm64 only")
     }
 } else when ODIN_OS == .Linux {
     when SDL.LINK == "static" {

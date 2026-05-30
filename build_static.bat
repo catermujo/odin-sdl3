@@ -1,7 +1,14 @@
 @echo off
 
 setlocal EnableDelayedExpansion
+
+set "VENDOR_WINDOWS_ARCH=%VSCMD_ARG_TGT_ARCH%"
+if not defined VENDOR_WINDOWS_ARCH set "VENDOR_WINDOWS_ARCH=%PROCESSOR_ARCHITECTURE%"
+if /I "%VENDOR_WINDOWS_ARCH%"=="AMD64" set "VENDOR_WINDOWS_ARCH=x64"
+if /I "%VENDOR_WINDOWS_ARCH%"=="ARM64" set "VENDOR_WINDOWS_ARCH=arm64"
+if /I "%VENDOR_WINDOWS_ARCH%"=="X86" set "VENDOR_WINDOWS_ARCH=x64"
 set BUILD_DIR=build_static
+set output_dir=windows_%VENDOR_WINDOWS_ARCH%
 
 if not exist SDL (
    git clone https://github.com/libsdl-org/SDL --revision release-3.4.2 --depth=1 --recurse-submodules -j 4
@@ -22,10 +29,15 @@ for %%p in (patches\*.patch) do (
    git -C SDL am --3way "%%p" 2>nul || echo Patch %%p skipped
 )
 
-cmake -S . -B %BUILD_DIR% -DSDL_STATIC=ON -DSDL_SHARED=OFF -DBUILD_SHARED_LIBS=OFF -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+cmake -S . -B %BUILD_DIR% -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=ON -DSDL_SHARED=OFF -DBUILD_SHARED_LIBS=OFF -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
 cmake --build %BUILD_DIR% -j%NUMBER_OF_PROCESSORS% --config Release
 
-copy /y %BUILD_DIR%\SDL\Release\SDL3-static.lib             SDL3_static.lib
-copy /y %BUILD_DIR%\SDL_image\Release\SDL3_image-static.lib image\SDL3_image_static.lib
-copy /y %BUILD_DIR%\SDL_mixer\Release\SDL3_mixer-static.lib mixer\SDL3_mixer_static.lib
-copy /y %BUILD_DIR%\SDL_ttf\Release\SDL3_ttf-static.lib     ttf\SDL3_ttf_static.lib
+if not exist %output_dir% mkdir %output_dir%
+if not exist image\%output_dir% mkdir image\%output_dir%
+if not exist mixer\%output_dir% mkdir mixer\%output_dir%
+if not exist ttf\%output_dir% mkdir ttf\%output_dir%
+
+copy /y %BUILD_DIR%\SDL\Release\SDL3-static.lib             %output_dir%\SDL3_static.lib
+copy /y %BUILD_DIR%\SDL_image\Release\SDL3_image-static.lib image\%output_dir%\SDL3_image_static.lib
+copy /y %BUILD_DIR%\SDL_mixer\Release\SDL3_mixer-static.lib mixer\%output_dir%\SDL3_mixer_static.lib
+copy /y %BUILD_DIR%\SDL_ttf\Release\SDL3_ttf-static.lib     ttf\%output_dir%\SDL3_ttf_static.lib

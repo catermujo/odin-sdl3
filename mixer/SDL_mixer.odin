@@ -8,22 +8,48 @@ import sdl ".."
 when sdl.MIXER {
     // Keep mixer optional while reusing the root SDL package's link-mode selection on native targets.
     when ODIN_OS == .Windows {
-        when sdl.LINK == "shared" {
-            foreign import lib "SDL3_mixer.lib"
-        } else when sdl.LINK == "static" {
-            foreign import lib "SDL3_mixer_static.lib"
+        when ODIN_ARCH == .amd64 {
+            when sdl.LINK == "shared" {
+                foreign import lib "windows_x64/SDL3_mixer.lib"
+            } else when sdl.LINK == "static" {
+                foreign import lib "windows_x64/SDL3_mixer_static.lib"
+            }
+        } else when ODIN_ARCH == .arm64 {
+            when sdl.LINK == "shared" {
+                foreign import lib "windows_arm64/SDL3_mixer.lib"
+            } else when sdl.LINK == "static" {
+                foreign import lib "windows_arm64/SDL3_mixer_static.lib"
+            }
+        } else {
+            #panic("vendor/sdl/mixer supports windows amd64/arm64 only")
         }
     } else when ODIN_OS == .Darwin {
-        when sdl.LINK == "static" {
-            @(export)
-            foreign import lib "SDL3_mixer.darwin.a"
-        } else when sdl.LINK == "shared" {
-            // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
-            @(export)
-            foreign import lib "libSDL3_mixer.0.dylib"
+        when ODIN_ARCH == .amd64 {
+            when sdl.LINK == "static" {
+                @(export)
+                foreign import lib "darwin_x64/SDL3_mixer.darwin.a"
+            } else when sdl.LINK == "shared" {
+                // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
+                @(export)
+                foreign import lib "darwin_x64/libSDL3_mixer.0.dylib"
+            } else {
+                @(export)
+                foreign import lib "system:SDL3_mixer"
+            }
+        } else when ODIN_ARCH == .arm64 {
+            when sdl.LINK == "static" {
+                @(export)
+                foreign import lib "darwin_arm64/SDL3_mixer.darwin.a"
+            } else when sdl.LINK == "shared" {
+                // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
+                @(export)
+                foreign import lib "darwin_arm64/libSDL3_mixer.0.dylib"
+            } else {
+                @(export)
+                foreign import lib "system:SDL3_mixer"
+            }
         } else {
-            @(export)
-            foreign import lib "system:SDL3_mixer"
+            #panic("vendor/sdl/mixer supports Darwin amd64/arm64 only")
         }
     } else when ODIN_OS == .Linux {
         when sdl.LINK == "static" {

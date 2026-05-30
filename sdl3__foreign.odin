@@ -14,60 +14,124 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     }
 
     when ODIN_OS == .Windows {
-        when LINK == "shared" {
-            @(export)
-            foreign import lib "SDL3.lib"
-        } else when LINK == "static" {
-            @(require) foreign import "system:Kernel32.lib"
-            @(require) foreign import "system:User32.lib"
-            @(require) foreign import "system:Gdi32.lib"
-            @(require) foreign import "system:Winmm.lib"
-            @(require) foreign import "system:Imm32.lib"
-            @(require) foreign import "system:Ole32.lib"
-            @(require) foreign import "system:Oleaut32.lib"
-            @(require) foreign import "system:Version.lib"
-            @(require) foreign import "system:Uuid.lib"
-            @(require) foreign import "system:Advapi32.lib"
-            @(require) foreign import "system:Setupapi.lib"
-            @(require) foreign import "system:Shell32.lib"
-            @(require) foreign import "system:Cfgmgr32.lib"
-            @(export)
-            foreign import lib "SDL3_static.lib"
+        when ODIN_ARCH == .amd64 {
+            when LINK == "shared" {
+                @(export)
+                foreign import lib "windows_x64/SDL3.lib"
+            } else when LINK == "static" {
+                @(require) foreign import "system:Kernel32.lib"
+                @(require) foreign import "system:User32.lib"
+                @(require) foreign import "system:Gdi32.lib"
+                @(require) foreign import "system:Winmm.lib"
+                @(require) foreign import "system:Imm32.lib"
+                @(require) foreign import "system:Ole32.lib"
+                @(require) foreign import "system:Oleaut32.lib"
+                @(require) foreign import "system:Version.lib"
+                @(require) foreign import "system:Uuid.lib"
+                @(require) foreign import "system:Advapi32.lib"
+                @(require) foreign import "system:Setupapi.lib"
+                @(require) foreign import "system:Shell32.lib"
+                @(require) foreign import "system:Cfgmgr32.lib"
+                @(export)
+                foreign import lib "windows_x64/SDL3_static.lib"
+            }
+        } else when ODIN_ARCH == .arm64 {
+            when LINK == "shared" {
+                @(export)
+                foreign import lib "windows_arm64/SDL3.lib"
+            } else when LINK == "static" {
+                @(require) foreign import "system:Kernel32.lib"
+                @(require) foreign import "system:User32.lib"
+                @(require) foreign import "system:Gdi32.lib"
+                @(require) foreign import "system:Winmm.lib"
+                @(require) foreign import "system:Imm32.lib"
+                @(require) foreign import "system:Ole32.lib"
+                @(require) foreign import "system:Oleaut32.lib"
+                @(require) foreign import "system:Version.lib"
+                @(require) foreign import "system:Uuid.lib"
+                @(require) foreign import "system:Advapi32.lib"
+                @(require) foreign import "system:Setupapi.lib"
+                @(require) foreign import "system:Shell32.lib"
+                @(require) foreign import "system:Cfgmgr32.lib"
+                @(export)
+                foreign import lib "windows_arm64/SDL3_static.lib"
+            }
+        } else {
+            #panic("vendor/sdl supports windows amd64/arm64 only")
         }
     } else when ODIN_OS == .Darwin {
-        when LINK == "static" {
-            @(require) foreign import "system:System"
-            @(require) foreign import "system:ObjC"
-            @(require) foreign import "system:iconv"
-            @(require) foreign import "system:AVFoundation.framework"
-            @(require) foreign import "system:Foundation.framework"
-            @(require) foreign import "system:CoreFoundation.framework"
-            @(require) foreign import "system:CoreAudio.framework"
-            @(require) foreign import "system:CoreMedia.framework"
-            @(require) foreign import "system:UniformTypeIdentifiers.framework"
-            @(require) foreign import "system:CoreGraphics.framework"
-            @(require) foreign import "system:CoreVideo.framework"
-            @(require) foreign import "system:CoreServices.framework"
-            @(require) foreign import "system:CoreHaptics.framework"
-            @(require) foreign import "system:AudioToolbox.framework"
-            @(require) foreign import "system:IOKit.framework"
-            @(require) foreign import "system:QuartzCore.framework"
-            @(require) foreign import "system:GameController.framework"
-            @(require) foreign import "system:ForceFeedback.framework"
-            @(require) foreign import "system:Metal.framework"
-            @(require) foreign import "system:MetalKit.framework"
-            @(require) foreign import "system:Cocoa.framework"
-            @(require) foreign import "system:AppKit.framework"
-            @(require) foreign import "system:Carbon.framework"
-            @(export)
-            foreign import lib "SDL3.darwin.a"
-        } else when LINK == "shared" {
-            // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
-            @(export)
-            foreign import lib "libSDL3.0.dylib"
+        when ODIN_ARCH == .amd64 {
+            when LINK == "static" {
+                @(require) foreign import "system:System"
+                @(require) foreign import "system:ObjC"
+                @(require) foreign import "system:iconv"
+                @(require) foreign import "system:AVFoundation.framework"
+                @(require) foreign import "system:Foundation.framework"
+                @(require) foreign import "system:CoreFoundation.framework"
+                @(require) foreign import "system:CoreAudio.framework"
+                @(require) foreign import "system:CoreMedia.framework"
+                @(require) foreign import "system:UniformTypeIdentifiers.framework"
+                @(require) foreign import "system:CoreGraphics.framework"
+                @(require) foreign import "system:CoreVideo.framework"
+                @(require) foreign import "system:CoreServices.framework"
+                @(require) foreign import "system:CoreHaptics.framework"
+                @(require) foreign import "system:AudioToolbox.framework"
+                @(require) foreign import "system:IOKit.framework"
+                @(require) foreign import "system:QuartzCore.framework"
+                @(require) foreign import "system:GameController.framework"
+                @(require) foreign import "system:ForceFeedback.framework"
+                @(require) foreign import "system:Metal.framework"
+                @(require) foreign import "system:MetalKit.framework"
+                @(require) foreign import "system:Cocoa.framework"
+                @(require) foreign import "system:AppKit.framework"
+                @(require) foreign import "system:Carbon.framework"
+                @(export)
+                foreign import lib "darwin_x64/SDL3.darwin.a"
+            } else when LINK == "shared" {
+                // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
+                @(export)
+                foreign import lib "darwin_x64/libSDL3.0.dylib"
+            } else {
+                @(export)
+                foreign import lib "system:SDL3"
+            }
+        } else when ODIN_ARCH == .arm64 {
+            when LINK == "static" {
+                @(require) foreign import "system:System"
+                @(require) foreign import "system:ObjC"
+                @(require) foreign import "system:iconv"
+                @(require) foreign import "system:AVFoundation.framework"
+                @(require) foreign import "system:Foundation.framework"
+                @(require) foreign import "system:CoreFoundation.framework"
+                @(require) foreign import "system:CoreAudio.framework"
+                @(require) foreign import "system:CoreMedia.framework"
+                @(require) foreign import "system:UniformTypeIdentifiers.framework"
+                @(require) foreign import "system:CoreGraphics.framework"
+                @(require) foreign import "system:CoreVideo.framework"
+                @(require) foreign import "system:CoreServices.framework"
+                @(require) foreign import "system:CoreHaptics.framework"
+                @(require) foreign import "system:AudioToolbox.framework"
+                @(require) foreign import "system:IOKit.framework"
+                @(require) foreign import "system:QuartzCore.framework"
+                @(require) foreign import "system:GameController.framework"
+                @(require) foreign import "system:ForceFeedback.framework"
+                @(require) foreign import "system:Metal.framework"
+                @(require) foreign import "system:MetalKit.framework"
+                @(require) foreign import "system:Cocoa.framework"
+                @(require) foreign import "system:AppKit.framework"
+                @(require) foreign import "system:Carbon.framework"
+                @(export)
+                foreign import lib "darwin_arm64/SDL3.darwin.a"
+            } else when LINK == "shared" {
+                // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
+                @(export)
+                foreign import lib "darwin_arm64/libSDL3.0.dylib"
+            } else {
+                @(export)
+                foreign import lib "system:SDL3"
+            }
         } else {
-            @(export)
-            foreign import lib "system:SDL3"
+            #panic("vendor/sdl supports Darwin amd64/arm64 only")
         }
     } else when ODIN_OS == .Linux {
         when LINK == "static" {

@@ -102,6 +102,14 @@ linux_arch_dir() {
     esac
 }
 
+darwin_arch_dir() {
+    case "$(uname -m)" in
+        x86_64 | amd64) echo "darwin_x64" ;;
+        aarch64 | arm64) echo "darwin_arm64" ;;
+        *) echo "darwin_$(uname -m)" ;;
+    esac
+}
+
 copy_shared_family() {
     local src_dir="$1"
     local lib_base="$2"
@@ -169,6 +177,8 @@ if [ "$(uname -s)" = 'Linux' ]; then
     require_cmake_bool_on libs/CMakeCache.txt SDL_X11
 fi
 if [ "$(uname -s)" = 'Darwin' ]; then
+    ARCH_DIR=$(darwin_arch_dir)
+    mkdir -p "$ARCH_DIR" "image/$ARCH_DIR" "ttf/$ARCH_DIR" "mixer/$ARCH_DIR"
     cmake --build libs -j$(sysctl -n hw.ncpu) --config Release
     LIB_EXT=dylib
 else
@@ -181,10 +191,10 @@ fi
 
 if [ "$(uname -s)" = 'Darwin' ]; then
     # DUMBAI: Keep only ABI-major SDL dylib names in vendor output; Odin bindings import these directly to avoid duplicate unversioned aliases.
-    cp libs/SDL/libSDL3.0.dylib .
-    cp libs/SDL_image/libSDL3_image.0.dylib image/
-    cp libs/SDL_ttf/libSDL3_ttf.0.dylib ttf/
-    cp libs/SDL_mixer/libSDL3_mixer.0.dylib mixer/
+    cp libs/SDL/libSDL3.0.dylib "$ARCH_DIR"/
+    cp libs/SDL_image/libSDL3_image.0.dylib "image/$ARCH_DIR"/
+    cp libs/SDL_ttf/libSDL3_ttf.0.dylib "ttf/$ARCH_DIR"/
+    cp libs/SDL_mixer/libSDL3_mixer.0.dylib "mixer/$ARCH_DIR"/
 else
     ARCH_DIR=$(linux_arch_dir)
     mkdir -p "$ARCH_DIR" "image/$ARCH_DIR" "ttf/$ARCH_DIR" "mixer/$ARCH_DIR"
@@ -205,7 +215,7 @@ if [ "$(uname -s)" = 'Darwin' ]; then
         libwebpdemux.2.dylib; do
         src="$(find libs/SDL_image/external -type f -name "$dylib" -print -quit)"
         if [ -n "$src" ]; then
-            cp "$src" image/
+            cp "$src" "image/$ARCH_DIR"/
         fi
     done
 else

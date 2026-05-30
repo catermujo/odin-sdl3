@@ -102,6 +102,14 @@ linux_arch_dir() {
     esac
 }
 
+darwin_arch_dir() {
+    case "$(uname -m)" in
+        x86_64 | amd64) echo "darwin_x64" ;;
+        aarch64 | arm64) echo "darwin_arm64" ;;
+        *) echo "darwin_$(uname -m)" ;;
+    esac
+}
+
 # Apply patches
 for patch in patches/*.patch; do
     [ -f "$patch" ] && git -C SDL am --3way "$PWD/$patch" 2>/dev/null || true
@@ -115,6 +123,8 @@ fi
 
 cmake -S . -B libs -DSDL_SHARED=OFF -DSDL_STATIC=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=OFF "${EXTRA_CMAKE_FLAGS[@]}"
 if [ "$(uname -s)" = 'Darwin' ]; then
+    ARCH_DIR=$(darwin_arch_dir)
+    mkdir -p "$ARCH_DIR" "image/$ARCH_DIR" "ttf/$ARCH_DIR" "mixer/$ARCH_DIR"
     cmake --build libs -j$(sysctl -n hw.ncpu) --config Release
     LIB_EXT=darwin
 else
@@ -123,10 +133,10 @@ else
 fi
 
 if [ "$(uname -s)" = 'Darwin' ]; then
-    cp libs/SDL/libSDL3.a SDL3.$LIB_EXT.a
-    cp libs/SDL_image/libSDL3_image.a image/SDL3_image.$LIB_EXT.a
-    cp libs/SDL_ttf/libSDL3_ttf.a ttf/SDL3_ttf.$LIB_EXT.a
-    cp libs/SDL_mixer/libSDL3_mixer.a mixer/SDL3_mixer.$LIB_EXT.a
+    cp libs/SDL/libSDL3.a "$ARCH_DIR/SDL3.$LIB_EXT.a"
+    cp libs/SDL_image/libSDL3_image.a "image/$ARCH_DIR/SDL3_image.$LIB_EXT.a"
+    cp libs/SDL_ttf/libSDL3_ttf.a "ttf/$ARCH_DIR/SDL3_ttf.$LIB_EXT.a"
+    cp libs/SDL_mixer/libSDL3_mixer.a "mixer/$ARCH_DIR/SDL3_mixer.$LIB_EXT.a"
 else
     mkdir -p "$ARCH_DIR" "image/$ARCH_DIR" "ttf/$ARCH_DIR" "mixer/$ARCH_DIR"
     cp libs/SDL/libSDL3.a "$ARCH_DIR/SDL3.linux.a"
