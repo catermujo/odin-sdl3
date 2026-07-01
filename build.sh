@@ -153,30 +153,43 @@ for patch in patches/*.patch; do
 done
 
 EXTRA_CMAKE_FLAGS=()
-if [ "$(uname -s)" = 'Linux' ]; then
+HOST_OS="$(uname -s)"
+if [ "$HOST_OS" = 'Linux' ]; then
     # DUMBAI: Vendored Vorbis in SDL_mixer expects HAVE_ALLOCA_H from autotools; define it explicitly in our CMake flow.
     # DUMBAI: Force SDL's Vulkan codepaths at compile-definition level because SDL's dep_option gate can evaluate
     # SDL_VULKAN=OFF on some modern CMake/policy combos despite Linux + SDL_VIDEO being enabled.
     EXTRA_CMAKE_FLAGS+=(-DCMAKE_C_FLAGS=-DHAVE_ALLOCA_H=1\ -DSDL_VIDEO_VULKAN=1)
+fi
+if [ "$HOST_OS" = 'Linux' ] || [ "$HOST_OS" = 'Darwin' ]; then
     # DUMBAI: SDL sets cmake_minimum_required(VERSION 3.16), so CMP0127 defaults to OLD and
     # cmake_dependent_option() OR-conditions (like SDL_VULKAN deps) can evaluate incorrectly to OFF on modern CMake.
     EXTRA_CMAKE_FLAGS+=(-DCMAKE_POLICY_DEFAULT_CMP0127=NEW)
+    EXTRA_CMAKE_FLAGS+=(-DSDL_VULKAN=ON)
+fi
+if [ "$HOST_OS" = 'Linux' ]; then
     # DUMBAI: Linux runtime expects Vulkan-capable SDL window backend; force these toggles and fail during configure if not satisfiable.
     EXTRA_CMAKE_FLAGS+=(
-        -DSDL_VULKAN=ON
         -DSDL_RENDER_VULKAN=ON
         -DSDL_X11=ON
     )
+fi
+if [ "$HOST_OS" = 'Darwin' ]; then
+    EXTRA_CMAKE_FLAGS+=(-DSDL_METAL=ON)
 fi
 
 # DUMBAI: Reconfigure from a clean cache so host/platform flips (or old option values) cannot silently disable Vulkan/X11.
 rm -f libs/CMakeCache.txt
 rm -rf libs/CMakeFiles
 cmake -S . -B libs -DSDL_SHARED=ON -DSDL_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=ON "${EXTRA_CMAKE_FLAGS[@]}"
-if [ "$(uname -s)" = 'Linux' ]; then
+if [ "$HOST_OS" = 'Linux' ]; then
     require_cmake_bool_on libs/CMakeCache.txt SDL_X11
+    require_cmake_bool_on libs/CMakeCache.txt SDL_VULKAN
 fi
-if [ "$(uname -s)" = 'Darwin' ]; then
+if [ "$HOST_OS" = 'Darwin' ]; then
+    require_cmake_bool_on libs/CMakeCache.txt SDL_VULKAN
+    require_cmake_bool_on libs/CMakeCache.txt SDL_METAL
+fi
+if [ "$HOST_OS" = 'Darwin' ]; then
     ARCH_DIR=$(darwin_arch_dir)
     mkdir -p "$ARCH_DIR" "image/$ARCH_DIR" "ttf/$ARCH_DIR" "mixer/$ARCH_DIR"
     cmake --build libs -j$(sysctl -n hw.ncpu) --config Release
@@ -185,11 +198,11 @@ else
     cmake --build libs -j$(nproc) --config Release
     LIB_EXT=so
 fi
-if [ "$(uname -s)" = 'Linux' ]; then
+if [ "$HOST_OS" = 'Linux' ]; then
     require_file_contains "libs/SDL/libSDL3.so" "vkCreateXlibSurfaceKHR failed"
 fi
 
-if [ "$(uname -s)" = 'Darwin' ]; then
+if [ "$HOST_OS" = 'Darwin' ]; then
     # DUMBAI: Keep only ABI-major SDL dylib names in vendor output; Odin bindings import these directly to avoid duplicate unversioned aliases.
     cp libs/SDL/libSDL3.0.dylib "$ARCH_DIR"/
     cp libs/SDL_image/libSDL3_image.0.dylib "image/$ARCH_DIR"/
@@ -203,7 +216,7 @@ else
     copy_shared_family libs/SDL_ttf libSDL3_ttf "ttf/$ARCH_DIR"
     copy_shared_family libs/SDL_mixer libSDL3_mixer "mixer/$ARCH_DIR"
 fi
-if [ "$(uname -s)" = 'Darwin' ]; then
+if [ "$HOST_OS" = 'Darwin' ]; then
     # DUMBAI: Stage only ABI-major external SDL_image dylibs so vendor output does not duplicate unversioned and patch-level aliases.
     for dylib in \
         libaom.3.dylib \

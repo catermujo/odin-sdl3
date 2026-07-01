@@ -110,19 +110,52 @@ darwin_arch_dir() {
     esac
 }
 
+require_cmake_bool_on() {
+    local cache_file="$1"
+    local key="$2"
+    if ! grep -Eq "^${key}:[^=]*=(ON|TRUE|1|YES)$" "$cache_file"; then
+        echo "ERROR: ${key} is not ON in ${cache_file}"
+        exit 1
+    fi
+}
+
 # Apply patches
 for patch in patches/*.patch; do
     [ -f "$patch" ] && git -C SDL am --3way "$PWD/$patch" 2>/dev/null || true
 done
 
 EXTRA_CMAKE_FLAGS=()
-if [ "$(uname -s)" = 'Linux' ]; then
+HOST_OS="$(uname -s)"
+if [ "$HOST_OS" = 'Linux' ]; then
     # DUMBAI: Vendored Vorbis in SDL_mixer expects HAVE_ALLOCA_H from autotools; define it explicitly in our CMake flow.
     EXTRA_CMAKE_FLAGS+=(-DCMAKE_C_FLAGS=-DHAVE_ALLOCA_H=1)
 fi
+if [ "$HOST_OS" = 'Linux' ] || [ "$HOST_OS" = 'Darwin' ]; then
+    EXTRA_CMAKE_FLAGS+=(-DCMAKE_POLICY_DEFAULT_CMP0127=NEW)
+    EXTRA_CMAKE_FLAGS+=(-DSDL_VULKAN=ON)
+fi
+if [ "$HOST_OS" = 'Linux' ]; then
+    EXTRA_CMAKE_FLAGS+=(
+        -DSDL_RENDER_VULKAN=ON
+        -DSDL_X11=ON
+    )
+fi
+if [ "$HOST_OS" = 'Darwin' ]; then
+    EXTRA_CMAKE_FLAGS+=(-DSDL_METAL=ON)
+fi
 
+rm -f libs/CMakeCache.txt
+rm -rf libs/CMakeFiles
 cmake -S . -B libs -DSDL_SHARED=OFF -DSDL_STATIC=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=OFF "${EXTRA_CMAKE_FLAGS[@]}"
-if [ "$(uname -s)" = 'Darwin' ]; then
+if [ "$HOST_OS" = 'Linux' ]; then
+    require_cmake_bool_on libs/CMakeCache.txt SDL_X11
+    require_cmake_bool_on libs/CMakeCache.txt SDL_VULKAN
+fi
+if [ "$HOST_OS" = 'Darwin' ]; then
+    require_cmake_bool_on libs/CMakeCache.txt SDL_VULKAN
+    require_cmake_bool_on libs/CMakeCache.txt SDL_METAL
+fi
+if [ "$HOST_OS" = 'Darwin' ]; then
     ARCH_DIR=$(darwin_arch_dir)
     mkdir -p "$ARCH_DIR" "image/$ARCH_DIR" "ttf/$ARCH_DIR" "mixer/$ARCH_DIR"
     cmake --build libs -j$(sysctl -n hw.ncpu) --config Release
