@@ -28,8 +28,15 @@ for %%p in (patches\*.patch) do (
    git -C SDL am --3way "%%p" 2>nul || echo Patch %%p skipped
 )
 
-cmake -S . -B build -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DSDL_VULKAN=ON -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release
+if errorlevel 1 exit /b 1
+findstr /X /C:"SDL_VULKAN:BOOL=ON" build\CMakeCache.txt >nul
+if errorlevel 1 (
+   echo ERROR: SDL Vulkan support is disabled in build\CMakeCache.txt
+   exit /b 1
+)
 cmake --build build -j%NUMBER_OF_PROCESSORS% --config Release
+if errorlevel 1 exit /b 1
 
 if not exist %output_dir% mkdir %output_dir%
 if not exist image\%output_dir% mkdir image\%output_dir%
