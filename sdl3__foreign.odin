@@ -135,6 +135,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
         }
     } else when ODIN_OS == .Linux {
         when LINK == "static" {
+            @(require) foreign import "system:EGL"
             when ODIN_ARCH == .amd64 {
                 @(export)
                 foreign import lib "linux_x64/SDL3.linux.a"
