@@ -181,6 +181,8 @@ fi
 if [ "$HOST_OS" = 'Linux' ]; then
     # DUMBAI: Linux runtime expects Vulkan-capable SDL window backend; force these toggles and fail during configure if not satisfiable.
     EXTRA_CMAKE_FLAGS+=(
+        # DUMBAI: Wayland has no native CPU framebuffer; the startup splash needs SDL texture rendering.
+        -DSDL_RENDER=ON
         -DSDL_RENDER_VULKAN=ON
         -DSDL_X11=ON
     )

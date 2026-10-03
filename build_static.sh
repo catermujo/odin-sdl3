@@ -136,6 +136,8 @@ if [ "$HOST_OS" = 'Linux' ] || [ "$HOST_OS" = 'Darwin' ]; then
 fi
 if [ "$HOST_OS" = 'Linux' ]; then
     EXTRA_CMAKE_FLAGS+=(
+        # DUMBAI: Wayland has no native CPU framebuffer; the startup splash needs SDL texture rendering.
+        -DSDL_RENDER=ON
         -DSDL_RENDER_VULKAN=ON
         -DSDL_X11=ON
     )
