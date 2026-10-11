@@ -1,7 +1,9 @@
 build/
+build_virtual/
 SDL/
 SDL_image/
 SDL_mixer/
 SDL_ttf/
 libs/
+libs_virtual/
 build_static/

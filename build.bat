@@ -28,8 +28,13 @@ for %%p in (patches\*.patch) do (
    git -C SDL am --3way "%%p" 2>nul || echo Patch %%p skipped
 )
 
-cmake -S . -B build -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DSDL_VULKAN=ON -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DSDL_VULKAN=ON -DSDL_VIRTUAL_JOYSTICK=OFF -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release
 if errorlevel 1 exit /b 1
+findstr /X /C:"SDL_VIRTUAL_JOYSTICK:BOOL=OFF" build\CMakeCache.txt >nul
+if errorlevel 1 (
+   echo ERROR: SDL virtual joystick support is enabled in build\CMakeCache.txt
+   exit /b 1
+)
 findstr /X /C:"SDL_VULKAN:BOOL=ON" build\CMakeCache.txt >nul
 if errorlevel 1 (
    echo ERROR: SDL Vulkan support is disabled in build\CMakeCache.txt
@@ -38,10 +43,21 @@ if errorlevel 1 (
 cmake --build build -j%NUMBER_OF_PROCESSORS% --config Release
 if errorlevel 1 exit /b 1
 
+cmake -S . -B build_virtual -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DSDL_VULKAN=ON -DSDL_VIRTUAL_JOYSTICK=ON -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release
+if errorlevel 1 exit /b 1
+findstr /X /C:"SDL_VIRTUAL_JOYSTICK:BOOL=ON" build_virtual\CMakeCache.txt >nul
+if errorlevel 1 (
+   echo ERROR: SDL virtual joystick support is disabled in build_virtual\CMakeCache.txt
+   exit /b 1
+)
+cmake --build build_virtual -j%NUMBER_OF_PROCESSORS% --config Release --target SDL3-shared
+if errorlevel 1 exit /b 1
+
 if not exist %output_dir% mkdir %output_dir%
 if not exist image\%output_dir% mkdir image\%output_dir%
 if not exist mixer\%output_dir% mkdir mixer\%output_dir%
 if not exist ttf\%output_dir% mkdir ttf\%output_dir%
+if not exist %output_dir%\virtual mkdir %output_dir%\virtual
 
 copy /y build\SDL\Release\SDL3.lib             %output_dir%\SDL3.lib
 copy /y build\SDL_image\Release\SDL3_image.lib image\%output_dir%\SDL3_image.lib
@@ -49,6 +65,8 @@ copy /y build\SDL_mixer\Release\SDL3_mixer.lib mixer\%output_dir%\SDL3_mixer.lib
 copy /y build\SDL_ttf\Release\SDL3_ttf.lib     ttf\%output_dir%\SDL3_ttf.lib
 
 copy /y build\SDL\Release\SDL3.dll             %output_dir%\SDL3.dll
+copy /y build_virtual\SDL\Release\SDL3.lib    %output_dir%\virtual\SDL3.lib
+copy /y build_virtual\SDL\Release\SDL3.dll    %output_dir%\virtual\SDL3.dll
 copy /y build\SDL_image\Release\SDL3_image.dll image\%output_dir%\SDL3_image.dll
 copy /y build\SDL_mixer\Release\SDL3_mixer.dll mixer\%output_dir%\SDL3_mixer.dll
 copy /y build\SDL_ttf\Release\SDL3_ttf.dll     ttf\%output_dir%\SDL3_ttf.dll

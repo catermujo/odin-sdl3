@@ -1,13 +1,22 @@
 package sdl3
 
+VIRTUAL_JOYSTICK :: #config(SDL3_VIRTUAL_JOYSTICK, false)
 MIXER :: #config(SDL3_MIXER, false)
 when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
-    @(export)
-    foreign import lib "SDL3.wasm.a"
+    when VIRTUAL_JOYSTICK {
+        #panic("SDL3_VIRTUAL_JOYSTICK is only available with native shared SDL")
+    } else {
+        @(export)
+        foreign import lib "SDL3.wasm.a"
+    }
     SYSTEM_SUPPORT :: false
 } else {
     SYSTEM_SUPPORT :: ODIN_OS != .Windows && (ODIN_OS != .Darwin || !MIXER)
     LINK :: #config(SDL3_LINK, "system" when SYSTEM_SUPPORT else "shared")
+
+    when VIRTUAL_JOYSTICK && LINK != "shared" {
+        #panic("SDL3_VIRTUAL_JOYSTICK requires shared SDL linkage")
+    }
 
     when ODIN_OS == .Darwin && MIXER && LINK == "system" {
         #panic("not available on brew yet, you gotta copile")
@@ -16,8 +25,13 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
     when ODIN_OS == .Windows {
         when ODIN_ARCH == .amd64 {
             when LINK == "shared" {
-                @(export)
-                foreign import lib "windows_x64/SDL3.lib"
+                when VIRTUAL_JOYSTICK {
+                    @(export)
+                    foreign import lib "windows_x64/virtual/SDL3.lib"
+                } else {
+                    @(export)
+                    foreign import lib "windows_x64/SDL3.lib"
+                }
             } else when LINK == "static" {
                 @(require) foreign import "system:Kernel32.lib"
                 @(require) foreign import "system:User32.lib"
@@ -37,8 +51,13 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
             }
         } else when ODIN_ARCH == .arm64 {
             when LINK == "shared" {
-                @(export)
-                foreign import lib "windows_arm64/SDL3.lib"
+                when VIRTUAL_JOYSTICK {
+                    @(export)
+                    foreign import lib "windows_arm64/virtual/SDL3.lib"
+                } else {
+                    @(export)
+                    foreign import lib "windows_arm64/SDL3.lib"
+                }
             } else when LINK == "static" {
                 @(require) foreign import "system:Kernel32.lib"
                 @(require) foreign import "system:User32.lib"
@@ -88,9 +107,14 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
                 @(export)
                 foreign import lib "darwin_x64/SDL3.darwin.a"
             } else when LINK == "shared" {
-                // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
-                @(export)
-                foreign import lib "darwin_x64/libSDL3.0.dylib"
+                when VIRTUAL_JOYSTICK {
+                    @(export)
+                    foreign import lib "darwin_x64/virtual/libSDL3.0.dylib"
+                } else {
+                    // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
+                    @(export)
+                    foreign import lib "darwin_x64/libSDL3.0.dylib"
+                }
             } else {
                 @(export)
                 foreign import lib "system:SDL3"
@@ -123,9 +147,14 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
                 @(export)
                 foreign import lib "darwin_arm64/SDL3.darwin.a"
             } else when LINK == "shared" {
-                // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
-                @(export)
-                foreign import lib "darwin_arm64/libSDL3.0.dylib"
+                when VIRTUAL_JOYSTICK {
+                    @(export)
+                    foreign import lib "darwin_arm64/virtual/libSDL3.0.dylib"
+                } else {
+                    // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
+                    @(export)
+                    foreign import lib "darwin_arm64/libSDL3.0.dylib"
+                }
             } else {
                 @(export)
                 foreign import lib "system:SDL3"
@@ -147,11 +176,21 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
             }
         } else when LINK == "shared" {
             when ODIN_ARCH == .amd64 {
-                @(export)
-                foreign import lib "linux_x64/libSDL3.so"
+                when VIRTUAL_JOYSTICK {
+                    @(export)
+                    foreign import lib "linux_x64/virtual/libSDL3.so"
+                } else {
+                    @(export)
+                    foreign import lib "linux_x64/libSDL3.so"
+                }
             } else when ODIN_ARCH == .arm64 {
-                @(export)
-                foreign import lib "linux_arm64/libSDL3.so"
+                when VIRTUAL_JOYSTICK {
+                    @(export)
+                    foreign import lib "linux_arm64/virtual/libSDL3.so"
+                } else {
+                    @(export)
+                    foreign import lib "linux_arm64/libSDL3.so"
+                }
             } else {
                 #panic("vendor/sdl shared link supports only linux amd64/arm64")
             }

@@ -138,6 +138,18 @@ require_cmake_bool_on() {
     fi
 }
 
+require_cmake_bool_off() {
+    local cache_file="$1"
+    local key="$2"
+    if ! grep -Eq "^${key}:[^=]*=(OFF|FALSE|0|NO)$" "$cache_file"; then
+        echo "ERROR: ${key} is not OFF in ${cache_file}"
+        echo "------ SDL CMake cache summary ------"
+        grep -E "^(CMAKE_SYSTEM_NAME|CMAKE_SYSTEM_PROCESSOR|UNIX|LINUX|SDL_VIDEO|SDL_X11|SDL_WAYLAND|SDL_VULKAN|SDL_RENDER_VULKAN):" "$cache_file" || true
+        echo "-------------------------------------"
+        exit 1
+    fi
+}
+
 require_file_contains() {
     local file="$1"
     local needle="$2"
@@ -180,7 +192,8 @@ fi
 # DUMBAI: Reconfigure from a clean cache so host/platform flips (or old option values) cannot silently disable Vulkan/X11.
 rm -f libs/CMakeCache.txt
 rm -rf libs/CMakeFiles
-cmake -S . -B libs -DSDL_SHARED=ON -DSDL_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=ON "${EXTRA_CMAKE_FLAGS[@]}"
+cmake -S . -B libs -DSDL_SHARED=ON -DSDL_STATIC=OFF -DSDL_VIRTUAL_JOYSTICK=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=ON "${EXTRA_CMAKE_FLAGS[@]}"
+require_cmake_bool_off libs/CMakeCache.txt SDL_VIRTUAL_JOYSTICK
 if [ "$HOST_OS" = 'Linux' ]; then
     require_cmake_bool_on libs/CMakeCache.txt SDL_X11
     require_cmake_bool_on libs/CMakeCache.txt SDL_VULKAN
@@ -198,6 +211,9 @@ else
     cmake --build libs -j$(nproc) --config Release
     LIB_EXT=so
 fi
+cmake -S . -B libs_virtual -DSDL_SHARED=ON -DSDL_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=OFF -DSDL_VIRTUAL_JOYSTICK=ON "${EXTRA_CMAKE_FLAGS[@]}"
+require_cmake_bool_on libs_virtual/CMakeCache.txt SDL_VIRTUAL_JOYSTICK
+cmake --build libs_virtual --target SDL3-shared --config Release --parallel
 if [ "$HOST_OS" = 'Linux' ]; then
     require_file_contains "libs/SDL/libSDL3.so" "vkCreateXlibSurfaceKHR failed"
 fi
@@ -205,13 +221,16 @@ fi
 if [ "$HOST_OS" = 'Darwin' ]; then
     # DUMBAI: Keep only ABI-major SDL dylib names in vendor output; Odin bindings import these directly to avoid duplicate unversioned aliases.
     cp libs/SDL/libSDL3.0.dylib "$ARCH_DIR"/
+    mkdir -p "$ARCH_DIR/virtual"
+    cp libs_virtual/SDL/libSDL3.0.dylib "$ARCH_DIR/virtual"/
     cp libs/SDL_image/libSDL3_image.0.dylib "image/$ARCH_DIR"/
     cp libs/SDL_ttf/libSDL3_ttf.0.dylib "ttf/$ARCH_DIR"/
     cp libs/SDL_mixer/libSDL3_mixer.0.dylib "mixer/$ARCH_DIR"/
 else
     ARCH_DIR=$(linux_arch_dir)
-    mkdir -p "$ARCH_DIR" "image/$ARCH_DIR" "ttf/$ARCH_DIR" "mixer/$ARCH_DIR"
+    mkdir -p "$ARCH_DIR" "$ARCH_DIR/virtual" "image/$ARCH_DIR" "ttf/$ARCH_DIR" "mixer/$ARCH_DIR"
     copy_shared_family libs/SDL libSDL3 "$ARCH_DIR"
+    copy_shared_family libs_virtual/SDL libSDL3 "$ARCH_DIR/virtual"
     copy_shared_family libs/SDL_image libSDL3_image "image/$ARCH_DIR"
     copy_shared_family libs/SDL_ttf libSDL3_ttf "ttf/$ARCH_DIR"
     copy_shared_family libs/SDL_mixer libSDL3_mixer "mixer/$ARCH_DIR"
