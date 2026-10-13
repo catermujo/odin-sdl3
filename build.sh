@@ -194,6 +194,7 @@ rm -f libs/CMakeCache.txt
 rm -rf libs/CMakeFiles
 cmake -S . -B libs -DSDL_SHARED=ON -DSDL_STATIC=OFF -DSDL_VIRTUAL_JOYSTICK=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=ON "${EXTRA_CMAKE_FLAGS[@]}"
 require_cmake_bool_off libs/CMakeCache.txt SDL_VIRTUAL_JOYSTICK
+require_cmake_bool_on libs/CMakeCache.txt SDL_CAMERA
 if [ "$HOST_OS" = 'Linux' ]; then
     require_cmake_bool_on libs/CMakeCache.txt SDL_X11
     require_cmake_bool_on libs/CMakeCache.txt SDL_VULKAN

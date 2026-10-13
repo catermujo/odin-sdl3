@@ -36,6 +36,11 @@ if errorlevel 1 (
    echo ERROR: SDL Vulkan support is disabled in %BUILD_DIR%\CMakeCache.txt
    exit /b 1
 )
+findstr /X /C:"SDL_CAMERA:BOOL=ON" %BUILD_DIR%\CMakeCache.txt >nul
+if errorlevel 1 (
+   echo ERROR: SDL camera support is disabled in %BUILD_DIR%\CMakeCache.txt
+   exit /b 1
+)
 cmake --build %BUILD_DIR% -j%NUMBER_OF_PROCESSORS% --config Release
 if errorlevel 1 exit /b 1
 
