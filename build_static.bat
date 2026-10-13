@@ -29,7 +29,7 @@ for %%p in (patches\*.patch) do (
    git -C SDL am --3way "%%p" 2>nul || echo Patch %%p skipped
 )
 
-cmake -S . -B %BUILD_DIR% -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=ON -DSDL_SHARED=OFF -DSDL_VULKAN=ON -DBUILD_SHARED_LIBS=OFF -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+cmake -S . -B %BUILD_DIR% -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=ON -DSDL_SHARED=OFF -DSDL_VULKAN=ON -DSDL_CAMERA=ON -DBUILD_SHARED_LIBS=OFF -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
 if errorlevel 1 exit /b 1
 findstr /X /C:"SDL_VULKAN:BOOL=ON" %BUILD_DIR%\CMakeCache.txt >nul
 if errorlevel 1 (

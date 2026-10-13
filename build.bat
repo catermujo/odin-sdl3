@@ -28,7 +28,7 @@ for %%p in (patches\*.patch) do (
    git -C SDL am --3way "%%p" 2>nul || echo Patch %%p skipped
 )
 
-cmake -S . -B build -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DSDL_VULKAN=ON -DSDL_VIRTUAL_JOYSTICK=OFF -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DSDL_VULKAN=ON -DSDL_CAMERA=ON -DSDL_VIRTUAL_JOYSTICK=OFF -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release
 if errorlevel 1 exit /b 1
 findstr /X /C:"SDL_VIRTUAL_JOYSTICK:BOOL=OFF" build\CMakeCache.txt >nul
 if errorlevel 1 (
@@ -48,7 +48,7 @@ if errorlevel 1 (
 cmake --build build -j%NUMBER_OF_PROCESSORS% --config Release
 if errorlevel 1 exit /b 1
 
-cmake -S . -B build_virtual -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DSDL_VULKAN=ON -DSDL_VIRTUAL_JOYSTICK=ON -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build_virtual -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DSDL_VULKAN=ON -DSDL_CAMERA=ON -DSDL_VIRTUAL_JOYSTICK=ON -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release
 if errorlevel 1 exit /b 1
 findstr /X /C:"SDL_VIRTUAL_JOYSTICK:BOOL=ON" build_virtual\CMakeCache.txt >nul
 if errorlevel 1 (
