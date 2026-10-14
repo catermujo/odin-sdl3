@@ -36,7 +36,7 @@ for patch in patches/*.patch; do
     [ -f "$patch" ] && git -C SDL am --3way "$PWD/$patch" 2>/dev/null || true
 done
 
-emcmake cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DDAV1D_ASM=OFF -DEMSCRIPTEN=ON -DSDLIMAGE_AVIF=OFF
+emcmake cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DDAV1D_ASM=OFF -DAOM_TARGET_CPU=generic -DEMSCRIPTEN=ON -DSDLIMAGE_AVIF=ON -DSDL_SHARED=OFF -DSDL_STATIC=ON -DBUILD_SHARED_LIBS=OFF
 if [ $(uname -s) = 'Darwin' ]; then
     emmake make -C build -j$(sysctl -n hw.ncpu)
 else
@@ -44,6 +44,14 @@ else
 fi
 
 cp build/SDL/libSDL3.a SDL3.wasm.a
-cp build/SDL_image/libSDL3_image.a image/SDL3_image.wasm.a
+{
+    echo "CREATE image/SDL3_image.wasm.a"
+    echo "ADDLIB build/SDL_image/libSDL3_image.a"
+    while IFS= read -r archive; do
+        echo "ADDLIB $archive"
+    done < <(find build/SDL_image/external -type f -name '*.a' | sort)
+    echo "SAVE"
+    echo "END"
+} | emar -M
 cp build/SDL_ttf/libSDL3_ttf.a ttf/SDL3_ttf.wasm.a
 cp build/SDL_mixer/libSDL3_mixer.a mixer/SDL3_mixer.wasm.a

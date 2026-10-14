@@ -28,7 +28,7 @@ for %%p in (patches\*.patch) do (
    git -C SDL am --3way "%%p" 2>nul || echo Patch %%p skipped
 )
 
-cmake -S . -B build -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DSDL_VULKAN=ON -DSDL_CAMERA=ON -DSDL_VIRTUAL_JOYSTICK=OFF -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=OFF -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DSDL_VULKAN=ON -DSDL_CAMERA=ON -DSDL_VIRTUAL_JOYSTICK=OFF -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=ON -DCMAKE_BUILD_TYPE=Release
 if errorlevel 1 exit /b 1
 findstr /X /C:"SDL_VIRTUAL_JOYSTICK:BOOL=OFF" build\CMakeCache.txt >nul
 if errorlevel 1 (
@@ -73,5 +73,6 @@ copy /y build\SDL\Release\SDL3.dll             %output_dir%\SDL3.dll
 copy /y build_virtual\SDL\Release\SDL3.lib    %output_dir%\virtual\SDL3.lib
 copy /y build_virtual\SDL\Release\SDL3.dll    %output_dir%\virtual\SDL3.dll
 copy /y build\SDL_image\Release\SDL3_image.dll image\%output_dir%\SDL3_image.dll
+for /r build\SDL_image\external %%f in (*.dll) do copy /y "%%f" image\%output_dir%\
 copy /y build\SDL_mixer\Release\SDL3_mixer.dll mixer\%output_dir%\SDL3_mixer.dll
 copy /y build\SDL_ttf\Release\SDL3_ttf.dll     ttf\%output_dir%\SDL3_ttf.dll

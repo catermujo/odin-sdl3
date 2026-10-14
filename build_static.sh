@@ -148,7 +148,7 @@ fi
 
 rm -f libs/CMakeCache.txt
 rm -rf libs/CMakeFiles
-cmake -S . -B libs -DSDL_SHARED=OFF -DSDL_STATIC=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=OFF "${EXTRA_CMAKE_FLAGS[@]}"
+cmake -S . -B libs -DSDL_SHARED=OFF -DSDL_STATIC=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=ON "${EXTRA_CMAKE_FLAGS[@]}"
 require_cmake_bool_on libs/CMakeCache.txt SDL_CAMERA
 if [ "$HOST_OS" = 'Linux' ]; then
     require_cmake_bool_on libs/CMakeCache.txt SDL_X11
