@@ -211,6 +211,16 @@ set_bool_default(SDLIMAGE_WEBP_SHARED ON)
 set_bool_default(SDLIMAGE_XCF OFF)
 set_bool_default(SDLIMAGE_XPM OFF)
 set_bool_default(SDLIMAGE_XV OFF)
+execute_process(COMMAND git apply --ignore-space-change --reverse --check "${CMAKE_CURRENT_SOURCE_DIR}/patches/image/decode-only-avif.patch"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/SDL_image" RESULT_VARIABLE avif_patch_applied
+    OUTPUT_QUIET ERROR_QUIET)
+if(NOT avif_patch_applied EQUAL 0)
+    execute_process(COMMAND git apply --ignore-space-change "${CMAKE_CURRENT_SOURCE_DIR}/patches/image/decode-only-avif.patch"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/SDL_image" RESULT_VARIABLE avif_patch_result)
+    if(NOT avif_patch_result EQUAL 0)
+        message(FATAL_ERROR "Cannot apply SDL_image decoder-only AVIF patch")
+    endif()
+endif()
 add_subdirectory(SDL_image)
 
 # # SDL_Image bug: https://github.com/libsdl-org/SDL_image/issues/506

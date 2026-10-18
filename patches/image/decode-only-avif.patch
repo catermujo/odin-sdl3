@@ -1,0 +1,25 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -151,8 +151,8 @@
+ if(SDLIMAGE_AVIF_VENDORED)
+   set(SDLIMAGE_DAV1D ON)
+   set(SDLIMAGE_DAV1D_VENDORED ON)
+-  set(SDLIMAGE_AOM ON)
+-  set(SDLIMAGE_AOM_VENDORED ON)
++  set(SDLIMAGE_AOM ${SDLIMAGE_AVIF_SAVE})
++  set(SDLIMAGE_AOM_VENDORED ${SDLIMAGE_AVIF_SAVE})
+ else()
+   set(SDLIMAGE_DAV1D OFF)
+   set(SDLIMAGE_DAV1D_VENDORED OFF)
+@@ -550,9 +550,9 @@
+         set(BUILD_SHARED_LIBS ${SDLIMAGE_AVIF_SHARED})
+         set(AVIF_CODEC_DAV1D ON CACHE BOOL "Use dav1d codec for decoding" FORCE)
+         set(AVIF_LOCAL_DAV1D OFF CACHE BOOL "Build dav1d by libavif" FORCE)
+-        set(AVIF_CODEC_AOM ON CACHE BOOL "Use aom codec for decoding" FORCE)
++        set(AVIF_CODEC_AOM ${SDLIMAGE_AVIF_SAVE} CACHE BOOL "Use aom codec for encoding" FORCE)
+         set(AVIF_LOCAL_AOM OFF CACHE BOOL "Build aom by libavif" FORCE)
+-        set(AVIF_CODEC_AOM_ENCODE ON CACHE BOOL "Enable aom encoder" FORCE)
++        set(AVIF_CODEC_AOM_ENCODE ${SDLIMAGE_AVIF_SAVE} CACHE BOOL "Enable aom encoder" FORCE)
+         set(AVIF_CODEC_AOM_DECODE OFF CACHE BOOL "Enable aom decoder" FORCE)
+         set(LIBAVIF_WITH_SHARPYUV_SDLIMAGE ${SDLIMAGE_WEBP} CACHE BOOL "Build libavif with sharpyuv support (re-use sharpyuv built by libwebp)" FORCE)
+         set(BUILD_SHARED_LIBS ${SDLIMAGE_AVIF_SHARED})
