@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Isabella Basso <isabellabdoamaral@usp.br>
+Date: Sat, 24 Oct 2026 21:00:00 -0300
+Subject: [PATCH] x11: Preserve alpha for transparent Vulkan windows
+
+diff --git i/src/video/x11/SDL_x11window.c w/src/video/x11/SDL_x11window.c
+index 4a68287cc..38b8293ed 100644
+--- i/src/video/x11/SDL_x11window.c
++++ w/src/video/x11/SDL_x11window.c
+@@ -653,8 +653,31 @@ bool X11_CreateWindow(SDL_VideoDevice *_this, SDL_Window *window, SDL_Properties
+     } else
+ #endif
+     {
+-        visual = displaydata->visual;
+-        depth = displaydata->depth;
++        if (window->flags & SDL_WINDOW_TRANSPARENT) {
++            // DUMBAI: Vulkan windows also need an ARGB visual; the default X11 visual discards swapchain alpha.
++            XVisualInfo template;
++            SDL_zero(template);
++            template.screen = screen;
++            template.depth = 32;
++            template.class = TrueColor;
++            template.red_mask = 0x00ff0000;
++            template.green_mask = 0x0000ff00;
++            template.blue_mask = 0x000000ff;
++            int count;
++            XVisualInfo *info = X11_XGetVisualInfo(display,
++                VisualScreenMask | VisualDepthMask | VisualClassMask | VisualRedMaskMask | VisualGreenMaskMask | VisualBlueMaskMask,
++                &template, &count);
++            if (!info || !count) {
++                if (info) X11_XFree(info);
++                return SDL_SetError("X11 has no 32-bit transparent visual");
++            }
++            visual = info[0].visual;
++            depth = info[0].depth;
++            X11_XFree(info);
++        } else {
++            visual = displaydata->visual;
++            depth = displaydata->depth;
++        }
+     }
+ 
+     xattr.override_redirect = ((window->flags & SDL_WINDOW_TOOLTIP) || (window->flags & SDL_WINDOW_POPUP_MENU) || force_override_redirect) ? True : False;

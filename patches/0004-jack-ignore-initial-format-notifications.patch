@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Isabella Basso <isabellabdoamaral@usp.br>
+Date: Sat, 24 Oct 2026 21:00:00 -0300
+Subject: [PATCH] jack: Avoid locking on duplicate activation notifications
+
+diff --git i/src/audio/jack/SDL_jackaudio.c w/src/audio/jack/SDL_jackaudio.c
+index a5237da0a..866946dfb 100644
+--- i/src/audio/jack/SDL_jackaudio.c
++++ w/src/audio/jack/SDL_jackaudio.c
+@@ -153,6 +153,8 @@ static int jackSampleRateCallback(jack_nframes_t nframes, void *arg)
+ {
+     //SDL_Log("JACK Sample Rate Callback! %d", (int) nframes);
+     SDL_AudioDevice *device = (SDL_AudioDevice *) arg;
++    // DUMBAI: JACK repeats the negotiated format during activation, while SDL's opener owns the device lock.
++    if (device->spec.freq == (int)nframes) return 0;
+     SDL_AudioSpec newspec;
+     SDL_copyp(&newspec, &device->spec);
+     newspec.freq = (int) nframes;
+@@ -166,6 +168,8 @@ static int jackBufferSizeCallback(jack_nframes_t nframes, void *arg)
+ {
+     //SDL_Log("JACK Buffer Size Callback! %d", (int) nframes);
+     SDL_AudioDevice *device = (SDL_AudioDevice *) arg;
++    // DUMBAI: Ignore the initial duplicate before entering SDL's locked format-change path.
++    if (device->sample_frames == (int)nframes) return 0;
+     SDL_AudioSpec newspec;
+     SDL_copyp(&newspec, &device->spec);
+     if (!SDL_AudioDeviceFormatChanged(device, &newspec, (int) nframes)) {
