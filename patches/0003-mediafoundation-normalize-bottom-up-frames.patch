@@ -1,0 +1,68 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Isabella Basso <isabellabdoamaral@gmail.com>
+Date: Wed, 28 Oct 2026 12:16:28 -0000
+Subject: [PATCH] camera: normalize Media Foundation bottom-up frames
+
+Lock2D and Lock2DSize already return scanline zero. Applying a bottom-up
+base offset again moves the full-frame copy beyond the source buffer.
+Copy signed-pitch rows into positive-pitch storage instead, keeping the
+allocated pointer valid for ReleaseFrame. Only plain IMFMediaBuffer Lock
+needs its buffer base advanced to scanline zero.
+
+diff --git i/src/camera/mediafoundation/SDL_camera_mediafoundation.c w/src/camera/mediafoundation/SDL_camera_mediafoundation.c
+index f04b77b..84c91a3 100644
+--- i/src/camera/mediafoundation/SDL_camera_mediafoundation.c
++++ w/src/camera/mediafoundation/SDL_camera_mediafoundation.c
+@@ -478,9 +478,6 @@ static SDL_CameraFrameResult MEDIAFOUNDATION_AcquireFrame(SDL_Camera *device, SD
+                 if (frame->format == SDL_PIXELFORMAT_MJPG) {
+                     pitch = (LONG)buflen;
+                 }
+-                if (pitch < 0) { // image rows are reversed.
+-                    pixels += -pitch * (frame->h - 1);
+-                }
+                 frame->pixels = pixels;
+                 frame->pitch = (int)pitch;
+                 if (!SDL_SetPointerPropertyWithCleanup(surfprops, PROP_SURFACE_IMFOBJS_POINTER, objs, CleanupIMF2DBuffer2, NULL)) {
+@@ -494,9 +491,6 @@ static SDL_CameraFrameResult MEDIAFOUNDATION_AcquireFrame(SDL_Camera *device, SD
+                 CleanupIMF2DBuffer(NULL, objs);
+                 result = SDL_CAMERA_FRAME_ERROR;
+             } else {
+-                if (pitch < 0) { // image rows are reversed.
+-                    pixels += -pitch * (frame->h - 1);
+-                }
+                 frame->pixels = pixels;
+                 frame->pitch = (int)pitch;
+                 if (!SDL_SetPointerPropertyWithCleanup(surfprops, PROP_SURFACE_IMFOBJS_POINTER, objs, CleanupIMF2DBuffer, NULL)) {
+@@ -552,12 +546,17 @@ static SDL_CameraFrameResult MEDIAFOUNDATION_CopyFrame(SDL_Surface *frame, const
+         return SDL_CAMERA_FRAME_ERROR;
+     }
+ 
+-    const BYTE *start = pixels;
+-    if (pitch < 0) { // image rows are reversed.
+-        start += -pitch * (frame->h - 1);
++    if (pitch < 0) {
++        frame->pitch = (int)-pitch;
++        BYTE *output = frame->pixels;
++        const size_t rowbytes = (size_t)frame->w * SDL_BYTESPERPIXEL(frame->format);
++        for (int y = 0; y < frame->h; ++y) {
++            SDL_memcpy(output + y * frame->pitch, pixels + y * pitch, rowbytes);
++        }
++    } else {
++        SDL_memcpy(frame->pixels, pixels, buflen);
++        frame->pitch = (int)pitch;
+     }
+-    SDL_memcpy(frame->pixels, start, buflen);
+-    frame->pitch = (int)pitch;
+ 
+     return SDL_CAMERA_FRAME_READY;
+ }
+@@ -631,6 +630,9 @@ static SDL_CameraFrameResult MEDIAFOUNDATION_AcquireFrame(SDL_Camera *device, SD
+                     pitch = (LONG)buflen;
+                 } else {
+                     pitch = (LONG)device->hidden->pitch;
++                    if (pitch < 0) {
++                        pixels -= pitch * (frame->h - 1);
++                    }
+                 }
+                 result = MEDIAFOUNDATION_CopyFrame(frame, pixels, pitch, buflen);
+                 IMFMediaBuffer_Unlock(buffer);
