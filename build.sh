@@ -208,15 +208,17 @@ fi
 if [ "$HOST_OS" = 'Darwin' ]; then
     ARCH_DIR=$(darwin_arch_dir)
     mkdir -p "$ARCH_DIR" "image/$ARCH_DIR" "ttf/$ARCH_DIR" "mixer/$ARCH_DIR"
-    cmake --build libs -j$(sysctl -n hw.ncpu) --config Release
+    BUILD_JOBS=$(sysctl -n hw.ncpu)
     LIB_EXT=dylib
 else
-    cmake --build libs -j$(nproc) --config Release
+    BUILD_JOBS=$(nproc)
     LIB_EXT=so
 fi
+# DUMBAI: Both builds need an explicit job count; bare --parallel ignores CMAKE_BUILD_PARALLEL_LEVEL.
+cmake --build libs --parallel "$BUILD_JOBS" --config Release
 cmake -S . -B libs_virtual -DSDL_SHARED=ON -DSDL_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=OFF -DSDL_VIRTUAL_JOYSTICK=ON "${EXTRA_CMAKE_FLAGS[@]}"
 require_cmake_bool_on libs_virtual/CMakeCache.txt SDL_VIRTUAL_JOYSTICK
-cmake --build libs_virtual --target SDL3-shared --config Release --parallel
+cmake --build libs_virtual --target SDL3-shared --config Release --parallel "$BUILD_JOBS"
 if [ "$HOST_OS" = 'Linux' ]; then
     require_file_contains "libs/SDL/libSDL3.so" "vkCreateXlibSurfaceKHR failed"
 fi
