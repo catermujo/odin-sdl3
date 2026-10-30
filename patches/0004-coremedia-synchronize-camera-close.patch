@@ -1,0 +1,68 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Isabella Basso <isabellabdoamaral@gmail.com>
+Date: Fri, 30 Oct 2026 12:08:00 -0300
+Subject: [PATCH] camera: synchronize CoreMedia callbacks with camera close
+
+Detach the device from its delegate before releasing capture state. Hold
+the delegate monitor through each callback and try the device mutex so a
+callback never waits on the lock held by close. Queued callbacks then see
+a closed delegate, and close cannot release state during frame processing.
+
+diff --git a/src/camera/coremedia/SDL_camera_coremedia.m b/src/camera/coremedia/SDL_camera_coremedia.m
+index 2f3fb59c8..657b6fe0a 100644
+--- a/src/camera/coremedia/SDL_camera_coremedia.m
++++ b/src/camera/coremedia/SDL_camera_coremedia.m
+@@ -129,19 +129,25 @@ -(id) init:(SDL_Camera *) dev {
+ 
+     - (void) captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
+     {
+-        SDL_Camera *device = self.device;
+-        if (!device || !device->hidden) {
+-            return;  // oh well.
+-        }
++        // DUMBAI: Keep a callback device valid until close clears the delegate under the same monitor.
++        @synchronized (self) {
++            SDL_Camera *device = self.device;
++            // DUMBAI: Drop a busy frame because close holds the device mutex while it stops the delegate.
++            if (!device || !SDL_TryLockMutex(device->lock)) {
++                return;
++            }
+ 
+-        if (!CheckCameraPermissions(device)) {
+-            return;  // nothing to do right now, dump what is probably a completely black frame.
+-        }
++            if (!CheckCameraPermissions(device)) {
++                SDL_UnlockMutex(device->lock);
++                return;  // nothing to do right now, dump what is probably a completely black frame.
++            }
+ 
+-        SDLPrivateCameraData *hidden = (__bridge SDLPrivateCameraData *) device->hidden;
+-        hidden.current_sample = sampleBuffer;
+-        SDL_CameraThreadIterate(device);
+-        hidden.current_sample = NULL;
++            SDLPrivateCameraData *hidden = (__bridge SDLPrivateCameraData *) device->hidden;
++            hidden.current_sample = sampleBuffer;
++            SDL_CameraThreadIterate(device);
++            hidden.current_sample = NULL;
++            SDL_UnlockMutex(device->lock);
++        }
+     }
+ 
+     - (void)captureOutput:(AVCaptureOutput *)output didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
+@@ -278,11 +284,15 @@ static void COREMEDIA_CloseDevice(SDL_Camera *device)
+         #endif
+ 
+         SDLPrivateCameraData *hidden = (SDLPrivateCameraData *) CFBridgingRelease(device->hidden);
+-        device->hidden = NULL;
++        @synchronized (hidden.delegate) {
++            hidden.delegate.device = NULL;
++            device->hidden = NULL;
++        }
+ 
+         AVCaptureSession *session = hidden.session;
+         if (session) {
+             hidden.session = nil;
++            [(AVCaptureVideoDataOutput *)session.outputs.firstObject setSampleBufferDelegate:nil queue:NULL];
+             [session stopRunning];
+             [session removeInput:[session.inputs objectAtIndex:0]];
+             [session removeOutput:(AVCaptureVideoDataOutput *)[session.outputs objectAtIndex:0]];
