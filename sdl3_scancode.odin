@@ -227,6 +227,7 @@ Scancode :: enum c.int {
     CLEARAGAIN           = 162,
     CRSEL                = 163,
     EXSEL                = 164,
+    FRONT                = 165, /**< Front (Sun keyboards) */
     KP_00                = 176,
     KP_000               = 177,
     THOUSANDSSEPARATOR   = 178,

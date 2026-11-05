@@ -44,21 +44,24 @@ AudioFormat :: enum c.int {
 }
 
 @(require_results)
-AUDIO_BITSIZE :: proc "c" (x: AudioFormat) -> Uint16 { return Uint16(x) & AUDIO_MASK_BITSIZE }
+AUDIO_BITSIZE :: #force_inline proc "c" (x: AudioFormat) -> Uint16 { return Uint16(x) & AUDIO_MASK_BITSIZE }
 @(require_results)
-AUDIO_BYTESIZE :: proc "c" (x: AudioFormat) -> Uint16 { return AUDIO_BITSIZE(x) / 8 }
+AUDIO_BYTESIZE :: #force_inline proc "c" (x: AudioFormat) -> Uint16 { return AUDIO_BITSIZE(x) / 8 }
 @(require_results)
-AUDIO_ISFLOAT :: proc "c" (x: AudioFormat) -> bool { return (Uint16(x) & AUDIO_MASK_FLOAT) != 0 }
+AUDIO_ISFLOAT :: #force_inline proc "c" (x: AudioFormat) -> bool { return (Uint16(x) & AUDIO_MASK_FLOAT) != 0 }
 @(require_results)
-AUDIO_ISBIGENDIAN :: proc "c" (x: AudioFormat) -> bool { return (Uint16(x) & AUDIO_MASK_BIG_ENDIAN) != 0 }
+AUDIO_ISBIGENDIAN :: #force_inline proc "c" (x: AudioFormat) -> bool { return(
+        (Uint16(x) & AUDIO_MASK_BIG_ENDIAN) !=
+        0 \
+    ) }
 @(require_results)
-AUDIO_ISLITTLEENDIAN :: proc "c" (x: AudioFormat) -> bool { return !AUDIO_ISBIGENDIAN(x) }
+AUDIO_ISLITTLEENDIAN :: #force_inline proc "c" (x: AudioFormat) -> bool { return !AUDIO_ISBIGENDIAN(x) }
 @(require_results)
-AUDIO_ISSIGNED :: proc "c" (x: AudioFormat) -> bool { return (Uint16(x) & AUDIO_MASK_SIGNED) != 0 }
+AUDIO_ISSIGNED :: #force_inline proc "c" (x: AudioFormat) -> bool { return (Uint16(x) & AUDIO_MASK_SIGNED) != 0 }
 @(require_results)
-AUDIO_ISINT :: proc "c" (x: AudioFormat) -> bool { return !AUDIO_ISFLOAT(x) }
+AUDIO_ISINT :: #force_inline proc "c" (x: AudioFormat) -> bool { return !AUDIO_ISFLOAT(x) }
 @(require_results)
-AUDIO_ISUNSIGNED :: proc "c" (x: AudioFormat) -> bool { return !AUDIO_ISSIGNED(x) }
+AUDIO_ISUNSIGNED :: #force_inline proc "c" (x: AudioFormat) -> bool { return !AUDIO_ISSIGNED(x) }
 
 
 AudioDeviceID :: distinct Uint32
@@ -73,8 +76,8 @@ AudioSpec :: struct {
 }
 
 @(require_results)
-AUDIO_FRAMESIZE :: proc "c" (x: AudioSpec) -> c.int {
-    return c.int(AUDIO_BYTESIZE(x.format)) * x.channels
+AUDIO_FRAMESIZE :: #force_inline proc "c" (x: AudioSpec) -> c.uint {
+    return c.uint(AUDIO_BYTESIZE(x.format)) * c.uint(x.channels)
 }
 
 
@@ -133,7 +136,9 @@ foreign lib {
     PauseAudioStreamDevice :: proc(stream: ^AudioStream) -> bool ---
     ResumeAudioStreamDevice :: proc(stream: ^AudioStream) -> bool ---
     AudioStreamDevicePaused :: proc(stream: ^AudioStream) -> bool ---
+    @(synchronizes = .Acquire)
     LockAudioStream :: proc(stream: ^AudioStream) -> bool ---
+    @(synchronizes = .Release)
     UnlockAudioStream :: proc(stream: ^AudioStream) -> bool ---
     SetAudioStreamGetCallback :: proc(stream: ^AudioStream, callback: AudioStreamCallback, userdata: rawptr) -> bool ---
     SetAudioStreamPutCallback :: proc(stream: ^AudioStream, callback: AudioStreamCallback, userdata: rawptr) -> bool ---

@@ -10,7 +10,7 @@ if /I "%VENDOR_WINDOWS_ARCH%"=="X86" set "VENDOR_WINDOWS_ARCH=x64"
 set output_dir=windows_%VENDOR_WINDOWS_ARCH%
 
 if not exist SDL (
-   git clone https://github.com/libsdl-org/SDL --revision release-3.4.2 --depth=1 --recurse-submodules -j 4
+   git clone https://github.com/libsdl-org/SDL --revision release-3.4.20 --depth=1 --recurse-submodules -j 4
 )
 if not exist SDL_image (
    git clone https://github.com/libsdl-org/SDL_image --revision release-3.4.0 --depth=1 --recurse-submodules -j 10
@@ -23,9 +23,18 @@ if not exist SDL_ttf (
    git clone https://github.com/libsdl-org/SDL_ttf --revision 053bbc89517471427748a082583c9eada55c07b5 --depth=1 --recurse-submodules -j 10
 )
 
+rem DUMBAI: Existing checkouts must use the same SDL release as fresh clones before applying local patches.
+git -C SDL rev-parse --verify refs/tags/release-3.4.20 >nul 2>nul
+if errorlevel 1 (
+   git -C SDL fetch origin refs/tags/release-3.4.20:refs/tags/release-3.4.20 --depth=1
+   if errorlevel 1 exit /b 1
+)
+git -C SDL checkout --detach release-3.4.20
+if errorlevel 1 exit /b 1
+
 rem Apply patches
 for %%p in (patches\*.patch) do (
-   git -C SDL am --3way "%%p" 2>nul || echo Patch %%p skipped
+   git -C SDL am --3way "%CD%\%%p" 2>nul || echo Patch %%p skipped
 )
 
 cmake -S . -B build -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=OFF -DSDL_SHARED=ON -DSDL_VULKAN=ON -DSDL_CAMERA=ON -DSDL_VIRTUAL_JOYSTICK=OFF -DBUILD_SHARED_LIBS=ON -DSDLIMAGE_AVIF=ON -DSDLIMAGE_AVIF_SAVE=OFF -DCMAKE_BUILD_TYPE=Release
