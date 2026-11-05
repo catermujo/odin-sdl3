@@ -21,8 +21,9 @@ def main():
         "  add_compile_options(-fsanitize=address -fno-omit-frame-pointer -UNDEBUG)\n"
         "  add_link_options(-fsanitize=address)\n"
         "endif()\n"
-        f'add_subdirectory("{sdk / "SDL"}" sdl)\n'
-        f'add_executable(audio-default-migration "{sdk / "tests/audio_default_migration.c"}")\n'
+        # DUMBAI: CMake strings need forward slashes even when Windows Path strings use backslashes.
+        f'add_subdirectory("{(sdk / "SDL").as_posix()}" sdl)\n'
+        f'add_executable(audio-default-migration "{(sdk / "tests/audio_default_migration.c").as_posix()}")\n'
         "target_link_libraries(audio-default-migration PRIVATE SDL3::SDL3-static)\n"
     )
     subprocess.run(
