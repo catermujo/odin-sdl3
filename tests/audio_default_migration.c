@@ -1,5 +1,6 @@
 #define SDL_MAIN_HANDLED
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 #include <assert.h>
 #include <stdio.h>
 
@@ -59,6 +60,8 @@ static void migrate_and_close(const int order[3], bool occupied, int switches)
 
 int main(void)
 {
+    /* DUMBAI: This standalone test supplies main instead of SDL's platform entry wrapper. */
+    SDL_SetMainReady();
     const int orders[][3] = {{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}};
     for (int occupied = 0; occupied < 2; ++occupied) {
         for (int switches = 1; switches <= 3; ++switches) {
