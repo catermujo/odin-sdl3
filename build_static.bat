@@ -2,6 +2,9 @@
 
 setlocal EnableDelayedExpansion
 
+rem DUMBAI: Managed builds must finish with their MSBuild workers instead of retaining broker processes.
+set MSBUILDDISABLENODEREUSE=1
+
 set "VENDOR_WINDOWS_ARCH=%VSCMD_ARG_TGT_ARCH%"
 if not defined VENDOR_WINDOWS_ARCH set "VENDOR_WINDOWS_ARCH=%PROCESSOR_ARCHITECTURE%"
 if /I "%VENDOR_WINDOWS_ARCH%"=="AMD64" set "VENDOR_WINDOWS_ARCH=x64"
@@ -38,7 +41,8 @@ for %%p in (patches\*.patch) do (
    git -C SDL am --3way "%CD%\%%p" 2>nul || echo Patch %%p skipped
 )
 
-cmake -S . -B %BUILD_DIR% -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=ON -DSDL_SHARED=OFF -DSDL_VULKAN=ON -DSDL_CAMERA=ON -DBUILD_SHARED_LIBS=OFF -DSDLIMAGE_AVIF=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+rem DUMBAI: Keep WebP enabled through its shipped DLLs; stale static-codec caches leave unresolved WebP symbols.
+cmake -S . -B %BUILD_DIR% -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=ON -DSDL_SHARED=OFF -DSDL_VULKAN=ON -DSDL_CAMERA=ON -DBUILD_SHARED_LIBS=OFF -DSDLIMAGE_AVIF=ON -DSDLIMAGE_WEBP_SHARED=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
 if errorlevel 1 exit /b 1
 findstr /X /C:"SDL_VULKAN:BOOL=ON" %BUILD_DIR%\CMakeCache.txt >nul
 if errorlevel 1 (

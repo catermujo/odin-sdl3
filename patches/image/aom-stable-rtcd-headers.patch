@@ -1,0 +1,19 @@
+--- a/build/cmake/aom_configure.cmake
++++ b/build/cmake/aom_configure.cmake
+@@ -464,7 +464,15 @@
+       --arch=${AOM_TARGET_CPU}
+       --sym=${AOM_RTCD_SYMBOL} ${AOM_RTCD_FLAGS}
+       --config=${AOM_CONFIG_DIR}/config/aom_config.h ${AOM_RTCD_CONFIG_FILE}
+-    OUTPUT_FILE ${AOM_RTCD_HEADER_FILE})
++    OUTPUT_FILE "${AOM_RTCD_HEADER_FILE}.tmp")
++  # DUMBAI: Preserve unchanged dispatch headers so unrelated reconfiguration retains compiled SIMD objects.
++  execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
++                  "${AOM_RTCD_HEADER_FILE}.tmp" "${AOM_RTCD_HEADER_FILE}"
++                  RESULT_VARIABLE aom_rtcd_copy_result)
++  if(NOT aom_rtcd_copy_result EQUAL 0)
++    message(FATAL_ERROR "Cannot publish AOM dispatch header: ${AOM_RTCD_HEADER_FILE}")
++  endif()
++  file(REMOVE "${AOM_RTCD_HEADER_FILE}.tmp")
+ endforeach()
+ 
+ # Generate aom_version.h.

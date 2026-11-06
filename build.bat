@@ -2,6 +2,9 @@
 
 setlocal EnableDelayedExpansion
 
+rem DUMBAI: Managed builds must finish with their MSBuild workers instead of retaining broker processes.
+set MSBUILDDISABLENODEREUSE=1
+
 set "VENDOR_WINDOWS_ARCH=%VSCMD_ARG_TGT_ARCH%"
 if not defined VENDOR_WINDOWS_ARCH set "VENDOR_WINDOWS_ARCH=%PROCESSOR_ARCHITECTURE%"
 if /I "%VENDOR_WINDOWS_ARCH%"=="AMD64" set "VENDOR_WINDOWS_ARCH=x64"

@@ -237,6 +237,18 @@ if(NOT avif_patch_applied EQUAL 0)
         message(FATAL_ERROR "Cannot apply SDL_image decoder-only AVIF patch")
     endif()
 endif()
+# DUMBAI: AOM dispatch generation must not invalidate every SIMD object when codec configuration is unchanged.
+set(aom_rtcd_patch "${CMAKE_CURRENT_SOURCE_DIR}/patches/image/aom-stable-rtcd-headers.patch")
+execute_process(COMMAND git apply --ignore-space-change --reverse --check "${aom_rtcd_patch}"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/SDL_image/external/aom" RESULT_VARIABLE aom_rtcd_patch_applied
+    OUTPUT_QUIET ERROR_QUIET)
+if(NOT aom_rtcd_patch_applied EQUAL 0)
+    execute_process(COMMAND git apply --ignore-space-change "${aom_rtcd_patch}"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/SDL_image/external/aom" RESULT_VARIABLE aom_rtcd_patch_result)
+    if(NOT aom_rtcd_patch_result EQUAL 0)
+        message(FATAL_ERROR "Cannot apply AOM stable dispatch-header patch")
+    endif()
+endif()
 add_subdirectory(SDL_image)
 
 # # SDL_Image bug: https://github.com/libsdl-org/SDL_image/issues/506
