@@ -1,6 +1,6 @@
 --- a/build/cmake/aom_configure.cmake
 +++ b/build/cmake/aom_configure.cmake
-@@ -464,7 +464,15 @@
+@@ -464,5 +464,13 @@
        --arch=${AOM_TARGET_CPU}
        --sym=${AOM_RTCD_SYMBOL} ${AOM_RTCD_FLAGS}
        --config=${AOM_CONFIG_DIR}/config/aom_config.h ${AOM_RTCD_CONFIG_FILE}
@@ -15,5 +15,3 @@
 +  endif()
 +  file(REMOVE "${AOM_RTCD_HEADER_FILE}.tmp")
  endforeach()
- 
- # Generate aom_version.h.
