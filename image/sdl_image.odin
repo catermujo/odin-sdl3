@@ -26,7 +26,7 @@ when ODIN_OS == .Windows {
         when SDL.LINK == "static" {
             foreign import lib "darwin_x64/SDL3_image.darwin.a"
         } else when SDL.LINK == "shared" {
-            // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
+            // Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
             @(export)
             foreign import lib "darwin_x64/libSDL3_image.0.dylib"
         } else {
@@ -37,7 +37,7 @@ when ODIN_OS == .Windows {
         when SDL.LINK == "static" {
             foreign import lib "darwin_arm64/SDL3_image.darwin.a"
         } else when SDL.LINK == "shared" {
-            // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
+            // Pin Darwin shared import to ABI-major install-name so vendor tree can drop duplicate unversioned alias files.
             @(export)
             foreign import lib "darwin_arm64/libSDL3_image.0.dylib"
         } else {

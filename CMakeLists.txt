@@ -48,7 +48,7 @@ set_bool_default(SDL_SENSOR OFF)
 set_bool_default(SDL_DBUS OFF)
 set_bool_default(SDL_LIBURING OFF)
 set_bool_default(SDL_DISKAUDIO OFF)
-# DUMBAI: Keep dummy audio available in retained virtual builds so automated runs can select a silent sink.
+# Keep dummy audio available in retained virtual builds so automated runs can select a silent sink.
 set(SDL_DUMMYAUDIO ON CACHE BOOL "" FORCE)
 set_bool_default(SDL_DUMMYVIDEO OFF)
 set_bool_default(SDL_DUMMYCAMERA OFF)
@@ -237,7 +237,7 @@ if(NOT avif_patch_applied EQUAL 0)
         message(FATAL_ERROR "Cannot apply SDL_image decoder-only AVIF patch")
     endif()
 endif()
-# DUMBAI: AOM dispatch generation must not invalidate every SIMD object when codec configuration is unchanged.
+# AOM dispatch generation must not invalidate every SIMD object when codec configuration is unchanged.
 set(aom_rtcd_patch "${CMAKE_CURRENT_SOURCE_DIR}/patches/image/aom-stable-rtcd-headers.patch")
 execute_process(COMMAND git apply --ignore-space-change --reverse --check "${aom_rtcd_patch}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/SDL_image/external/aom" RESULT_VARIABLE aom_rtcd_patch_applied

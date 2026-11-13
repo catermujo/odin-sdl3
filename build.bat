@@ -2,7 +2,7 @@
 
 setlocal EnableDelayedExpansion
 
-rem DUMBAI: Managed builds must finish with their MSBuild workers instead of retaining broker processes.
+rem Managed builds must finish with their MSBuild workers instead of retaining broker processes.
 set MSBUILDDISABLENODEREUSE=1
 
 set "VENDOR_WINDOWS_ARCH=%VSCMD_ARG_TGT_ARCH%"
@@ -26,7 +26,7 @@ if not exist SDL_ttf (
    git clone https://github.com/libsdl-org/SDL_ttf --revision 053bbc89517471427748a082583c9eada55c07b5 --depth=1 --recurse-submodules -j 10
 )
 
-rem DUMBAI: Existing checkouts must use the same SDL release as fresh clones before applying local patches.
+rem Existing checkouts must use the same SDL release as fresh clones before applying local patches.
 git -C SDL rev-parse --verify refs/tags/release-3.4.20 >nul 2>nul
 if errorlevel 1 (
    git -C SDL fetch origin refs/tags/release-3.4.20:refs/tags/release-3.4.20 --depth=1

@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-/* DUMBAI: Drive real SDL migration with dummy hardware, without changing the host's default output. */
+/* Drive real SDL migration with dummy hardware, without changing the host's default output. */
 typedef struct SDL_AudioDevice SDL_AudioDevice;
 extern SDL_AudioDevice *SDL_AddAudioDevice(bool recording, const char *name, const SDL_AudioSpec *spec, void *handle);
 extern void SDL_DefaultAudioDeviceChanged(SDL_AudioDevice *device);
@@ -44,7 +44,7 @@ static void migrate_and_close(const int order[3], bool occupied, int switches)
     for (int i = 0; i < switches; ++i) {
         SDL_DefaultAudioDeviceChanged(target);
         if (i + 1 < switches) {
-            /* DUMBAI: Give each migration a fresh physical destination to exercise repeated list relinking. */
+            /* Give each migration a fresh physical destination to exercise repeated list relinking. */
             target = SDL_AddAudioDevice(false, "next migration target", &spec, streams[i]);
             assert(target);
         }
@@ -60,7 +60,7 @@ static void migrate_and_close(const int order[3], bool occupied, int switches)
 
 int main(void)
 {
-    /* DUMBAI: This standalone test supplies main instead of SDL's platform entry wrapper. */
+    /* This standalone test supplies main instead of SDL's platform entry wrapper. */
     SDL_SetMainReady();
     const int orders[][3] = {{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}};
     for (int occupied = 0; occupied < 2; ++occupied) {

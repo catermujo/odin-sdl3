@@ -167,21 +167,21 @@ done
 EXTRA_CMAKE_FLAGS=()
 HOST_OS="$(uname -s)"
 if [ "$HOST_OS" = 'Linux' ]; then
-    # DUMBAI: Vendored Vorbis in SDL_mixer expects HAVE_ALLOCA_H from autotools; define it explicitly in our CMake flow.
-    # DUMBAI: Force SDL's Vulkan codepaths at compile-definition level because SDL's dep_option gate can evaluate
+    # Vendored Vorbis in SDL_mixer expects HAVE_ALLOCA_H from autotools; define it explicitly in our CMake flow.
+    # Force SDL's Vulkan codepaths at compile-definition level because SDL's dep_option gate can evaluate
     # SDL_VULKAN=OFF on some modern CMake/policy combos despite Linux + SDL_VIDEO being enabled.
     EXTRA_CMAKE_FLAGS+=(-DCMAKE_C_FLAGS=-DHAVE_ALLOCA_H=1\ -DSDL_VIDEO_VULKAN=1)
 fi
 if [ "$HOST_OS" = 'Linux' ] || [ "$HOST_OS" = 'Darwin' ]; then
-    # DUMBAI: SDL sets cmake_minimum_required(VERSION 3.16), so CMP0127 defaults to OLD and
+    # SDL sets cmake_minimum_required(VERSION 3.16), so CMP0127 defaults to OLD and
     # cmake_dependent_option() OR-conditions (like SDL_VULKAN deps) can evaluate incorrectly to OFF on modern CMake.
     EXTRA_CMAKE_FLAGS+=(-DCMAKE_POLICY_DEFAULT_CMP0127=NEW)
     EXTRA_CMAKE_FLAGS+=(-DSDL_VULKAN=ON)
 fi
 if [ "$HOST_OS" = 'Linux' ]; then
-    # DUMBAI: Linux runtime expects Vulkan-capable SDL window backend; force these toggles and fail during configure if not satisfiable.
+    # Linux runtime expects Vulkan-capable SDL window backend; force these toggles and fail during configure if not satisfiable.
     EXTRA_CMAKE_FLAGS+=(
-        # DUMBAI: Wayland has no native CPU framebuffer; the startup splash needs SDL texture rendering.
+        # Wayland has no native CPU framebuffer; the startup splash needs SDL texture rendering.
         -DSDL_RENDER=ON
         -DSDL_RENDER_VULKAN=ON
         -DSDL_X11=ON
@@ -191,7 +191,7 @@ if [ "$HOST_OS" = 'Darwin' ]; then
     EXTRA_CMAKE_FLAGS+=(-DSDL_METAL=ON)
 fi
 
-# DUMBAI: Reconfigure from a clean cache so host/platform flips (or old option values) cannot silently disable Vulkan/X11.
+# Reconfigure from a clean cache so host/platform flips (or old option values) cannot silently disable Vulkan/X11.
 rm -f libs/CMakeCache.txt
 rm -rf libs/CMakeFiles
 cmake -S . -B libs -DSDL_SHARED=ON -DSDL_STATIC=OFF -DSDL_VIRTUAL_JOYSTICK=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=ON "${EXTRA_CMAKE_FLAGS[@]}"
@@ -214,7 +214,7 @@ else
     BUILD_JOBS=$(nproc)
     LIB_EXT=so
 fi
-# DUMBAI: Both builds need an explicit job count; bare --parallel ignores CMAKE_BUILD_PARALLEL_LEVEL.
+# Both builds need an explicit job count; bare --parallel ignores CMAKE_BUILD_PARALLEL_LEVEL.
 cmake --build libs --parallel "$BUILD_JOBS" --config Release
 cmake -S . -B libs_virtual -DSDL_SHARED=ON -DSDL_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DSDLIMAGE_AVIF=OFF -DSDL_VIRTUAL_JOYSTICK=ON "${EXTRA_CMAKE_FLAGS[@]}"
 require_cmake_bool_on libs_virtual/CMakeCache.txt SDL_VIRTUAL_JOYSTICK
@@ -224,7 +224,7 @@ if [ "$HOST_OS" = 'Linux' ]; then
 fi
 
 if [ "$HOST_OS" = 'Darwin' ]; then
-    # DUMBAI: Keep only ABI-major SDL dylib names in vendor output; Odin bindings import these directly to avoid duplicate unversioned aliases.
+    # Keep only ABI-major SDL dylib names in vendor output; Odin bindings import these directly to avoid duplicate unversioned aliases.
     cp libs/SDL/libSDL3.0.dylib "$ARCH_DIR"/
     mkdir -p "$ARCH_DIR/virtual"
     cp libs_virtual/SDL/libSDL3.0.dylib "$ARCH_DIR/virtual"/
@@ -241,7 +241,7 @@ else
     copy_shared_family libs/SDL_mixer libSDL3_mixer "mixer/$ARCH_DIR"
 fi
 if [ "$HOST_OS" = 'Darwin' ]; then
-    # DUMBAI: Stage only ABI-major external SDL_image dylibs so vendor output does not duplicate unversioned and patch-level aliases.
+    # Stage only ABI-major external SDL_image dylibs so vendor output does not duplicate unversioned and patch-level aliases.
     for dylib in \
         libaom.3.dylib \
         libaom_version.dylib \

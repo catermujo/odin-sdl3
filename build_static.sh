@@ -127,7 +127,7 @@ done
 EXTRA_CMAKE_FLAGS=()
 HOST_OS="$(uname -s)"
 if [ "$HOST_OS" = 'Linux' ]; then
-    # DUMBAI: Vendored Vorbis in SDL_mixer expects HAVE_ALLOCA_H from autotools; define it explicitly in our CMake flow.
+    # Vendored Vorbis in SDL_mixer expects HAVE_ALLOCA_H from autotools; define it explicitly in our CMake flow.
     EXTRA_CMAKE_FLAGS+=(-DCMAKE_C_FLAGS=-DHAVE_ALLOCA_H=1)
 fi
 if [ "$HOST_OS" = 'Linux' ] || [ "$HOST_OS" = 'Darwin' ]; then
@@ -136,7 +136,7 @@ if [ "$HOST_OS" = 'Linux' ] || [ "$HOST_OS" = 'Darwin' ]; then
 fi
 if [ "$HOST_OS" = 'Linux' ]; then
     EXTRA_CMAKE_FLAGS+=(
-        # DUMBAI: Wayland has no native CPU framebuffer; the startup splash needs SDL texture rendering.
+        # Wayland has no native CPU framebuffer; the startup splash needs SDL texture rendering.
         -DSDL_RENDER=ON
         -DSDL_RENDER_VULKAN=ON
         -DSDL_X11=ON

@@ -2,7 +2,7 @@
 
 setlocal EnableDelayedExpansion
 
-rem DUMBAI: Managed builds must finish with their MSBuild workers instead of retaining broker processes.
+rem Managed builds must finish with their MSBuild workers instead of retaining broker processes.
 set MSBUILDDISABLENODEREUSE=1
 
 set "VENDOR_WINDOWS_ARCH=%VSCMD_ARG_TGT_ARCH%"
@@ -27,7 +27,7 @@ if not exist SDL_ttf (
    git clone https://github.com/libsdl-org/SDL_ttf --revision 053bbc89517471427748a082583c9eada55c07b5 --depth=1 --recurse-submodules -j 10
 )
 
-rem DUMBAI: Existing checkouts must use the same SDL release as fresh clones before applying local patches.
+rem Existing checkouts must use the same SDL release as fresh clones before applying local patches.
 git -C SDL rev-parse --verify refs/tags/release-3.4.20 >nul 2>nul
 if errorlevel 1 (
    git -C SDL fetch origin refs/tags/release-3.4.20:refs/tags/release-3.4.20 --depth=1
@@ -41,7 +41,7 @@ for %%p in (patches\*.patch) do (
    git -C SDL am --3way "%CD%\%%p" 2>nul || echo Patch %%p skipped
 )
 
-rem DUMBAI: Keep WebP enabled through its shipped DLLs; stale static-codec caches leave unresolved WebP symbols.
+rem Keep WebP enabled through its shipped DLLs; stale static-codec caches leave unresolved WebP symbols.
 cmake -S . -B %BUILD_DIR% -A %VENDOR_WINDOWS_ARCH% -DSDL_STATIC=ON -DSDL_SHARED=OFF -DSDL_VULKAN=ON -DSDL_CAMERA=ON -DBUILD_SHARED_LIBS=OFF -DSDLIMAGE_AVIF=ON -DSDLIMAGE_WEBP_SHARED=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
 if errorlevel 1 exit /b 1
 findstr /X /C:"SDL_VULKAN:BOOL=ON" %BUILD_DIR%\CMakeCache.txt >nul

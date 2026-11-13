@@ -6,7 +6,7 @@
        --config=${AOM_CONFIG_DIR}/config/aom_config.h ${AOM_RTCD_CONFIG_FILE}
 -    OUTPUT_FILE ${AOM_RTCD_HEADER_FILE})
 +    OUTPUT_FILE "${AOM_RTCD_HEADER_FILE}.tmp")
-+  # DUMBAI: Preserve unchanged dispatch headers so unrelated reconfiguration retains compiled SIMD objects.
++  # Preserve unchanged dispatch headers so unrelated reconfiguration retains compiled SIMD objects.
 +  execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
 +                  "${AOM_RTCD_HEADER_FILE}.tmp" "${AOM_RTCD_HEADER_FILE}"
 +                  RESULT_VARIABLE aom_rtcd_copy_result)

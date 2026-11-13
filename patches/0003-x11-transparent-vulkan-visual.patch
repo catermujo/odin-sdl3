@@ -14,7 +14,7 @@ index 4a68287cc..38b8293ed 100644
 -        visual = displaydata->visual;
 -        depth = displaydata->depth;
 +        if (window->flags & SDL_WINDOW_TRANSPARENT) {
-+            // DUMBAI: Vulkan windows also need an ARGB visual; the default X11 visual discards swapchain alpha.
++            // Vulkan windows also need an ARGB visual; the default X11 visual discards swapchain alpha.
 +            XVisualInfo template;
 +            SDL_zero(template);
 +            template.screen = screen;

@@ -10,7 +10,7 @@ def main():
     sdk = Path(__file__).resolve().parents[1]
     output = args.out.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    # DUMBAI: Build SDL from source so stale vendor binaries cannot hide a migration regression.
+    # Build SDL from source so stale vendor binaries cannot hide a migration regression.
     (output / "CMakeLists.txt").write_text(
         "cmake_minimum_required(VERSION 3.16)\n"
         "project(audio-default-migration C)\n"
@@ -21,7 +21,7 @@ def main():
         "  add_compile_options(-fsanitize=address -fno-omit-frame-pointer -UNDEBUG)\n"
         "  add_link_options(-fsanitize=address)\n"
         "endif()\n"
-        # DUMBAI: CMake strings need forward slashes even when Windows Path strings use backslashes.
+        # CMake strings need forward slashes even when Windows Path strings use backslashes.
         f'add_subdirectory("{(sdk / "SDL").as_posix()}" sdl)\n'
         f'add_executable(audio-default-migration "{(sdk / "tests/audio_default_migration.c").as_posix()}")\n'
         "target_link_libraries(audio-default-migration PRIVATE SDL3::SDL3-static)\n"

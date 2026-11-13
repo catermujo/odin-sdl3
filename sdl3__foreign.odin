@@ -111,7 +111,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
                     @(export)
                     foreign import lib "darwin_x64/virtual/libSDL3.0.dylib"
                 } else {
-                    // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
+                    // Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
                     @(export)
                     foreign import lib "darwin_x64/libSDL3.0.dylib"
                 }
@@ -151,7 +151,7 @@ when ODIN_ARCH == .wasm32 || ODIN_ARCH == .wasm64p32 {
                     @(export)
                     foreign import lib "darwin_arm64/virtual/libSDL3.0.dylib"
                 } else {
-                    // DUMBAI: Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
+                    // Pin Darwin shared import to ABI-major install-name so vendor tree does not need duplicate unversioned alias files.
                     @(export)
                     foreign import lib "darwin_arm64/libSDL3.0.dylib"
                 }

@@ -20,10 +20,10 @@ index 2f3fb59c8..657b6fe0a 100644
 -        if (!device || !device->hidden) {
 -            return;  // oh well.
 -        }
-+        // DUMBAI: Keep a callback device valid until close clears the delegate under the same monitor.
++        // Keep a callback device valid until close clears the delegate under the same monitor.
 +        @synchronized (self) {
 +            SDL_Camera *device = self.device;
-+            // DUMBAI: Drop a busy frame because close holds the device mutex while it stops the delegate.
++            // Drop a busy frame because close holds the device mutex while it stops the delegate.
 +            if (!device || !SDL_TryLockMutex(device->lock)) {
 +                return;
 +            }

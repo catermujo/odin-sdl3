@@ -11,7 +11,7 @@ index a5237da0a..866946dfb 100644
  {
      //SDL_Log("JACK Sample Rate Callback! %d", (int) nframes);
      SDL_AudioDevice *device = (SDL_AudioDevice *) arg;
-+    // DUMBAI: JACK repeats the negotiated format during activation, while SDL's opener owns the device lock.
++    // JACK repeats the negotiated format during activation, while SDL's opener owns the device lock.
 +    if (device->spec.freq == (int)nframes) return 0;
      SDL_AudioSpec newspec;
      SDL_copyp(&newspec, &device->spec);
@@ -20,7 +20,7 @@ index a5237da0a..866946dfb 100644
  {
      //SDL_Log("JACK Buffer Size Callback! %d", (int) nframes);
      SDL_AudioDevice *device = (SDL_AudioDevice *) arg;
-+    // DUMBAI: Ignore the initial duplicate before entering SDL's locked format-change path.
++    // Ignore the initial duplicate before entering SDL's locked format-change path.
 +    if (device->sample_frames == (int)nframes) return 0;
      SDL_AudioSpec newspec;
      SDL_copyp(&newspec, &device->spec);
