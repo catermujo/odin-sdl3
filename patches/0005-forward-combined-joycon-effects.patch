@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Isabella Basso <isabellabdoamaral@gmail.com>
+Date: Sat, 14 Nov 2026 13:13:54 -0300
+Subject: [PATCH] joystick: Forward custom effects to combined controller children
+
+The combined Joy-Con driver rejects HD Rumble packets even though both
+child drivers accept them. Forward each effect to both devices and report
+failure if either child rejects it. Always attempt both writes.
+
+---
+ src/joystick/hidapi/SDL_hidapi_combined.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/src/joystick/hidapi/SDL_hidapi_combined.c b/src/joystick/hidapi/SDL_hidapi_combined.c
+--- a/src/joystick/hidapi/SDL_hidapi_combined.c
++++ b/src/joystick/hidapi/SDL_hidapi_combined.c
+@@ -162,7 +162,16 @@
+
+ static bool HIDAPI_DriverCombined_SendJoystickEffect(SDL_HIDAPI_Device *device, SDL_Joystick *joystick, const void *data, int size)
+ {
+-    return SDL_Unsupported();
++    int i;
++    bool result = true;
++
++    for (i = 0; i < device->num_children; ++i) {
++        SDL_HIDAPI_Device *child = device->children[i];
++        if (!child->driver->SendJoystickEffect(child, joystick, data, size)) {
++            result = false;
++        }
++    }
++    return result;
+ }
+
+ static bool HIDAPI_DriverCombined_SetJoystickSensorsEnabled(SDL_HIDAPI_Device *device, SDL_Joystick *joystick, bool enabled)

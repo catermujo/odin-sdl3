@@ -113,19 +113,20 @@ set_bool_default(SDL_LIBUDEV ON)
 if(EMSCRIPTEN)
     set(SDL_PTHREADS OFF CACHE BOOL "" FORCE)
 endif()
-foreach(camera_patch_file IN ITEMS
+foreach(sdl_patch_file IN ITEMS
     0003-mediafoundation-normalize-bottom-up-frames.patch
-    0004-coremedia-synchronize-camera-close.patch)
-    set(camera_patch "${CMAKE_CURRENT_SOURCE_DIR}/patches/${camera_patch_file}")
-    execute_process(COMMAND git apply --ignore-space-change --reverse --check "${camera_patch}"
+    0004-coremedia-synchronize-camera-close.patch
+    0005-forward-combined-joycon-effects.patch)
+    set(sdl_patch "${CMAKE_CURRENT_SOURCE_DIR}/patches/${sdl_patch_file}")
+    execute_process(COMMAND git apply --ignore-space-change --reverse --check "${sdl_patch}"
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/SDL"
-        RESULT_VARIABLE camera_patch_applied OUTPUT_QUIET ERROR_QUIET)
-    if(NOT camera_patch_applied EQUAL 0)
-        execute_process(COMMAND git apply --ignore-space-change "${camera_patch}"
+        RESULT_VARIABLE sdl_patch_applied OUTPUT_QUIET ERROR_QUIET)
+    if(NOT sdl_patch_applied EQUAL 0)
+        execute_process(COMMAND git apply --ignore-space-change "${sdl_patch}"
             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/SDL"
-            RESULT_VARIABLE camera_patch_result)
-        if(NOT camera_patch_result EQUAL 0)
-            message(FATAL_ERROR "Cannot apply camera patch: ${camera_patch_file}")
+            RESULT_VARIABLE sdl_patch_result)
+        if(NOT sdl_patch_result EQUAL 0)
+            message(FATAL_ERROR "Cannot apply SDL patch: ${sdl_patch_file}")
         endif()
     endif()
 endforeach()
