@@ -116,7 +116,8 @@ endif()
 foreach(sdl_patch_file IN ITEMS
     0003-mediafoundation-normalize-bottom-up-frames.patch
     0004-coremedia-synchronize-camera-close.patch
-    0005-forward-combined-joycon-effects.patch)
+    0005-forward-combined-joycon-effects.patch
+    0006-retire-nintendo-mfi-aliases.patch)
     set(sdl_patch "${CMAKE_CURRENT_SOURCE_DIR}/patches/${sdl_patch_file}")
     execute_process(COMMAND git apply --ignore-space-change --reverse --check "${sdl_patch}"
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/SDL"

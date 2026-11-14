@@ -1,0 +1,39 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Isabella Basso <isabellabdoamaral@gmail.com>
+Date: Sat, 14 Nov 2026 13:39:53 -0300
+Subject: [PATCH] joystick: Retire Nintendo MFi aliases after HIDAPI handoff
+
+The macOS GameController framework can register a fallback Nintendo device
+while HIDAPI rebuilds a Joy-Con pair. Remove that fallback when HIDAPI
+claims the controller again so one physical grip has one SDL device.
+
+diff --git a/src/joystick/apple/SDL_mfijoystick.m b/src/joystick/apple/SDL_mfijoystick.m
+--- a/src/joystick/apple/SDL_mfijoystick.m
++++ b/src/joystick/apple/SDL_mfijoystick.m
+@@ -849,6 +849,26 @@
+
+ static void IOS_JoystickDetect(void)
+ {
++#if defined(SDL_JOYSTICK_MFI) && defined(SDL_JOYSTICK_HIDAPI)
++    SDL_JoystickDeviceItem *device = deviceList;
++    while (device) {
++        SDL_GamepadType type = SDL_GAMEPAD_TYPE_UNKNOWN;
++        if (device->is_switch_pro) {
++            type = SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_PRO;
++        } else if (device->is_switch_joycon_pair) {
++            type = SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_PAIR;
++        } else if (device->is_switch_joyconL) {
++            type = SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_LEFT;
++        } else if (device->is_switch_joyconR) {
++            type = SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT;
++        }
++        if (type != SDL_GAMEPAD_TYPE_UNKNOWN && HIDAPI_IsDeviceTypePresent(type)) {
++            device = IOS_RemoveJoystickDevice(device);
++        } else {
++            device = device->next;
++        }
++    }
++#endif
+ }
+
+ static bool IOS_JoystickIsDevicePresent(Uint16 vendor_id, Uint16 product_id, Uint16 version, const char *name)
